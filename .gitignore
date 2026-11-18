@@ -1,0 +1,28 @@
+# 비밀 값
+.env
+
+# 가상환경 / 캐시
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# 런타임 산출물
+chroma_db/
+checkpoints.sqlite
+checkpoints.sqlite-*
+logs/
+
+# Node (생성 앱·템플릿 의존성)
+node_modules/
+dist/
+storybook-static/
+playwright-report/
+test-results/
+
+# gstack 임시 파일
+.gstack/
+
+# 에디터 / OS
+.vscode/
+.DS_Store
