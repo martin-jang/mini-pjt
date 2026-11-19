@@ -12,7 +12,7 @@
 - **LLM / 임베딩**: AWS Bedrock Claude Sonnet 4.5 / Titan Embeddings v2
 - **RAG**: Chroma
 - **화면 수집**: Playwright MCP (`microsoft/playwright-mcp`)
-- **개인정보 마스킹**: Presidio (`presidio-analyzer`, `presidio-anonymizer`)
+- **개인정보 마스킹**: Presidio (`presidio-analyzer`, `presidio-anonymizer`, `presidio-image-redactor` + Tesseract OCR `kor`)
 - **UI 디자인**: Stitch MCP로 화면 디자인 생성
 - **생성물(TOBE)**: React + Vite + TypeScript + React Router + Tailwind CSS, Storybook, Playwright 검증
 - **API 서버**: FastAPI (`/query` 단일 진입점)
