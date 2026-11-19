@@ -8,10 +8,11 @@
 ## 기술 스택 / 환경
 
 - **런타임**: Python 3.14 (`agent/.venv`), Node v26
-- **에이전트**: LangGraph (Supervisor + 서브 에이전트), 체크포인트 SqliteSaver
+- **에이전트**: LangGraph 고정 그래프 (Router + 단계별 노드, `interrupt()`로 사용자 승인), 체크포인트 SqliteSaver
 - **LLM / 임베딩**: AWS Bedrock Claude Sonnet 4.5 / Titan Embeddings v2
 - **RAG**: Chroma
-- **크롤러**: Playwright, fastmcp로 만든 자체 MCP 서버
+- **화면 수집**: Playwright MCP (`microsoft/playwright-mcp`)
+- **개인정보 마스킹**: Presidio (`presidio-analyzer`, `presidio-anonymizer`)
 - **UI 디자인**: Stitch MCP로 화면 디자인 생성
 - **생성물(TOBE)**: React + Vite + TypeScript + React Router + Tailwind CSS, Storybook, Playwright 검증
 - **API 서버**: FastAPI (`/query` 단일 진입점)
@@ -109,6 +110,7 @@ PowerShell 기준. 명령이 생기거나 바뀌면 여기에 추가한다.
 - `docs/TASKS.md` — 작업 목록(T01~)과 진행 상태
 - `docs/GUARDRAILS.md` — 에이전트 가드레일 상세 (대상 사이트 접근 규칙, 입력·출력 검증)
 - `docs/EVAL.md` — 평가셋 설명과 라운드별 결과 요약
+- `docs/STITCH.md` — Stitch 디자인 작업 규칙 (저장 위치, 순서, Tailwind 맞추기). Stitch 작업 전에 읽는다
 - `README.md` — 설치·실행 방법 (제출용)
 
 문서가 추가되면 여기에 한 줄씩 더한다.
