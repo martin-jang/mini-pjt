@@ -1,0 +1,202 @@
+<!doctype html>
+<!--
+  Legacy2Next 시연용 프롬프트 입력 UI.
+  app.py 가 GET / 로 이 파일을 내려주고, 같은 출처의 POST /query 를 호출합니다.
+  외부 CDN 없이 한 파일로 동작합니다 (로컬 127.0.0.1 시연 전용, 가드레일 G5).
+  - 새 질문: {"question"} (+ 이어가기 중이면 thread_id)
+  - 승인 대기(needs_approval): 승인/거절 버튼 → {"question", "thread_id", "approval": {"decision"}}
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legacy2Next 콘솔</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #ffffff; --text: #1d2330; --muted: #667085; --line: #e3e6eb;
+    --accent: #2f6fed; --accent-text: #ffffff; --user: #e8f0ff;
+    --ok: #12805c; --warn: #b26a00; --bad: #c4302b; --code: #f1f3f6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151b; --panel: #1b1f27; --text: #e6e9ef; --muted: #98a2b3; --line: #2c323d;
+      --accent: #5b8cff; --accent-text: #0b0e14; --user: #1f2a44;
+      --ok: #4cc38a; --warn: #f0b04a; --bad: #ff6b63; --code: #232833;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.6 "Pretendard", "Malgun Gothic", system-ui, sans-serif; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 16px; display: flex; flex-direction: column; min-height: 100vh; }
+  header { display: flex; align-items: center; gap: 12px; padding: 18px 0 12px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  header h1 { font-size: 18px; margin: 0; }
+  header .sub { color: var(--muted); font-size: 13px; }
+  header .spacer { flex: 1; }
+  .thread { font: 12px ui-monospace, Consolas, monospace; color: var(--muted); }
+  button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid var(--line);
+           background: var(--panel); color: var(--text); padding: 6px 12px; }
+  button:hover { border-color: var(--accent); }
+  button.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
+  button.danger { color: var(--bad); }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+
+  #log { flex: 1; padding: 16px 0; display: flex; flex-direction: column; gap: 14px; }
+  .empty { color: var(--muted); text-align: center; margin-top: 40px; }
+  .msg { padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); }
+  .msg.user { background: var(--user); align-self: flex-end; max-width: 85%; white-space: pre-wrap; }
+  .msg.bot { align-self: stretch; }
+  .msg .answer { white-space: pre-wrap; word-break: break-word; }
+  .meta { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+  .badge { font-weight: 700; padding: 1px 8px; border-radius: 999px; border: 1px solid currentColor; }
+  .s-ok { color: var(--ok); } .s-needs_approval { color: var(--warn); }
+  .s-partial { color: var(--warn); } .s-failed, .s-error { color: var(--bad); }
+  details { margin-top: 8px; border-top: 1px dashed var(--line); padding-top: 6px; }
+  summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+  pre { background: var(--code); padding: 10px; border-radius: 8px; overflow-x: auto; font: 12px/1.5 ui-monospace, Consolas, monospace;
+        white-space: pre-wrap; word-break: break-word; margin: 6px 0; }
+  .ctx b { font: 12px ui-monospace, Consolas, monospace; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  td, th { border-bottom: 1px solid var(--line); padding: 4px 6px; text-align: left; vertical-align: top; }
+  .approve { display: flex; gap: 8px; margin-top: 10px; }
+
+  .composer { position: sticky; bottom: 0; background: var(--bg); padding: 10px 0 16px; border-top: 1px solid var(--line); }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+  .chips button { font-size: 12px; padding: 3px 10px; border-radius: 999px; color: var(--muted); }
+  .row { display: flex; gap: 8px; align-items: flex-end; }
+  textarea { flex: 1; resize: vertical; min-height: 52px; max-height: 240px; font: inherit; padding: 10px 12px;
+             border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--text); }
+  textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .spin { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--line); border-top-color: var(--accent);
+          border-radius: 50%; animation: r 0.8s linear infinite; vertical-align: -2px; }
+  @keyframes r { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Legacy2Next 콘솔</h1>
+      <div class="sub">레거시 URL 분석 · 질의 · 차세대 POC 생성 (POST /query)</div>
+    </div>
+    <div class="spacer"></div>
+    <span class="thread" id="thread">대화: 새 대화</span>
+    <button id="newThread" title="thread_id 를 비우고 새 대화로 시작">새 대화</button>
+  </header>
+
+  <main id="log"><div class="empty" id="empty">아래 예시를 누르거나 질문을 입력하세요.</div></main>
+
+  <div class="composer">
+    <div class="chips" id="chips"></div>
+    <div class="row">
+      <textarea id="q" placeholder="예: 이체 화면에 어떤 입력 필드가 있어?  (Enter 전송 · Shift+Enter 줄바꿈)"></textarea>
+      <button class="primary" id="send">전송</button>
+    </div>
+    <div class="hint">POC 생성은 1~2분 걸립니다. 승인이 필요한 단계(로그인·이체·Happy Path·덮어쓰기)는 버튼으로 승인/거절합니다.</div>
+  </div>
+</div>
+
+<script>
+// 예시 질의는 GET /examples (평가셋 positive 케이스)에서 받아옵니다. 사이트 고유 값을 UI 코드에 두지 않습니다.
+const $ = (id) => document.getElementById(id);
+const log = $("log"), q = $("q"), send = $("send");
+let threadId = null, busy = false;
+
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function fmt(v) { return typeof v === "string" ? v : JSON.stringify(v, null, 2); }
+function setThread(id) { threadId = id; $("thread").textContent = "대화: " + (id || "새 대화"); }
+function scrollEnd() { window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); }
+
+function addUser(text) {
+  $("empty")?.remove();
+  const d = document.createElement("div");
+  d.className = "msg user"; d.textContent = text;
+  log.appendChild(d); scrollEnd();
+}
+
+function addPending() {
+  const d = document.createElement("div");
+  d.className = "msg bot";
+  const t0 = Date.now();
+  d.innerHTML = '<span class="spin"></span> <span class="el">처리 중… 0초</span>';
+  const timer = setInterval(() => { d.querySelector(".el").textContent = `처리 중… ${Math.round((Date.now() - t0) / 1000)}초`; }, 1000);
+  log.appendChild(d); scrollEnd();
+  return { el: d, done: () => { clearInterval(timer); return ((Date.now() - t0) / 1000).toFixed(1); } };
+}
+
+function renderResponse(el, r, secs) {
+  const status = r.status || "ok";
+  let html = `<div class="meta"><span class="badge s-${esc(status)}">${esc(status)}</span><span>${secs}s</span>`;
+  if (r.tools?.length) html += `<span>도구: ${esc(r.tools.join(", "))}</span>`;
+  html += `</div><div class="answer">${esc(r.answer)}</div>`;
+
+  if (status === "needs_approval" && r.pending) {
+    const { message, ...rest } = r.pending;
+    if (Object.keys(rest).length) html += `<details open><summary>확인할 내용</summary><pre>${esc(fmt(rest))}</pre></details>`;
+    html += `<div class="approve"><button class="primary" data-d="approve">승인</button><button class="danger" data-d="reject">거절</button></div>`;
+  }
+  if (r.contexts?.length) {
+    html += `<details><summary>근거 문서 ${r.contexts.length}건</summary>` +
+      r.contexts.map((c) => `<div class="ctx"><b>${esc(c.doc_id)}</b><pre>${esc(c.text)}</pre></div>`).join("") + `</details>`;
+  }
+  if (r.trace?.length) {
+    html += `<details><summary>trace ${r.trace.length}단계</summary><table><tr><th>step</th><th>ms</th><th>output</th></tr>` +
+      r.trace.map((t) => `<tr><td>${esc(t.step)}</td><td>${esc(t.elapsed_ms ?? "")}</td><td><pre>${esc(fmt(t.output).slice(0, 2000))}</pre></td></tr>`).join("") +
+      `</table></details>`;
+  }
+  el.innerHTML = html;
+
+  el.querySelectorAll(".approve button").forEach((b) => b.addEventListener("click", () => {
+    el.querySelectorAll(".approve button").forEach((x) => (x.disabled = true));
+    const decision = b.dataset.d;
+    ask(decision === "approve" ? "승인" : "거절", { decision });
+  }));
+}
+
+async function ask(question, approval) {
+  if (busy || !question.trim()) return;
+  busy = true; send.disabled = true;
+  addUser(question);
+  const p = addPending();
+  const body = { question };
+  if (threadId) body.thread_id = threadId;
+  if (approval) body.approval = approval;
+  try {
+    const res = await fetch("/query", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const data = await res.json().catch(() => ({}));
+    const secs = p.done();
+    if (!res.ok) {
+      renderResponse(p.el, { status: "error", answer: `HTTP ${res.status}: ${fmt(data.detail ?? data)}` }, secs);
+    } else {
+      setThread(data.thread_id);
+      renderResponse(p.el, data, secs);
+    }
+  } catch (e) {
+    renderResponse(p.el, { status: "error", answer: "서버에 연결하지 못했습니다. run.ps1 / run.sh 로 서버가 떠 있는지 확인하세요.\n" + e }, p.done());
+  } finally {
+    busy = false; send.disabled = false; q.focus(); scrollEnd();
+  }
+}
+
+fetch("/examples").then((r) => (r.ok ? r.json() : [])).catch(() => []).then((list) => {
+  list.forEach((ex) => {
+    const b = document.createElement("button");
+    b.textContent = ex.length > 28 ? ex.slice(0, 28) + "…" : ex; b.title = ex;
+    b.addEventListener("click", () => { q.value = ex; q.focus(); });
+    $("chips").appendChild(b);
+  });
+});
+send.addEventListener("click", () => { const v = q.value; q.value = ""; ask(v); });
+q.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); send.click(); }
+});
+$("newThread").addEventListener("click", () => {
+  setThread(null);
+  log.innerHTML = '<div class="empty" id="empty">새 대화를 시작했습니다.</div>';
+});
+q.focus();
+</script>
+</body>
+</html>

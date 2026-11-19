@@ -13,7 +13,7 @@ import socket
 from pathlib import Path
 from urllib.parse import urlparse
 
-from src.config import allowed_domains
+from src.config import allowed_domains, loopback_allowed, target_for
 from src.reuse.day05_guard import input_guard as _day5_input_guard
 from src.reuse.day05_guard import mask_pii as _day5_mask_pii
 
@@ -49,6 +49,8 @@ def check_url(url: str, *, resolve_dns: bool = True) -> tuple[bool, str]:
       - 호스트가 IP 직접 지정이면 거부
       - 호스트가 허용 도메인(또는 그 하위 도메인)이 아니면 거부
       - DNS로 해석한 모든 IP가 공인 주소여야 함 (도메인을 사설 IP로 돌리는 우회 방지)
+      - 예외: 설정의 allow_loopback_ports 에 명시한 대상(로컬 레거시 샘플)은 루프백(127.0.0.1)만 허용.
+        IP 직접 입력, 사설망, 클라우드 메타데이터 주소는 예외 없이 거부합니다.
     """
     if not isinstance(url, str) or not url.strip():
         return False, "거부: 빈 URL입니다."
@@ -65,13 +67,24 @@ def check_url(url: str, *, resolve_dns: bool = True) -> tuple[bool, str]:
         pass
     if not any(host == d or host.endswith("." + d) for d in allowed_domains()):
         return False, f"거부: 허용 목록에 없는 도메인입니다 ({host})."
+    try:
+        port = parsed.port or (443 if parsed.scheme == "https" else 80)
+    except ValueError:
+        return False, "거부: 포트 번호가 잘못된 URL입니다."
+    # 로컬 샘플 대상은 설정한 포트만 (같은 호스트의 다른 로컬 서비스 접근 방지, DNS 확인 없는 검사에서도 적용)
+    local_ports = target_for(host).get("allow_loopback_ports") or []
+    if local_ports and port not in local_ports:
+        return False, f"거부: 허용되지 않은 포트입니다 ({host}:{port})."
     if resolve_dns:
         try:
             infos = socket.getaddrinfo(host, None)
         except socket.gaierror:
             return False, f"거부: 도메인을 해석할 수 없습니다 ({host})."
+        local_ok = loopback_allowed(host, port)
         for info in infos:
             ip = info[4][0]
+            if local_ok and ipaddress.ip_address(ip.split("%")[0]).is_loopback:
+                continue  # 설정으로 명시한 로컬 레거시 샘플만 허용
             if _is_blocked_ip(ip):
                 return False, f"거부: 내부망 주소로 해석되는 도메인입니다 ({host} → {ip})."
     return True, "허용"
@@ -103,6 +116,27 @@ def mask_pii(text: str) -> str:
     for placeholder, pattern in _EXTRA_PII:
         out = pattern.sub(placeholder, out)
     return out
+
+
+_PII_REQUEST = re.compile(
+    r"(실제|원래|원본|진짜|전체|마스킹\s*(안|없이|풀)|그대로)?.{0,15}"
+    r"(계좌\s*번호|ssn|주민\s*(등록)?\s*번호|사회\s*보장\s*번호|전화\s*번호|휴대폰\s*번호|카드\s*번호|비밀\s*번호|개인\s*정보)"
+    r".{0,15}(알려|보여|출력|말해|줘|공개|조회)", re.IGNORECASE)
+
+
+def pii_request(text: str) -> bool:
+    """다른 사람·계정의 개인정보 원문을 달라는 요청인지 (G3). 화면 필드 구조를 묻는 질문과 구분하기 위해
+    '알려줘·보여줘' 같은 요청 동작이 함께 있을 때만 True."""
+    t = (text or "").lower()
+    if not _PII_REQUEST.search(t):
+        return False
+    # "이체 화면의 계좌번호 필드" 처럼 화면 구조를 묻는 질문은 제외
+    return not re.search(r"(필드|입력란|컬럼|화면\s*구조|라벨)", t)
+
+
+PII_REFUSAL = ("개인정보 원문(계좌번호·SSN·전화번호 등)은 제공하지 않습니다. 수집한 화면 데이터는 저장 전에 "
+               "[ACCOUNT]·[SSN]·[PHONE] 처럼 마스킹되며, 생성 앱에는 교육용 더미 값만 들어갑니다. "
+               "화면에 어떤 개인정보 필드가 있는지(구조)는 안내해 드릴 수 있습니다.")
 
 
 # ──────────────────────────────────────────────────────────────────

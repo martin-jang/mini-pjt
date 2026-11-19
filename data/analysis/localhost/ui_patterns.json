@@ -1,0 +1,82 @@
+{
+  "domain": "localhost",
+  "components": [
+    {
+      "name": "PageLayout",
+      "asis_pattern": "화면 틀(제목·좌측 메뉴)",
+      "used_by": [
+        "메인 홈(대시보드)",
+        "게시판 템플릿 등록",
+        "공지사항 글 등록",
+        "공지사항 글 등록(관리자)",
+        "공지사항 목록(관리자)",
+        "게시판 생성 상세",
+        "게시판 생성 목록",
+        "공지사항 목록",
+        "게시판 사용 등록",
+        "게시판 사용 상세",
+        "게시판 사용 목록",
+        "로그인"
+      ],
+      "variant_props": []
+    },
+    {
+      "name": "SearchPanel",
+      "asis_pattern": "조회조건 영역(기간·유형 선택 + 검색 버튼). 통일 표준: 목록 위에 배치",
+      "used_by": [
+        "공지사항 목록(관리자)",
+        "게시판 생성 상세",
+        "게시판 생성 목록",
+        "공지사항 목록",
+        "게시판 사용 상세",
+        "게시판 사용 목록"
+      ],
+      "variant_props": []
+    },
+    {
+      "name": "DataTable",
+      "asis_pattern": "조회 결과 목록 테이블(행·열 데이터). 변형 유지: 합계 행 유무",
+      "used_by": [
+        "메인 홈(대시보드)",
+        "공지사항 목록(관리자)",
+        "게시판 생성 상세",
+        "게시판 생성 목록",
+        "공지사항 목록",
+        "게시판 사용 상세",
+        "게시판 사용 목록"
+      ],
+      "variant_props": [
+        "showTotal"
+      ]
+    },
+    {
+      "name": "DetailList",
+      "asis_pattern": "'항목: 값' 상세 정보 표",
+      "used_by": [],
+      "variant_props": []
+    },
+    {
+      "name": "FormSection",
+      "asis_pattern": "값 입력 폼(텍스트·선택 입력) + 제출 버튼. 변형 유지: 제출 전 확인 단계",
+      "used_by": [
+        "게시판 템플릿 등록",
+        "공지사항 글 등록",
+        "공지사항 글 등록(관리자)",
+        "게시판 사용 등록",
+        "로그인"
+      ],
+      "variant_props": [
+        "confirmStep"
+      ]
+    },
+    {
+      "name": "ResultPanel",
+      "asis_pattern": "제출 처리 결과 화면",
+      "used_by": [],
+      "variant_props": []
+    }
+  ],
+  "keep_variant_decisions": [
+    "게시판 관리 테이블 컬럼 구성"
+  ]
+}

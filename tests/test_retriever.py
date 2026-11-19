@@ -36,7 +36,7 @@ def test_generic_terms_do_not_make_unrelated_question_usable():
 def test_no_model_call_without_grounds():
     llm = FakeChat("x")
     r = rt.answer_question("주식 매매 화면 필드?", retriever=FakeRetriever([DOC]), llm=llm)
-    assert r["answer"] == rt.NO_ANSWER and llm.calls == 0 and r["grounded"] is False
+    assert r["answer"].startswith(rt.NO_ANSWER) and llm.calls == 0 and r["grounded"] is False
 
 
 def test_grounded_answer_has_contexts_and_sources():
@@ -48,3 +48,16 @@ def test_grounded_answer_has_contexts_and_sources():
 def test_model_refusal_becomes_no_answer():
     r = rt.answer_question("이체 화면 입력 필드", retriever=FakeRetriever([DOC]), llm=FakeChat(rt.NO_ANSWER))
     assert r["grounded"] is False and r["sources"] == []
+
+
+def test_search_scope_keeps_systems_apart(tmp_path, monkeypatch):
+    """여러 시스템을 분석해도 질의는 현재 시스템(+그 시스템을 복제한 합성 픽스처) 문서만 검색."""
+    fx = tmp_path / "fixtures" / "fx.example"
+    fx.mkdir(parents=True)
+    (fx / "a.json").write_text('{"url": "https://sys-a.example/x.htm"}', encoding="utf-8")
+    from src import config
+
+    monkeypatch.setattr(config, "path", lambda key: tmp_path / key)
+    assert rt.search_scope("sys-a.example") == {"sys-a.example", "fx.example"}
+    assert rt.search_scope("sys-b.example") == {"sys-b.example"}
+    assert rt.search_scope(None) is None

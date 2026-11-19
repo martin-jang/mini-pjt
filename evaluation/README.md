@@ -9,7 +9,7 @@
 python evaluation/json_to_csv.py    # test_queries.json → test_queries.csv
 ```
 
-변환 시 배열은 세미콜론으로 이어지고, `auto_approve`는 `true/false/null` → `yes/no/빈 칸`이 됩니다.
+변환 시 배열은 세미콜론으로 이어집니다. CSV는 과제 표준 7개 컬럼만 담고, 평가 하네스 전용 필드 `auto_approve`는 JSON에만 둡니다.
 
 ## 필드 (과제 표준 7개 + 1개)
 

@@ -1,0 +1,296 @@
+{
+  "screen_id": "localhost_8080_uat_uap_selectloginpolicylist_do",
+  "url": "http://localhost:8080/uat/uap/selectLoginPolicyList.do",
+  "url_pattern": "//localhost:8080/uat/uap/selectLoginPolicyList.do",
+  "requires_login": true,
+  "captured_at": "2026-11-19T13:36:14",
+  "title": "내부업무 사이트 > 내부서비스관리 > 로그인정책관리",
+  "headings": [
+    "알림정보",
+    "직급체계관리",
+    "진급관리",
+    "근태관리",
+    "내무서비스관리",
+    "내부업무게시판관리",
+    "사용현황관리",
+    "내부시스템관리",
+    "사용자관리",
+    "사용자권한관리",
+    "메뉴관리",
+    "코드관리",
+    "내부서비스관리",
+    "로그인정책관리"
+  ],
+  "forms": [
+    {
+      "index": 0,
+      "id": "logoutForm",
+      "action": "/uat/uia/actionLogout.do",
+      "method": "POST",
+      "fields": [],
+      "buttons": []
+    },
+    {
+      "index": 1,
+      "id": "menuListForm",
+      "action": "",
+      "method": "POST",
+      "fields": [],
+      "buttons": []
+    },
+    {
+      "index": 2,
+      "id": "listForm",
+      "action": "/uat/uap/selectLoginPolicyList.do",
+      "method": "GET",
+      "fields": [
+        {
+          "name": "searchKeyword",
+          "type": "text",
+          "label": "사용자 명 :",
+          "required": false,
+          "options": null
+        }
+      ],
+      "buttons": [
+        "조회"
+      ]
+    },
+    {
+      "index": 3,
+      "id": "item",
+      "action": "/uat/uap/getLoginPolicy.do",
+      "method": "GET",
+      "fields": [],
+      "buttons": []
+    },
+    {
+      "index": 4,
+      "id": "item",
+      "action": "/uat/uap/getLoginPolicy.do",
+      "method": "GET",
+      "fields": [],
+      "buttons": []
+    }
+  ],
+  "loose_fields": [],
+  "tables": [
+    {
+      "index": 0,
+      "id": null,
+      "headers": [
+        "사용자ID",
+        "사용자 명",
+        "IP 정보",
+        "제한여부"
+      ],
+      "row_count": 2,
+      "sample_rows": [
+        [
+          "admin",
+          "관리자",
+          "",
+          ""
+        ],
+        [
+          "user1",
+          "유저1",
+          "",
+          ""
+        ]
+      ]
+    }
+  ],
+  "links": [
+    {
+      "text": "본문 바로가기",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do#contents"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/cmm/main/mainPage.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do#LINK"
+    },
+    {
+      "text": "로그아웃",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do#"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do"
+    },
+    {
+      "text": "공지사항",
+      "href": "http://localhost:8080/cop/bbs/selectBoardList.do?bbsId=BBSMSTR_AAAAAAAAAAAA"
+    },
+    {
+      "text": "업무게시판",
+      "href": "http://localhost:8080/cop/bbs/selectBoardList.do?bbsId=BBSMSTR_CCCCCCCCCCCC"
+    },
+    {
+      "text": "입퇴사정보 관리",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do#LINK"
+    },
+    {
+      "text": "직급정보 관리",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do#LINK"
+    },
+    {
+      "text": "직위정보 관리",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do#LINK"
+    },
+    {
+      "text": "업무평가점수 관리",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do#LINK"
+    },
+    {
+      "text": "상벌정보 관리",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do#LINK"
+    },
+    {
+      "text": "출퇴근정보 관리",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do#LINK"
+    },
+    {
+      "text": "휴무정보 관리",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do#LINK"
+    },
+    {
+      "text": "게시판생성관리",
+      "href": "http://localhost:8080/cop/bbs/SelectBBSMasterInfs.do"
+    },
+    {
+      "text": "게시판사용관리",
+      "href": "http://localhost:8080/cop/com/selectBBSUseInfs.do"
+    },
+    {
+      "text": "공지사항관리",
+      "href": "http://localhost:8080/cop/bbs/admin/selectBoardList.do?bbsId=BBSMSTR_AAAAAAAAAAAA"
+    },
+    {
+      "text": "업무게시판관리",
+      "href": "http://localhost:8080/cop/bbs/admin/selectBoardList.do?bbsId=BBSMSTR_CCCCCCCCCCCC"
+    },
+    {
+      "text": "접속로그관리",
+      "href": "http://localhost:8080/sym/log/clg/SelectLoginLogList.do"
+    },
+    {
+      "text": "접속통계관리",
+      "href": "http://localhost:8080/sts/cst/selectConectStats.do"
+    },
+    {
+      "text": "로그인정책관리",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do"
+    },
+    {
+      "text": "사용자등록관리",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserManage.do"
+    },
+    {
+      "text": "사용자부재관리",
+      "href": "http://localhost:8080/uss/ion/uas/selectUserAbsnceListView.do"
+    },
+    {
+      "text": "권한관리",
+      "href": "http://localhost:8080/sec/ram/EgovAuthorList.do"
+    },
+    {
+      "text": "사용자그룹관리",
+      "href": "http://localhost:8080/sec/gmt/EgovGroupList.do"
+    },
+    {
+      "text": "사용자별권한관리",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do"
+    },
+    {
+      "text": "롤관리",
+      "href": "http://localhost:8080/sec/rmt/EgovRoleList.do"
+    },
+    {
+      "text": "프로그램목록관리",
+      "href": "http://localhost:8080/sym/prm/EgovProgramListManageSelect.do"
+    },
+    {
+      "text": "메뉴생성관리",
+      "href": "http://localhost:8080/sym/mnu/mcm/EgovMenuCreatManageSelect.do"
+    },
+    {
+      "text": "메뉴목록관리",
+      "href": "http://localhost:8080/sym/mnu/mpm/EgovMenuManageSelect.do"
+    },
+    {
+      "text": "분류코드관리",
+      "href": "http://localhost:8080/sym/ccm/ccc/EgovCcmCmmnClCodeList.do"
+    },
+    {
+      "text": "공통코드관리",
+      "href": "http://localhost:8080/sym/ccm/cca/EgovCcmCmmnCodeList.do"
+    },
+    {
+      "text": "상세코드관리",
+      "href": "http://localhost:8080/sym/ccm/cde/EgovCcmCmmnDetailCodeList.do"
+    },
+    {
+      "text": "우편번호관리",
+      "href": "http://localhost:8080/sym/ccm/zip/EgovCcmZipList.do"
+    },
+    {
+      "text": "Home",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do"
+    },
+    {
+      "text": "내부서비스관리",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do"
+    },
+    {
+      "text": "사용현황관리",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do"
+    },
+    {
+      "text": "admin",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do"
+    },
+    {
+      "text": "user1",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do#LINK"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do#LINK"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do#LINK"
+    }
+  ],
+  "buttons": [],
+  "text": "Home 내부서비스관리 사용현황관리 로그인정책관리 내부서비스관리 로그인정책관리 사용자 명 : 조회 로그인정책 관리 사용자ID 사용자 명 IP 정보 제한여부 admin 관리자 user1 유저1 1"
+}

@@ -1,0 +1,441 @@
+{
+  "screen_id": "localhost_8080_uss_umt_user_egovuserinsertview_do",
+  "url": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do",
+  "url_pattern": "//localhost:8080/uss/umt/user/EgovUserInsertView.do",
+  "requires_login": true,
+  "captured_at": "2026-11-19T13:36:39",
+  "title": "내부업무 사이트 > 내부서비스관리 > 사용자등록관리",
+  "headings": [
+    "알림정보",
+    "직급체계관리",
+    "진급관리",
+    "근태관리",
+    "내무서비스관리",
+    "내부업무게시판관리",
+    "사용현황관리",
+    "내부시스템관리",
+    "사용자관리",
+    "사용자권한관리",
+    "메뉴관리",
+    "코드관리",
+    "내부시스템관리",
+    "사용자등록관리"
+  ],
+  "forms": [
+    {
+      "index": 0,
+      "id": "logoutForm",
+      "action": "/uat/uia/actionLogout.do",
+      "method": "POST",
+      "fields": [],
+      "buttons": []
+    },
+    {
+      "index": 1,
+      "id": "menuListForm",
+      "action": "",
+      "method": "POST",
+      "fields": [],
+      "buttons": []
+    },
+    {
+      "index": 2,
+      "id": "userManageVO",
+      "action": "<c:url value='/uss/umt/user/EgovUserInsert.do'/>",
+      "method": "POST",
+      "fields": [
+        {
+          "name": "id_view",
+          "type": "text",
+          "label": "사용자아이디 필수",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "moblphonNo",
+          "type": "text",
+          "label": "핸드폰번호",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "password",
+          "type": "password",
+          "label": "비밀번호",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "password2",
+          "type": "password",
+          "label": "비밀번호확인",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "passwordHint",
+          "type": "select",
+          "label": "비밀번호힌트",
+          "required": false,
+          "options": [
+            "선택하세요",
+            "가장 기억에 남는 장소는?",
+            "나의 좌우명은?",
+            "나의 보물 제1호는?",
+            "가장 기억에 남는 선생님 성함은?"
+          ]
+        },
+        {
+          "name": "passwordCnsr",
+          "type": "text",
+          "label": "비밀번호정답",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "emplyrNm",
+          "type": "text",
+          "label": "이름",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "insttCode",
+          "type": "select",
+          "label": "소속기관",
+          "required": false,
+          "options": [
+            "선택하세요",
+            "공공기관",
+            "금융기관",
+            "교육기관",
+            "의료기관"
+          ]
+        },
+        {
+          "name": "orgnztId",
+          "type": "select",
+          "label": "조직코드",
+          "required": false,
+          "options": [
+            "선택하세요",
+            "기본조직"
+          ]
+        },
+        {
+          "name": "ofcpsNm",
+          "type": "text",
+          "label": "직위명",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "emailAdres",
+          "type": "text",
+          "label": "이메일주소",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "areaNo",
+          "type": "text",
+          "label": "집전화 지역번호",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "homemiddleTelno",
+          "type": "text",
+          "label": "집전화 지역번호",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "homeendTelno",
+          "type": "text",
+          "label": "집전화 지역번호",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "offmTelno",
+          "type": "text",
+          "label": "사무실 전화번호",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "fxnum",
+          "type": "text",
+          "label": "팩스번호",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "homeadres",
+          "type": "text",
+          "label": "주소",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "detailAdres",
+          "type": "text",
+          "label": "상세주소",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "emplyrSttusCode",
+          "type": "select",
+          "label": "사용자상태 코드",
+          "required": false,
+          "options": [
+            "선택하세요",
+            "회원 가입 신청 상태",
+            "회원 가입 삭제 상태",
+            "회원 가입 승인 상태"
+          ]
+        },
+        {
+          "name": "groupId",
+          "type": "select",
+          "label": "그룹아이디",
+          "required": false,
+          "options": [
+            "선택하세요",
+            "기본 그룹입니다"
+          ]
+        }
+      ],
+      "buttons": [
+        "조회",
+        "조회"
+      ]
+    }
+  ],
+  "loose_fields": [],
+  "tables": [
+    {
+      "index": 0,
+      "id": null,
+      "headers": [
+        "사용자아이디 필수",
+        "조회 (중복체크)",
+        "핸드폰번호 필수",
+        ""
+      ],
+      "row_count": 8,
+      "sample_rows": [
+        [
+          "비밀번호 필수",
+          "",
+          "비밀번호확인 필수",
+          ""
+        ],
+        [
+          "비밀번호힌트 필수",
+          "선택하세요 가장 기억에 남는 장소는? 나의 좌우명은? 나의 보물 제1호는? 가장 기억에 남는 선생님 성함은? 다른 사람은 모르는 나만의 신체비밀은?",
+          "비밀번호정답 필수",
+          ""
+        ]
+      ]
+    }
+  ],
+  "links": [
+    {
+      "text": "본문 바로가기",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do#contents"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/cmm/main/mainPage.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do#LINK"
+    },
+    {
+      "text": "로그아웃",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do#"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do"
+    },
+    {
+      "text": "공지사항",
+      "href": "http://localhost:8080/cop/bbs/selectBoardList.do?bbsId=BBSMSTR_AAAAAAAAAAAA"
+    },
+    {
+      "text": "업무게시판",
+      "href": "http://localhost:8080/cop/bbs/selectBoardList.do?bbsId=BBSMSTR_CCCCCCCCCCCC"
+    },
+    {
+      "text": "입퇴사정보 관리",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do#LINK"
+    },
+    {
+      "text": "직급정보 관리",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do#LINK"
+    },
+    {
+      "text": "직위정보 관리",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do#LINK"
+    },
+    {
+      "text": "업무평가점수 관리",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do#LINK"
+    },
+    {
+      "text": "상벌정보 관리",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do#LINK"
+    },
+    {
+      "text": "출퇴근정보 관리",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do#LINK"
+    },
+    {
+      "text": "휴무정보 관리",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do#LINK"
+    },
+    {
+      "text": "게시판생성관리",
+      "href": "http://localhost:8080/cop/bbs/SelectBBSMasterInfs.do"
+    },
+    {
+      "text": "게시판사용관리",
+      "href": "http://localhost:8080/cop/com/selectBBSUseInfs.do"
+    },
+    {
+      "text": "공지사항관리",
+      "href": "http://localhost:8080/cop/bbs/admin/selectBoardList.do?bbsId=BBSMSTR_AAAAAAAAAAAA"
+    },
+    {
+      "text": "업무게시판관리",
+      "href": "http://localhost:8080/cop/bbs/admin/selectBoardList.do?bbsId=BBSMSTR_CCCCCCCCCCCC"
+    },
+    {
+      "text": "접속로그관리",
+      "href": "http://localhost:8080/sym/log/clg/SelectLoginLogList.do"
+    },
+    {
+      "text": "접속통계관리",
+      "href": "http://localhost:8080/sts/cst/selectConectStats.do"
+    },
+    {
+      "text": "로그인정책관리",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do"
+    },
+    {
+      "text": "사용자등록관리",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserManage.do"
+    },
+    {
+      "text": "사용자부재관리",
+      "href": "http://localhost:8080/uss/ion/uas/selectUserAbsnceListView.do"
+    },
+    {
+      "text": "권한관리",
+      "href": "http://localhost:8080/sec/ram/EgovAuthorList.do"
+    },
+    {
+      "text": "사용자그룹관리",
+      "href": "http://localhost:8080/sec/gmt/EgovGroupList.do"
+    },
+    {
+      "text": "사용자별권한관리",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do"
+    },
+    {
+      "text": "롤관리",
+      "href": "http://localhost:8080/sec/rmt/EgovRoleList.do"
+    },
+    {
+      "text": "프로그램목록관리",
+      "href": "http://localhost:8080/sym/prm/EgovProgramListManageSelect.do"
+    },
+    {
+      "text": "메뉴생성관리",
+      "href": "http://localhost:8080/sym/mnu/mcm/EgovMenuCreatManageSelect.do"
+    },
+    {
+      "text": "메뉴목록관리",
+      "href": "http://localhost:8080/sym/mnu/mpm/EgovMenuManageSelect.do"
+    },
+    {
+      "text": "분류코드관리",
+      "href": "http://localhost:8080/sym/ccm/ccc/EgovCcmCmmnClCodeList.do"
+    },
+    {
+      "text": "공통코드관리",
+      "href": "http://localhost:8080/sym/ccm/cca/EgovCcmCmmnCodeList.do"
+    },
+    {
+      "text": "상세코드관리",
+      "href": "http://localhost:8080/sym/ccm/cde/EgovCcmCmmnDetailCodeList.do"
+    },
+    {
+      "text": "우편번호관리",
+      "href": "http://localhost:8080/sym/ccm/zip/EgovCcmZipList.do"
+    },
+    {
+      "text": "Home",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do"
+    },
+    {
+      "text": "내부시스템관리",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do"
+    },
+    {
+      "text": "사용자관리",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do"
+    },
+    {
+      "text": "취소",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do"
+    },
+    {
+      "text": "저장",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do"
+    },
+    {
+      "text": "목록",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserManage.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do#LINK"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do#LINK"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do#LINK"
+    }
+  ],
+  "buttons": [],
+  "text": "Home 내부시스템관리 사용자관리 사용자등록관리 내부시스템관리 사용자등록관리 사용자아이디 필수 조회 (중복체크) 핸드폰번호 필수 비밀번호 필수 비밀번호확인 필수 비밀번호힌트 필수 선택하세요 가장 기억에 남는 장소는? 나의 좌우명은? 나의 보물 제1호는? 가장 기억에 남는 선생님 성함은? 다른 사람은 모르는 나만의 신체비밀은? 비밀번호정답 필수 이름 필수 소속기관 선택하세요 공공기관 금융기관 교육기관 의료기관 조직코드 필수 선택하세요 기본조직 직위명 이메일주소 집전화 지역번호 - - 사무실 전화번호 팩스번호 주소 조회 (우편번호 검색) 상세주소 사용자상태 코드 필수 선택하세요 회원 가입 신청 상태 회원 가입 삭제 상태 회원 가입 승인 상태 그룹아이디 필수 선택하세요 기본 그룹입니다 취소 저장 목록"
+}

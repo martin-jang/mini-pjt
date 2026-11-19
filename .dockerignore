@@ -1,0 +1,15 @@
+# 비밀 값과 로컬 런타임 산출물은 이미지에 넣지 않습니다
+.env
+.venv/
+.git/
+**/node_modules/
+**/dist/
+**/storybook-static/
+**/test-results/
+chroma_db/
+checkpoints.sqlite*
+logs/
+output/
+.gstack/
+.pytest_cache/
+**/__pycache__/

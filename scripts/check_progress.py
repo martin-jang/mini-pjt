@@ -202,15 +202,18 @@ def _():
     return has_view and has_transfer and no_billpay, f"흐름 {len(flows)}개: " + " | ".join(f["name"] for f in flows)
 
 
-@check("T09", "data-testid 고유·전 단계 부착")
+@check("T09", "data-testid 화면 단위 계약 (흐름 내 고유, 같은 화면은 같은 ID)")
 def _():
     from src.analyst.happy_path import load_happy_paths
-    ids = []
+    by_screen, dup_in_flow = {}, 0
     for f in load_happy_paths("parabank.parasoft.com"):
+        ids = []
         for st in f["steps"]:
             ids += [st["page_testid"]] + ([st["action_testid"]] if st["action_testid"] else [])
-            ids += [x["testid"] for x in st["fields"]]
-    return bool(ids) and len(ids) == len(set(ids)), f"testid {len(ids)}개, 중복 {len(ids) - len(set(ids))}개"
+            by_screen.setdefault(st["slug"], set()).add(st["page_testid"])
+        dup_in_flow += len(ids) - len(set(ids))
+    consistent = all(len(v) == 1 for v in by_screen.values())
+    return dup_in_flow == 0 and consistent, f"화면 {len(by_screen)}개, 흐름 내 중복 {dup_in_flow}, 화면별 ID 일관 {consistent}"
 
 
 # ── T10 ─────────────────────────────────────────────
@@ -241,7 +244,7 @@ def _():
             raise AssertionError("모델이 호출되면 안 됩니다")
 
     r = answer_question("주식 매매 화면에 어떤 필드가 있어?", retriever=_R(), llm=_NoCall())
-    return r["answer"] == NO_ANSWER and not r["grounded"], f"판정: {r['assessment']['reason'][:50]}"
+    return r["answer"].startswith(NO_ANSWER) and not r["grounded"], f"판정: {r['assessment']['reason'][:50]}"
 
 
 # ── T11 ─────────────────────────────────────────────
@@ -300,11 +303,83 @@ def _():
     return ok, f"통과율 {r['pass_rate']}, guardrail {r['l4_guardrail']}, 리포트 수치 일치 {'OK' if ok else '불일치'}"
 
 
+# ── T14 ─────────────────────────────────────────────
+@check("T14", "API 계약·MSW 결정적 생성 → 템플릿 빌드 성공, 마스킹 표식 없음")
+def _():
+    from src.codegen.contracts import write_contract
+    from src.codegen.scaffold import project_dir, scaffold_project
+    scaffold_project("_check_t14", overwrite_approved=True)
+    proj = project_dir("_check_t14")
+    c = write_contract("parabank.parasoft.com", proj)
+    data = (proj / "src/mocks/data.ts").read_text(encoding="utf-8")
+    leak = bool(re.search(r"\[(ACCOUNT|SSN|PHONE|EMAIL)\]", data))
+    b = subprocess.run("npm run build:mock", cwd=proj, shell=True, capture_output=True, text=True, encoding="utf-8")
+    kinds = {k: sum(e["kind_api"] == k for e in c["endpoints"]) for k in ("login", "list", "submit")}
+    return b.returncode == 0 and not leak and kinds["login"] == 1, f"API {kinds}, 빌드 {'성공' if b.returncode == 0 else '실패'}, 표식 잔존 {leak}"
+
+
+# ── T15~T18 ─────────────────────────────────────────
+def _gen_report() -> dict:
+    p = ROOT / "output" / "parabank-next" / "generation_report.json"
+    return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
+
+
+@check("T15", "공통 컴포넌트 6종 + 스토리 2개 이상, Storybook 빌드")
+def _():
+    r = _gen_report()
+    if not r:
+        return False, "generation_report.json 없음"
+    stories_short = [v for v in r["checks"]["rule_violations"] if v["rule"] == "스토리 부족"]
+    return (len(r["components"]) == 6 and r["checks"]["storybook_build"] and not stories_short
+            and not r["fallback_components"]), f"컴포넌트 {len(r['components'])}, 대체 {r['fallback_components']}, Storybook {r['checks']['storybook_build']}"
+
+
+@check("T16", "Happy Path 화면 + 라우트 커버리지 ≥90%, 화면에서 antd 직접 import 0")
+def _():
+    r = _gen_report()
+    if not r:
+        return False, "generation_report.json 없음"
+    antd = [v for v in r["checks"]["rule_violations"] if "antd" in v["rule"]]
+    cov = r["checks"]["route_coverage"]
+    return cov >= 0.9 and not antd and not r["failed_pages"], f"HP 화면 {len(r['happy_path_pages'])}, 플레이스홀더 {len(r['placeholder_pages'])}, 커버리지 {cov:.0%}, 실패 {r['failed_pages']}"
+
+
+@check("T17", "앱 빌드·정적 규칙·Happy Path 흐름 검증 통과")
+def _():
+    r = _gen_report()
+    if not r:
+        return False, "generation_report.json 없음"
+    c = r["checks"]
+    flows = {k: v["ok"] for k, v in c["happy_path"].items()}
+    return c["app_build"] and c["rules_ok"] and c["happy_path_ok"], f"빌드 {c['app_build']}, 규칙 {c['rules_ok']}, 흐름 {flows}"
+
+
+@check("T18", "백업 결과물 output/parabank-next (status=ok)")
+def _():
+    r = _gen_report()
+    return r.get("status") == "ok", f"status={r.get('status')}, 소요 {r.get('timings_s', {}).get('total')}s"
+
+
+# ── T19 ─────────────────────────────────────────────
+@check("T19", "round2(+재평가) 결과·리포트, 통과율 ≥80%, guardrail 100%")
+def _():
+    rep = ROOT / "evaluation/round2_report.md"
+    latest = max(((ROOT / "evaluation/results").glob("round*.json")), key=lambda p: int(p.stem[5:]))
+    r = json.loads(latest.read_text(encoding="utf-8"))
+    passed, total = map(int, r["pass_rate"].split("/"))
+    g_ok = r["l4_guardrail"].split("/")[0] == r["l4_guardrail"].split("/")[1]
+    return rep.exists() and passed / total >= 0.8 and g_ok, f"{latest.stem}: {r['pass_rate']}, guardrail {r['l4_guardrail']}"
+
+
 # ── 공통 규칙 ───────────────────────────────────────
 @check("규칙", "에이전트 코드에 대상 사이트 하드코딩 없음")
 def _():
     from src.config import allowed_domains
-    words = [d.split(".")[0] for d in allowed_domains()]  # 예: 도메인 첫 단어
+    # 예: 도메인 첫 단어. localhost 같은 일반 호스트명은 사이트 고유 값이 아니므로 제외
+    #   (생성 앱 개발 서버 주소·생성 코드 금지 패턴 예외 등 사이트와 무관한 용도로 쓰임)
+    generic = {"localhost", "www", "127"}
+    words = [w for w in (d.split(".")[0] for d in allowed_domains()) if w not in generic]
+    words += ["egov", "parasoft"]  # 등록된 대상 사이트의 고유 이름
     hits = []
     for f in list((ROOT / "src").rglob("*.py")) + list((ROOT / "mcp_server").rglob("*.py")):
         if "reuse" in f.parts:

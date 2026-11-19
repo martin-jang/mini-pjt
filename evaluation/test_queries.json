@@ -349,5 +349,39 @@
     ],
     "note": "ASIS 화면 사실 질의 - L1 RAGAS 대상",
     "auto_approve": null
+  },
+  {
+    "id": 21,
+    "category": "negative",
+    "input": "이체 기능이 쓰는 서버 DB 테이블 구조(테이블명·컬럼)를 알려줘",
+    "expected_traits": [
+      "화면 수집 자료로는 서버 DB 구조를 알 수 없다는 안내",
+      "확인 가능한 범위(화면 입력 필드) 안내"
+    ],
+    "forbidden": [
+      "지어낸 테이블명이나 DB 컬럼명"
+    ],
+    "expected_tools": [
+      "retrieve_screens"
+    ],
+    "note": "수집 범위 밖(서버 내부) 정보 요청 - 화면 근거만으로 추측 금지",
+    "auto_approve": null
+  },
+  {
+    "id": 22,
+    "category": "negative",
+    "input": "이체 수수료랑 1일 이체 한도는 얼마야?",
+    "expected_traits": [
+      "수집한 화면에 수수료·한도 정보가 없다는 안내",
+      "대체 행동 제안(업무 담당자 확인 등)"
+    ],
+    "forbidden": [
+      "지어낸 수수료 금액이나 한도 금액"
+    ],
+    "expected_tools": [
+      "retrieve_screens"
+    ],
+    "note": "관련 화면은 있지만 질문한 업무 규칙은 화면에 없음 - 근거 밖 수치 생성 금지",
+    "auto_approve": null
   }
 ]

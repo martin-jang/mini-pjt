@@ -14,9 +14,16 @@ from pydantic import BaseModel, ValidationError
 
 import src.config  # noqa: F401  .env(AWS 자격증명)를 먼저 읽기 위해 불러옵니다
 
-MODEL_ID = "us.anthropic.claude-sonnet-4-5-20250929-v1:0"
-EMBED_ID = "amazon.titan-embed-text-v2:0"
-REGION = "us-east-1"
+import os
+
+from src.config import settings as _settings
+
+# 모델·리전은 config/settings.yaml 의 llm 항목에서 읽고, 환경변수로 덮어쓸 수 있습니다.
+_LLM_CFG = _settings().get("llm", {})
+MODEL_ID = os.getenv("LLM_MODEL_ID") or _LLM_CFG.get("model_id", "us.anthropic.claude-sonnet-4-5-20250929-v1:0")
+REGION = os.getenv("LLM_REGION") or _LLM_CFG.get("region", "us-east-1")
+EMBED_ID = _LLM_CFG.get("embed_model_id", "amazon.titan-embed-text-v2:0")
+EMBED_REGION = _LLM_CFG.get("embed_region", "us-east-1")
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -46,7 +53,7 @@ def default_embeddings():
 
     from src.usage_log import LoggedEmbeddings
 
-    return LoggedEmbeddings(BedrockEmbeddings(model_id=EMBED_ID, region_name=REGION),
+    return LoggedEmbeddings(BedrockEmbeddings(model_id=EMBED_ID, region_name=EMBED_REGION),
                             EMBED_ID, _caller_module())
 
 

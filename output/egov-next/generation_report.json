@@ -1,0 +1,157 @@
+{
+  "status": "ok",
+  "project": "C:\\Users\\SDS\\Desktop\\mini-pjt\\output\\egov-next",
+  "project_name": "egov-next",
+  "domain": "localhost",
+  "components": [
+    "PageLayout",
+    "SearchPanel",
+    "DataTable",
+    "DetailList",
+    "FormSection",
+    "ResultPanel"
+  ],
+  "fallback_components": [],
+  "happy_path_pages": [
+    "mainpage",
+    "bbsSelectboardlist",
+    "egovloginusr"
+  ],
+  "failed_pages": [],
+  "placeholder_pages": [
+    "addbbsmaster",
+    "bbsAddboardarticle",
+    "adminAddboardarticle",
+    "adminSelectboardlist",
+    "selectbbsmasterinf",
+    "selectbbsmasterinfs",
+    "addbbsuseinf",
+    "selectbbsuseinf",
+    "selectbbsuseinfs"
+  ],
+  "checks": {
+    "app_build": true,
+    "storybook_build": true,
+    "rules_ok": true,
+    "rule_violations": [],
+    "route_coverage": 1.0,
+    "happy_path": {
+      "hp1 공지사항 조회": {
+        "ok": true,
+        "error": ""
+      }
+    },
+    "happy_path_ok": true
+  },
+  "generation_errors": {},
+  "fix_rounds": [
+    {
+      "round": 0,
+      "app_ok": true,
+      "rule_violations": 1,
+      "flow_ok": true,
+      "errors": {},
+      "flow_errors": {}
+    },
+    {
+      "round": 1,
+      "app_ok": true,
+      "rule_violations": 0,
+      "flow_ok": true,
+      "errors": {},
+      "flow_errors": {}
+    }
+  ],
+  "timings_s": {
+    "contract": 0.0,
+    "components": 23.2,
+    "pages": 6.4,
+    "verify_fix": 37.0,
+    "final_check": 20.6,
+    "total": 87.3
+  },
+  "ui_patterns": {
+    "domain": "localhost",
+    "components": [
+      {
+        "name": "PageLayout",
+        "asis_pattern": "화면 틀(제목·좌측 메뉴)",
+        "used_by": [
+          "메인 홈(대시보드)",
+          "게시판 템플릿 등록",
+          "공지사항 글 등록",
+          "공지사항 글 등록(관리자)",
+          "공지사항 목록(관리자)",
+          "게시판 생성 상세",
+          "게시판 생성 목록",
+          "공지사항 목록",
+          "게시판 사용 등록",
+          "게시판 사용 상세",
+          "게시판 사용 목록",
+          "로그인"
+        ],
+        "variant_props": []
+      },
+      {
+        "name": "SearchPanel",
+        "asis_pattern": "조회조건 영역(기간·유형 선택 + 검색 버튼). 통일 표준: 목록 위에 배치",
+        "used_by": [
+          "공지사항 목록(관리자)",
+          "게시판 생성 상세",
+          "게시판 생성 목록",
+          "공지사항 목록",
+          "게시판 사용 상세",
+          "게시판 사용 목록"
+        ],
+        "variant_props": []
+      },
+      {
+        "name": "DataTable",
+        "asis_pattern": "계좌·거래 목록 테이블. 변형 유지: 합계 행 유무",
+        "used_by": [
+          "메인 홈(대시보드)",
+          "공지사항 목록(관리자)",
+          "게시판 생성 상세",
+          "게시판 생성 목록",
+          "공지사항 목록",
+          "게시판 사용 상세",
+          "게시판 사용 목록"
+        ],
+        "variant_props": [
+          "showTotal"
+        ]
+      },
+      {
+        "name": "DetailList",
+        "asis_pattern": "'항목: 값' 상세 정보 표",
+        "used_by": [],
+        "variant_props": []
+      },
+      {
+        "name": "FormSection",
+        "asis_pattern": "금액·계좌 입력 폼 + 제출 버튼. 변형 유지: 제출 전 확인 단계",
+        "used_by": [
+          "게시판 템플릿 등록",
+          "공지사항 글 등록",
+          "공지사항 글 등록(관리자)",
+          "게시판 사용 등록",
+          "로그인"
+        ],
+        "variant_props": [
+          "confirmStep"
+        ]
+      },
+      {
+        "name": "ResultPanel",
+        "asis_pattern": "제출 처리 결과 화면",
+        "used_by": [],
+        "variant_props": []
+      }
+    ],
+    "keep_variant_decisions": [
+      "게시판 관리 테이블 컬럼 구성",
+      "제출 전 확인 단계",
+      "목록 합계 행 표시"
+    ]
+  }
+}

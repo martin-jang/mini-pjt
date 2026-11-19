@@ -9,6 +9,7 @@
     "react/jsx-runtime",
     "msw/browser",
     "@storybook/react-vite",
-    "@playwright/test"
+    "@playwright/test",
+    "react-router-dom"
   ]
 }

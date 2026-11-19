@@ -5,7 +5,9 @@ from src.analyst.inventory import Field_, Screen
 
 
 def _s(sid, kind, login=False, links=(), fields=(), result_of=None):
-    return Screen(screen_id=sid, domain="x", url=f"https://x/{sid}", url_pattern=f"//x/{sid}", title=sid,
+    # 실제 크롤러처럼 결과 화면은 입력 화면 URL 패턴 + '#result'
+    pattern = f"//x/{sid.split('__')[0]}" + ("#result" if result_of else "")
+    return Screen(screen_id=sid, domain="x", url=f"https://x/{sid}", url_pattern=pattern, title=sid,
                   requires_login=login, kind=kind, is_business=True, purpose="p", links_to=list(links),
                   fields=[Field_(name=n, type=t) for n, t in fields], result_of=result_of)
 
@@ -40,10 +42,13 @@ def test_rejects_ungrounded_flows():
     assert not hp.validate_flow(_flow(("detail", "view"), ("list", "view")), SCREENS)[0]
 
 
-def test_contract_testids_are_deterministic_and_unique():
+def test_contract_testids_are_screen_scoped():
     c = hp.build_contract(1, _flow(("home", "login"), ("send", "fill_submit"), ("send__result", "view")), SCREENS)
-    ids = [st["page_testid"] for st in c["steps"]] + [st["action_testid"] for st in c["steps"] if st["action_testid"]]
-    ids += [f["testid"] for st in c["steps"] for f in st["fields"]]
-    assert len(ids) == len(set(ids))
-    assert c["steps"][0]["fields"][1]["testid"] == "hp1-s1-field-password"
-    assert c["steps"][-1]["action_testid"] is None
+    s1, s2, s3 = c["steps"]
+    assert s1["page_testid"] == "home-page" and s1["action_testid"] == "home-submit"
+    assert [f["testid"] for f in s1["fields"]] == ["home-field-username", "home-field-password"]
+    assert s2["action_testid"] == "send-submit" and s2["next_slug"] == "sendResult"
+    assert s3["action_testid"] is None
+    c2 = hp.build_contract(2, _flow(("home", "login"), ("list", "navigate"), ("detail", "view")), SCREENS)
+    assert c2["steps"][0]["page_testid"] == s1["page_testid"]  # 같은 화면은 흐름이 달라도 같은 ID
+    assert c2["steps"][1]["action_testid"] == "list-to-detail"

@@ -14,6 +14,14 @@ from src import agent
     ("이체 화면에 어떤 입력 필드가 있어?", "query"),
     ("그 화면 바꿔줘", "clarify"),
     ("이체 결과 화면도 수집해", "submit_capture"),
+    # 생성된 결과물을 '보는' 질문은 재생성하지 않음 (UI 시연 중 발견한 오분류 회귀 방지)
+    ("생성된 POC 페이지에 접속하고 싶어", "run_info"),
+    ("접속 주소를 알려줘", "run_info"),
+    ("생성된 POC 실행 방법 알려줘", "run_info"),
+    ("아까 만든 결과물 그대로 다시 생성해", "generate"),
+    ("생성된 POC 주소 알려줘", "run_info"),
+    # 화면 URL 구조를 묻는 분석 질문은 실행 안내가 아님 (round 4 #16 회귀 방지)
+    ("계좌 상세 화면 URL이 계좌번호마다 다른데, 이건 화면 몇 개로 봐야 해?", "query"),
 ])
 def test_route_question(q, intent):
     assert agent.route_question(q) == intent

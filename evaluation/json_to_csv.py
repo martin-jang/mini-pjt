@@ -8,8 +8,8 @@
 
 변환 규칙:
 - 리스트 필드(expected_traits, forbidden, expected_tools)는 세미콜론("; ")으로 이어 붙인다.
-- auto_approve: true → "yes", false → "no", null/누락 → 빈 칸.
-- 컬럼 순서는 과제 표준 7개 + auto_approve 1개.
+- 컬럼은 과제 표준 7개만 씁니다 (ASSIGNMENT.md §4-4 스키마).
+  평가 하네스 전용 필드(auto_approve: 승인 요청 자동 승인 여부)는 JSON에만 두고 CSV에는 내보내지 않습니다.
 """
 
 import csv
@@ -19,7 +19,7 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 COLUMNS = ["id", "category", "input", "expected_traits", "forbidden",
-           "expected_tools", "note", "auto_approve"]
+           "expected_tools", "note"]
 LIST_FIELDS = {"expected_traits", "forbidden", "expected_tools"}
 CATEGORIES = {"positive", "negative", "edge", "guardrail"}
 
@@ -28,8 +28,6 @@ def _cell(key: str, value) -> str:
     """JSON 값 하나를 CSV 셀 문자열로 바꾼다."""
     if key in LIST_FIELDS:
         return "; ".join(value or [])
-    if key == "auto_approve":
-        return {True: "yes", False: "no"}.get(value, "")
     return "" if value is None else str(value)
 
 

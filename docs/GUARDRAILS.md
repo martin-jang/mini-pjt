@@ -29,8 +29,9 @@ POST /query ──▶ [G0 입력 검사: Day5 input_guard]
 
 | 항목 | 기준 |
 |---|---|
-| 허용 | 허용 목록 도메인만 (기본: `parabank.parasoft.com`). 로컬 스냅샷 재생 모드는 `data/snapshots/`, `data/fixtures/` 파일만 |
-| 거부 | 허용 목록 밖 도메인, `localhost`, `127.0.0.0/8`, 사설 IP(`10/8`, `172.16/12`, `192.168/16`), 링크 로컬 `169.254.0.0/16`(클라우드 메타데이터), `file://`, IP 직접 지정 URL |
+| 허용 | 허용 목록 도메인만 (`config/settings.yaml`의 `target`·`extra_targets`, 기본: `parabank.parasoft.com`). 로컬 스냅샷 재생 모드는 `data/snapshots/`, `data/fixtures/` 파일만 |
+| 로컬 샘플 예외 | 대상 설정에 `allow_loopback_ports`를 명시한 경우에만, 그 대상의 호스트(예: `localhost`)가 루프백으로 해석되는 것을 허용하고 지정 포트로만 접근합니다 (일반화 검증용 로컬 레거시 샘플). IP 직접 지정·사설망·메타데이터 주소는 예외 없음 |
+| 거부 | 허용 목록 밖 도메인, 예외 설정 없는 `localhost`·`127.0.0.0/8`, 사설 IP(`10/8`, `172.16/12`, `192.168/16`), 링크 로컬 `169.254.0.0/16`(클라우드 메타데이터), `file://`, IP 직접 지정 URL |
 | 강제 위치 | `crawl_site`, `capture_page`, `submit_once_and_capture` 진입부. DNS 해석 후 IP도 다시 검사 (도메인 우회 방지) |
 | 리다이렉트 | 리다이렉트 대상도 같은 기준으로 재검사. 허용 밖이면 중단 |
 | 사용자에게 보이는 것 | "허용되지 않은 주소라 수집하지 않았습니다: {이유}" (예외 대신 안내 문자열) |

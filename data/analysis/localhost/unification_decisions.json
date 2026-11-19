@@ -1,0 +1,32 @@
+{
+  "domain": "localhost",
+  "group_count": 1,
+  "summary": {
+    "unify": 0,
+    "keep_variant": 1,
+    "hold": 0
+  },
+  "decisions": [
+    {
+      "group_id": "COL6_1",
+      "element_type": "table_columns",
+      "role": "게시판 관리 테이블 컬럼 구성",
+      "asis_variants": [
+        {
+          "screen_id": "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+          "value": "번호 / 게시판명 / 게시판유형 / 게시판속성 / 생성일 / 사용여부"
+        },
+        {
+          "screen_id": "localhost_8080_cop_com_selectbbsuseinfs_do",
+          "value": "번호 / 게시판명 / 사용 커뮤니티 명 / 사용 동호회 명 / 등록일시 / 사용여부"
+        }
+      ],
+      "decision": "keep_variant",
+      "standard": null,
+      "basis": "business_meaning",
+      "reason": "'게시판생성관리' 화면은 게시판의 유형·속성·생성일 등 생성 메타정보를 표시하고, '게시판사용관리' 화면은 커뮤니티·동호회별 사용 현황과 등록일시를 표시하는 서로 다른 업무 목적의 화면이므로, 컬럼 구성이 다른 것은 업무 정보의 차이이며 통일하면 필요한 정보가 누락된다.",
+      "confidence": 0.95,
+      "guard_note": null
+    }
+  ]
+}

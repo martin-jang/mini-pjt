@@ -18,6 +18,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
+from src.analyst import naming
 from src.analyst.inventory import Screen, load_inventory
 from src.config import path as cfg_path
 from src.guardrails import DATA_BLOCK_RULE, wrap_as_data
@@ -104,28 +105,58 @@ def validate_flow(flow: ProposedFlow, screens: list[Screen]) -> tuple[bool, str]
 
 
 def build_contract(flow_no: int, flow: ProposedFlow, screens: list[Screen]) -> dict[str, Any]:
-    """검증된 흐름에 data-testid 계약을 붙입니다 (결정적).
+    """검증된 흐름에 data-testid 계약을 붙입니다 (결정적, 화면 단위 ID).
 
-    page_testid  : 단계 화면의 최상위 요소 (화면이 떴는지 확인)
-    action_testid: 다음 단계로 넘어가기 위해 누르는 요소 (마지막 단계는 없음)
-    fields       : fill_submit/login 단계에서 채울 입력 필드와 testid
+    여러 흐름이 같은 화면(예: 로그인)을 지나도 같은 ID를 쓰도록 화면 단위로 만듭니다.
+      page_testid  : 단계 화면의 최상위 요소
+      action_testid: 다음 단계로 넘어가는 요소. 제출·로그인은 '{slug}-submit', 이동은 '{slug}-to-{다음 slug}'
+      fields       : login/fill_submit 단계에서 채울 입력 필드와 testid
     """
     by_id = {s.screen_id: s for s in screens}
+    slugs = naming.slug_map(screens)  # 코드 생성(API 계약)과 같은 규칙 · 같은 화면 목록(업무 화면)
     fid = f"hp{flow_no}"
     steps = []
     for n, st in enumerate(flow.steps, start=1):
         s = by_id[st.screen_id]
-        base = f"{fid}-s{n}"
+        slug = slugs[s.screen_id]
+        nxt = by_id[flow.steps[n].screen_id] if n < len(flow.steps) else None
+        next_slug = slugs[nxt.screen_id] if nxt else None
         fields = []
         if st.action in ("login", "fill_submit"):
-            fields = [{"name": f.name, "label": f.label, "type": f.type, "testid": f"{base}-field-{_slug(f.name)}"}
-                      for f in s.fields if f.name]
+            named = [f for f in s.fields if f.name]
+            if st.action == "login":
+                named = [f for f in named if f.type == "password" or f.name in ("username", "user", "id", "email")]
+            fields = [{"name": f.name, "label": f.label, "type": f.type, "testid": naming.field_testid(slug, f.name)}
+                      for f in named]
+        if not nxt:
+            action_testid = None
+        elif st.action in ("login", "fill_submit"):
+            action_testid = naming.submit_testid(slug)
+        else:
+            action_testid = naming.link_testid(slug, next_slug)
         steps.append({
-            "step_id": base, "screen_id": s.screen_id, "screen_title": s.title, "action": st.action,
-            "description": st.description, "page_testid": f"{base}-page",
-            "action_testid": f"{base}-next" if n < len(flow.steps) else None, "fields": fields,
+            "step_id": f"{fid}-s{n}", "screen_id": s.screen_id, "screen_title": s.title_ko or s.title,
+            "slug": slug, "action": st.action, "description": st.description,
+            "page_testid": naming.page_testid(slug), "action_testid": action_testid,
+            "next_slug": next_slug, "fields": fields,
         })
     return {"flow_id": fid, "name": flow.name, "why": flow.why, "steps": steps}
+
+
+def reassign_testids(domain: str) -> list[dict[str, Any]]:
+    """저장된 happy_paths.json 의 testid 를 현재 규칙으로 다시 계산합니다 (LLM 재호출 없이)."""
+    screens = [s for s in load_inventory(domain) if s.is_business]  # derive_happy_paths·API 계약과 같은 화면 목록
+    p = happy_paths_path(domain)
+    data = json.loads(p.read_text(encoding="utf-8"))
+    flows = []
+    for n, f in enumerate(data["flows"], start=1):
+        pf = ProposedFlow(name=f["name"], why=f["why"],
+                          steps=[ProposedStep(screen_id=s["screen_id"], action=s["action"], description=s["description"])
+                                 for s in f["steps"]])
+        flows.append(build_contract(n, pf, screens))
+    data["flows"] = flows
+    p.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    return flows
 
 
 def _candidate_payload(screens: list[Screen]) -> list[dict[str, Any]]:

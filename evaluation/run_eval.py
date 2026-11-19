@@ -122,14 +122,14 @@ def ragas_scores(rows: list[dict[str, Any]]) -> dict[str, Any]:
     from ragas.llms import LangchainLLMWrapper
     from ragas.metrics import Faithfulness, LLMContextPrecisionWithReference, LLMContextRecall, ResponseRelevancy
 
-    from src.llm import EMBED_ID, REGION
+    from src.llm import EMBED_ID, EMBED_REGION
 
     samples = [SingleTurnSample(user_input=r["input"], response=r["answer"], reference=r["reference"],
                                 retrieved_contexts=[c["text"] for c in r["contexts"]] or [""]) for r in rows]
     if not samples:
         return {"n": 0}
     llm = LangchainLLMWrapper(default_llm(max_tokens=4096))
-    emb = LangchainEmbeddingsWrapper(BedrockEmbeddings(model_id=EMBED_ID, region_name=REGION))
+    emb = LangchainEmbeddingsWrapper(BedrockEmbeddings(model_id=EMBED_ID, region_name=EMBED_REGION))
     metrics = [LLMContextRecall(), LLMContextPrecisionWithReference(), Faithfulness(), ResponseRelevancy()]
     result = evaluate(EvaluationDataset(samples=samples), metrics=metrics, llm=llm, embeddings=emb,
                       show_progress=False, raise_exceptions=False)
@@ -199,6 +199,9 @@ def main() -> None:
     if args.ids:
         wanted = {int(x) for x in args.ids.split(",")}
         cases = [c for c in cases if c["id"] in wanted]
+    # 분석·생성 케이스는 공유 분석 산출물·결과물을 다시 만들므로, 다른 케이스의 근거가 실행 도중 바뀌지 않게 맨 뒤에 실행
+    from src.agent import route_question
+    cases.sort(key=lambda c: route_question(c["input"]) in ("analyze", "generate"))
     references = json.loads((EVAL_DIR / "golden" / "references.json").read_text(encoding="utf-8"))["references"]
     graph = get_graph()
     by_question = {c["input"]: c for c in cases}

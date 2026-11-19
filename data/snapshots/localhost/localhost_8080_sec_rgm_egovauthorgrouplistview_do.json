@@ -1,0 +1,295 @@
+{
+  "screen_id": "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+  "url": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do",
+  "url_pattern": "//localhost:8080/sec/rgm/EgovAuthorGroupListView.do",
+  "requires_login": true,
+  "captured_at": "2026-11-19T13:36:20",
+  "title": "내부업무 사이트 > 내부시스템관리 > 사용자별권한관리",
+  "headings": [
+    "알림정보",
+    "직급체계관리",
+    "진급관리",
+    "근태관리",
+    "내무서비스관리",
+    "내부업무게시판관리",
+    "사용현황관리",
+    "내부시스템관리",
+    "사용자관리",
+    "사용자권한관리",
+    "메뉴관리",
+    "코드관리",
+    "내부시스템관리",
+    "사용자별권한관리"
+  ],
+  "forms": [
+    {
+      "index": 0,
+      "id": "logoutForm",
+      "action": "/uat/uia/actionLogout.do",
+      "method": "POST",
+      "fields": [],
+      "buttons": []
+    },
+    {
+      "index": 1,
+      "id": "menuListForm",
+      "action": "",
+      "method": "POST",
+      "fields": [],
+      "buttons": []
+    },
+    {
+      "index": 2,
+      "id": "listForm",
+      "action": "<c:url value='/sec/rgm/EgovAuthorGroupList.do'/>",
+      "method": "GET",
+      "fields": [
+        {
+          "name": "searchCondition",
+          "type": "select",
+          "label": "사용자 ID 사용자 명 그룹",
+          "required": false,
+          "options": [
+            "사용자 ID",
+            "사용자 명",
+            "그룹"
+          ]
+        },
+        {
+          "name": "searchKeyword",
+          "type": "text",
+          "label": "",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "checkAll",
+          "type": "checkbox",
+          "label": "",
+          "required": false,
+          "options": null
+        }
+      ],
+      "buttons": [
+        "조회"
+      ]
+    }
+  ],
+  "loose_fields": [],
+  "tables": [
+    {
+      "index": 0,
+      "id": null,
+      "headers": [
+        "",
+        "사용자ID",
+        "사용자명",
+        "사용자유형",
+        "권한",
+        "등록 여부"
+      ],
+      "row_count": 1,
+      "sample_rows": [
+        [
+          "검색결과가 없습니다."
+        ]
+      ]
+    }
+  ],
+  "links": [
+    {
+      "text": "본문 바로가기",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do#contents"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/cmm/main/mainPage.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do#LINK"
+    },
+    {
+      "text": "로그아웃",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do#"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do"
+    },
+    {
+      "text": "공지사항",
+      "href": "http://localhost:8080/cop/bbs/selectBoardList.do?bbsId=BBSMSTR_AAAAAAAAAAAA"
+    },
+    {
+      "text": "업무게시판",
+      "href": "http://localhost:8080/cop/bbs/selectBoardList.do?bbsId=BBSMSTR_CCCCCCCCCCCC"
+    },
+    {
+      "text": "입퇴사정보 관리",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do#LINK"
+    },
+    {
+      "text": "직급정보 관리",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do#LINK"
+    },
+    {
+      "text": "직위정보 관리",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do#LINK"
+    },
+    {
+      "text": "업무평가점수 관리",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do#LINK"
+    },
+    {
+      "text": "상벌정보 관리",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do#LINK"
+    },
+    {
+      "text": "출퇴근정보 관리",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do#LINK"
+    },
+    {
+      "text": "휴무정보 관리",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do#LINK"
+    },
+    {
+      "text": "게시판생성관리",
+      "href": "http://localhost:8080/cop/bbs/SelectBBSMasterInfs.do"
+    },
+    {
+      "text": "게시판사용관리",
+      "href": "http://localhost:8080/cop/com/selectBBSUseInfs.do"
+    },
+    {
+      "text": "공지사항관리",
+      "href": "http://localhost:8080/cop/bbs/admin/selectBoardList.do?bbsId=BBSMSTR_AAAAAAAAAAAA"
+    },
+    {
+      "text": "업무게시판관리",
+      "href": "http://localhost:8080/cop/bbs/admin/selectBoardList.do?bbsId=BBSMSTR_CCCCCCCCCCCC"
+    },
+    {
+      "text": "접속로그관리",
+      "href": "http://localhost:8080/sym/log/clg/SelectLoginLogList.do"
+    },
+    {
+      "text": "접속통계관리",
+      "href": "http://localhost:8080/sts/cst/selectConectStats.do"
+    },
+    {
+      "text": "로그인정책관리",
+      "href": "http://localhost:8080/uat/uap/selectLoginPolicyList.do"
+    },
+    {
+      "text": "사용자등록관리",
+      "href": "http://localhost:8080/uss/umt/user/EgovUserManage.do"
+    },
+    {
+      "text": "사용자부재관리",
+      "href": "http://localhost:8080/uss/ion/uas/selectUserAbsnceListView.do"
+    },
+    {
+      "text": "권한관리",
+      "href": "http://localhost:8080/sec/ram/EgovAuthorList.do"
+    },
+    {
+      "text": "사용자그룹관리",
+      "href": "http://localhost:8080/sec/gmt/EgovGroupList.do"
+    },
+    {
+      "text": "사용자별권한관리",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do"
+    },
+    {
+      "text": "롤관리",
+      "href": "http://localhost:8080/sec/rmt/EgovRoleList.do"
+    },
+    {
+      "text": "프로그램목록관리",
+      "href": "http://localhost:8080/sym/prm/EgovProgramListManageSelect.do"
+    },
+    {
+      "text": "메뉴생성관리",
+      "href": "http://localhost:8080/sym/mnu/mcm/EgovMenuCreatManageSelect.do"
+    },
+    {
+      "text": "메뉴목록관리",
+      "href": "http://localhost:8080/sym/mnu/mpm/EgovMenuManageSelect.do"
+    },
+    {
+      "text": "분류코드관리",
+      "href": "http://localhost:8080/sym/ccm/ccc/EgovCcmCmmnClCodeList.do"
+    },
+    {
+      "text": "공통코드관리",
+      "href": "http://localhost:8080/sym/ccm/cca/EgovCcmCmmnCodeList.do"
+    },
+    {
+      "text": "상세코드관리",
+      "href": "http://localhost:8080/sym/ccm/cde/EgovCcmCmmnDetailCodeList.do"
+    },
+    {
+      "text": "우편번호관리",
+      "href": "http://localhost:8080/sym/ccm/zip/EgovCcmZipList.do"
+    },
+    {
+      "text": "Home",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do"
+    },
+    {
+      "text": "내부시스템관리",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do"
+    },
+    {
+      "text": "사용자권한관리",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do"
+    },
+    {
+      "text": "팝업조회",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do"
+    },
+    {
+      "text": "권한등록",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do"
+    },
+    {
+      "text": "등록취소",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do#LINK"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do#LINK"
+    },
+    {
+      "text": "",
+      "href": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do#LINK"
+    }
+  ],
+  "buttons": [],
+  "text": "Home 내부시스템관리 사용자권한관리 사용자별권한관리 내부시스템관리 사용자별권한관리 조회 조건 : 사용자 ID 사용자 명 그룹 조회 팝업조회 권한등록 등록취소 권한그룹관리 사용자ID 사용자명 사용자유형 권한 등록 여부 검색결과가 없습니다."
+}

@@ -26,6 +26,29 @@ target:
         fromAccountId: { option_index: 0 }
         toAccountId: { option_index: 1 }
 
+# 추가 분석 대상 (일반화 검증용). 구조는 target 과 같습니다. 질문 URL의 호스트로 대상을 고릅니다.
+extra_targets:
+  # 로컬에 띄운 전자정부 표준프레임워크 내부업무 템플릿 (저장소 밖 legacy-samples 폴더, 교육용 샘플)
+  - allowed_domains:
+      - localhost
+    start_url: http://localhost:8080/
+    demo_account_env:
+      username: EGOV_USERNAME
+      password: EGOV_PASSWORD
+    project_name: egov-next
+    # G1 예외: 이 대상만 루프백(127.0.0.1)을 허용하고, 아래 포트로만 접근합니다
+    allow_loopback_ports: [8080]
+    submit_once: []
+
+llm:
+  # 교육 고정 모델은 us.anthropic.claude-sonnet-4-5-20250929-v1:0 (us-east-1).
+  # us-east-1 일일 토큰 한도 초과로 사용자 지시에 따라 2026-11-19 전환 (환경변수 LLM_MODEL_ID·LLM_REGION 으로 덮어쓰기 가능)
+  model_id: global.anthropic.claude-sonnet-4-6
+  region: ap-northeast-2
+  # 임베딩은 기존 벡터 인덱스와 맞추기 위해 그대로 유지
+  embed_model_id: amazon.titan-embed-text-v2:0
+  embed_region: us-east-1
+
 crawl:
   max_depth: 2
   max_pages: 30

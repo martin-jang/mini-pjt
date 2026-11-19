@@ -29,3 +29,6 @@ test-results/
 
 # Playwright 실행 결과 (실행마다 새로 생김)
 e2e-results.json
+
+# 확인용 임시 생성 프로젝트 (output/_로 시작)
+output/_*/

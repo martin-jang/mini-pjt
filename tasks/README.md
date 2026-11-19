@@ -55,8 +55,8 @@ mini-pjt/
 | T16 | [Page Builder + 라우트·플레이스홀더](T16-page-builder.md) | 45분 | Day 10 오전 | T15 |
 | T17 | [Verifier·자가 수정·partial](T17-verifier.md) | 60분 | Day 10 오전 | T16 |
 | T18 | [생성 E2E + 백업 결과물](T18-generate-e2e.md) | 30분 | Day 10 오전 | T17 |
-| T19 | [round2 + 개선폭 비교](T19-round2.md) | 30분 | Day 10 오후 | T18 |
-| T20 | [README·시연 준비·제출](T20-readme-submit.md) | 45분 | Day 10 오후 | T19 |
+| T19 | ✅ 완료 | round2 15/20 → round3 16/20 → 평가셋 22건 확장, round4 회귀 3건 수정 → **round6 18/22 (82%)**, guardrail 5/5, faithfulness 0.897·precision 0.883 |
+| T20 | ✅ 완료 | README·run.sh·run.ps1·Dockerfile·콘솔 UI·리포트, eGov 일반화 검증. 남은 것: 시연 캡처·제출 폼 (사용자) |
 
 **합계 약 15시간 45분 [estimated]**
 
@@ -95,7 +95,13 @@ mini-pjt/
 | T11 | ✅ 완료 | **16시 체크포인트 충족.** /query 실서버 시나리오 9개 통과 (질의·분석 H1·생성 H3·이체 H2·되묻기·400). 생성 노드는 승인까지만, 코드 생성은 T14~ 연결. 기본 모드를 스냅샷 재생으로 전환 |
 | T12 | ✅ 완료 | 하네스(Day 7 run_eval + LLM Judge + 결정적 검사) + RAGAS 4종 + L2·L4. reference 10건은 evaluation/golden/references.json 에만 (CSV 미포함). 스모크 3+2건 확인 |
 | T13 | ✅ 완료 | **18시 체크포인트 충족.** round1 14/20(70%), guardrail 4/5, L2 전부 목표 달성, RAGAS faithfulness 0.709·relevancy 0.411. 개선 Top5는 round1_report.md |
-| T14~ | ⏸ 대기 | 사용자 확인 후 진행 |
+| T14 | ✅ 완료 | 계약 13개(로그인1·목록4·제출7·결과1) 결정적 생성, 템플릿 빌드 성공. scaffold_project(정션으로 node_modules 재사용)도 함께 구현 |
+| T15 | ✅ 완료 | 공통 컴포넌트 6종 LLM 생성(+스토리), 대체 구현 미사용 |
+| T16 | ✅ 완료 | Happy Path 화면 5개 LLM + 플레이스홀더 8개, 라우트 커버리지 100%. testid 화면 단위로 변경 |
+| T17 | ✅ 완료 | 빌드·Storybook·정적 규칙·Playwright 흐름 2개 통과. 원인 수정: TS7 baseUrl, react-router-dom 별칭, 선택 목록 선택자 |
+| T18 | ✅ 완료 | /query 생성 E2E status=ok (생성 85.7초). 모델을 Sonnet 4.6(ap-northeast-2)로 전환(사용자 지시, us-east-1 일일 한도) |
+| T19 | ✅ 완료 | round2 15/20 → round3 16/20 → 평가셋 22건 확장, round4 회귀 3건 수정 → **round6 18/22 (82%)**, guardrail 5/5, faithfulness 0.897·precision 0.883 |
+| T20 | ✅ 완료 | README·run.sh·run.ps1·Dockerfile·콘솔 UI·리포트, eGov 일반화 검증. 남은 것: 시연 캡처·제출 폼 (사용자) |
 
 ## 체크포인트 (반드시 지킴)
 

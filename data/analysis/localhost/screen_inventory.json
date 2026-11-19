@@ -1,0 +1,3284 @@
+{
+  "domain": "localhost",
+  "screen_count": 31,
+  "business_count": 12,
+  "screens": [
+    {
+      "screen_id": "localhost_8080_cmm_main_mainpage_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/cmm/main/mainPage.do",
+      "url_pattern": "//localhost:8080/cmm/main/mainPage.do",
+      "title": "표준프레임워크 경량환경 내부업무템플릿",
+      "title_ko": "메인 홈(대시보드)",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": false,
+      "kind": "조회",
+      "is_business": true,
+      "purpose": "로그인 후 진입하는 메인 홈 화면으로 알림정보 등 주요 업무 메뉴와 공지사항 요약을 제공한다.",
+      "fields": [],
+      "buttons": [],
+      "tables": [
+        {
+          "headers": [
+            "홈페이지 샘플공지5 NEW",
+            "관리자",
+            "2026-11-19"
+          ],
+          "row_count": 4,
+          "sample_row": [
+            "홈페이지 샘플공지4 NEW",
+            "관리자",
+            "2026-11-19"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_uat_uia_egovloginusr_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_cop_bbs_addbbsmaster_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/cop/bbs/addBBSMaster.do",
+      "url_pattern": "//localhost:8080/cop/bbs/addBBSMaster.do",
+      "title": "내부업무 사이트 > 내부서비스관리 > 게시판템플릿관리",
+      "title_ko": "게시판 템플릿 등록",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "입력",
+      "is_business": true,
+      "purpose": "새로운 게시판 마스터 정보를 입력하여 게시판 템플릿을 생성·등록한다.",
+      "fields": [
+        {
+          "name": "bbsNm",
+          "label": "게시판명 필수",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "bbsIntrcn",
+          "label": "게시판소개 필수",
+          "type": "textarea",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "bbsTyCode",
+          "label": "게시판 유형",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "선택하세요",
+            "일반게시판",
+            "공지게시판"
+          ]
+        },
+        {
+          "name": "bbsAttrbCode",
+          "label": "게시판 속성",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "선택하세요",
+            "갤러리",
+            "일반게시판"
+          ]
+        },
+        {
+          "name": "replyPosblAt",
+          "label": "답장가능여부 필수",
+          "type": "radio",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "replyPosblAt",
+          "label": "답장가능여부 필수",
+          "type": "radio",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "fileAtchPosblAt",
+          "label": "파일첨부가능여부 필수",
+          "type": "radio",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "fileAtchPosblAt",
+          "label": "파일첨부가능여부 필수",
+          "type": "radio",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "posblAtchFileNumber",
+          "label": "첨부가능파일 숫자",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "선택하세요",
+            "1개",
+            "2개"
+          ]
+        },
+        {
+          "name": "tmplatNm",
+          "label": "템플릿 정보",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [],
+      "tables": [
+        {
+          "headers": [
+            "게시판명 필수",
+            ""
+          ],
+          "row_count": 5,
+          "sample_row": [
+            "게시판소개 필수",
+            ""
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_cop_bbs_addboardarticle_do_bbsid_value_pageindex_value",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/cop/bbs/addBoardArticle.do?bbsId=BBSMSTR_AAAAAAAAAAAA&searchCnd=&searchWrd=&pageIndex=1",
+      "url_pattern": "//localhost:8080/cop/bbs/addBoardArticle.do?bbsId={value}&pageIndex={value}",
+      "title": "사내업무 > 알림정보 > 공지사항",
+      "title_ko": "공지사항 글 등록",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "입력",
+      "is_business": true,
+      "purpose": "공지사항 게시판에 새 게시글(제목·내용·첨부파일)을 작성하여 등록한다.",
+      "fields": [
+        {
+          "name": "nttSj",
+          "label": "제목 필수",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "nttCn",
+          "label": "글내용 필수",
+          "type": "textarea",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "file_0",
+          "label": "파일첨부",
+          "type": "file",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [],
+      "tables": [
+        {
+          "headers": [
+            "제목 필수",
+            ""
+          ],
+          "row_count": 2,
+          "sample_row": [
+            "글내용 필수",
+            ""
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_cop_bbs_admin_addboardarticle_do_bbsid_value_pageindex_value",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/cop/bbs/admin/addBoardArticle.do?bbsId=BBSMSTR_AAAAAAAAAAAA&searchCnd=&searchWrd=&pageIndex=1",
+      "url_pattern": "//localhost:8080/cop/bbs/admin/addBoardArticle.do?bbsId={value}&pageIndex={value}",
+      "title": "내부업무 사이트 > 내부서비스관리 > 내부업무게시판관리 > 공지사항관리",
+      "title_ko": "공지사항 글 등록(관리자)",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "입력",
+      "is_business": true,
+      "purpose": "관리자 권한으로 공지사항 게시판에 새 게시글을 작성하여 등록한다.",
+      "fields": [
+        {
+          "name": "nttSj",
+          "label": "제목 필수",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "nttCn",
+          "label": "글내용 필수",
+          "type": "textarea",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "file_0",
+          "label": "파일첨부",
+          "type": "file",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [],
+      "tables": [
+        {
+          "headers": [
+            "제목 필수",
+            ""
+          ],
+          "row_count": 2,
+          "sample_row": [
+            "글내용 필수",
+            ""
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/cop/bbs/admin/selectBoardList.do?bbsId=BBSMSTR_AAAAAAAAAAAA",
+      "url_pattern": "//localhost:8080/cop/bbs/admin/selectBoardList.do?bbsId={value}",
+      "title": "내부업무 사이트 > 내부서비스관리 > 내부업무게시판관리 > 공지사항관리",
+      "title_ko": "공지사항 목록(관리자)",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "조회",
+      "is_business": true,
+      "purpose": "관리자 화면에서 공지사항 게시글 목록을 검색·조회한다.",
+      "fields": [
+        {
+          "name": "searchCnd",
+          "label": "제목 내용 작성자",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "제목",
+            "내용",
+            "작성자"
+          ]
+        },
+        {
+          "name": "searchWrd",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "번호",
+            "제목",
+            "작성자",
+            "작성일",
+            "조회수"
+          ],
+          "row_count": 5,
+          "sample_row": [
+            "5",
+            "홈페이지 샘플공지5",
+            "관리자",
+            "2026-11-19",
+            "0"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do",
+        "localhost_8080_cop_bbs_admin_addboardarticle_do_bbsid_value_pageindex_value"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_cop_bbs_selectbbsmasterinf_do_bbsid_value_pageindex_value",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/cop/bbs/SelectBBSMasterInf.do?bbsId=BBSMSTR_AAAAAAAAAAAA&searchCnd=&searchWrd=&pageIndex=1",
+      "url_pattern": "//localhost:8080/cop/bbs/SelectBBSMasterInf.do?bbsId={value}&pageIndex={value}",
+      "title": "내부업무 사이트 > 내부서비스관리 > 게시판생성관리",
+      "title_ko": "게시판 생성 상세",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "조회",
+      "is_business": true,
+      "purpose": "특정 게시판의 마스터 상세 정보를 조회하고 수정할 수 있도록 표시한다.",
+      "fields": [
+        {
+          "name": "bbsNm",
+          "label": "게시판명",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "bbsIntrcn",
+          "label": "게시판소개",
+          "type": "textarea",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "fileAtchPosblAt",
+          "label": "파일첨부가능여부 필수",
+          "type": "radio",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "fileAtchPosblAt",
+          "label": "파일첨부가능여부 필수",
+          "type": "radio",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "posblAtchFileNumber",
+          "label": "첨부가능파일 숫자",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "선택하세요",
+            "1개",
+            "2개"
+          ]
+        },
+        {
+          "name": "tmplatNm",
+          "label": "템플릿정보",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [],
+      "tables": [
+        {
+          "headers": [
+            "게시판명 필수",
+            ""
+          ],
+          "row_count": 5,
+          "sample_row": [
+            "게시판소개 필수",
+            ""
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/cop/bbs/SelectBBSMasterInfs.do",
+      "url_pattern": "//localhost:8080/cop/bbs/SelectBBSMasterInfs.do",
+      "title": "내부업무 사이트 > 내부서비스관리 > 게시판생성관리",
+      "title_ko": "게시판 생성 목록",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "조회",
+      "is_business": true,
+      "purpose": "생성된 게시판 목록을 검색 조건으로 조회하여 관리한다.",
+      "fields": [
+        {
+          "name": "searchCnd",
+          "label": "게시판명 게시판유형",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "게시판명",
+            "게시판유형"
+          ]
+        },
+        {
+          "name": "searchWrd",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "번호",
+            "게시판명",
+            "게시판유형",
+            "게시판속성",
+            "생성일",
+            "사용여부"
+          ],
+          "row_count": 3,
+          "sample_row": [
+            "3",
+            "공지사항",
+            "공지게시판",
+            "일반게시판",
+            "2011-08-31",
+            "사용"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do",
+        "localhost_8080_cop_bbs_addbbsmaster_do",
+        "localhost_8080_cop_bbs_selectbbsmasterinf_do_bbsid_value_pageindex_value"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/cop/bbs/selectBoardList.do?bbsId=BBSMSTR_AAAAAAAAAAAA",
+      "url_pattern": "//localhost:8080/cop/bbs/selectBoardList.do?bbsId={value}",
+      "title": "내부업무 사이트 > 알림정보 > 공지사항",
+      "title_ko": "공지사항 목록",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "조회",
+      "is_business": true,
+      "purpose": "공지사항 게시판의 게시글 목록을 검색·조회한다.",
+      "fields": [
+        {
+          "name": "searchCnd",
+          "label": "제목 내용 작성자",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "제목",
+            "내용",
+            "작성자"
+          ]
+        },
+        {
+          "name": "searchWrd",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "번호",
+            "제목",
+            "작성자",
+            "작성일",
+            "조회수"
+          ],
+          "row_count": 5,
+          "sample_row": [
+            "5",
+            "홈페이지 샘플공지5",
+            "관리자",
+            "2026-11-19",
+            "0"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do",
+        "localhost_8080_cop_bbs_addboardarticle_do_bbsid_value_pageindex_value"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_cop_com_addbbsuseinf_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/cop/com/addBBSUseInf.do",
+      "url_pattern": "//localhost:8080/cop/com/addBBSUseInf.do",
+      "title": "내부업무 사이트 > 내부서비스관리 > 게시판사용관리",
+      "title_ko": "게시판 사용 등록",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "입력",
+      "is_business": true,
+      "purpose": "특정 커뮤니티·동호회에 게시판 사용 정보를 신규 등록한다.",
+      "fields": [
+        {
+          "name": "bbsNm",
+          "label": "게시판명 필수",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "trgetType",
+          "label": "커뮤니티/동호회 정보 필수",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "선택하세요",
+            "시스템"
+          ]
+        },
+        {
+          "name": "trgetNm",
+          "label": "커뮤니티/동호회 정보 필수",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "게시판명 필수",
+            "조회"
+          ],
+          "row_count": 1,
+          "sample_row": [
+            "커뮤니티/동호회 정보 필수",
+            "선택하세요 시스템"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_cop_com_selectbbsuseinf_do_bbsid_value_pageindex_value_trgetid_va",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/cop/com/selectBBSUseInf.do?bbsId=BBSMSTR_AAAAAAAAAAAA&trgetId=SYSTEM_DEFAULT_BOARD&searchCnd=&searchWrd=&pageIndex=1",
+      "url_pattern": "//localhost:8080/cop/com/selectBBSUseInf.do?bbsId={value}&pageIndex={value}&trgetId={value}",
+      "title": "게시판 사용정보 상세조회 및 수정",
+      "title_ko": "게시판 사용 상세",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "조회",
+      "is_business": true,
+      "purpose": "게시판 사용 정보의 상세 내용을 조회하고 사용 여부를 수정한다.",
+      "fields": [
+        {
+          "name": "useAt",
+          "label": "사용",
+          "type": "radio",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "useAt",
+          "label": "사용중지",
+          "type": "radio",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [],
+      "tables": [
+        {
+          "headers": [
+            "게시판명",
+            "공지사항"
+          ],
+          "row_count": 3,
+          "sample_row": [
+            "커뮤니티 / 동호회명",
+            "시스템 활용"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_cop_com_selectbbsuseinfs_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/cop/com/selectBBSUseInfs.do",
+      "url_pattern": "//localhost:8080/cop/com/selectBBSUseInfs.do",
+      "title": "내부업무 사이트 > 내부서비스관리 > 게시판사용관리",
+      "title_ko": "게시판 사용 목록",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "조회",
+      "is_business": true,
+      "purpose": "게시판별 사용 현황(커뮤니티·동호회 연결 정보)을 목록으로 조회한다.",
+      "fields": [
+        {
+          "name": "searchCnd",
+          "label": "게시판명",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "게시판명"
+          ]
+        },
+        {
+          "name": "searchWrd",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "번호",
+            "게시판명",
+            "사용 커뮤니티 명",
+            "사용 동호회 명",
+            "등록일시",
+            "사용여부"
+          ],
+          "row_count": 3,
+          "sample_row": [
+            "3",
+            "공지사항",
+            "시스템 활용",
+            "시스템 활용",
+            "2011-08-31",
+            "사용"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do",
+        "localhost_8080_cop_com_addbbsuseinf_do",
+        "localhost_8080_cop_com_selectbbsuseinf_do_bbsid_value_pageindex_value_trgetid_va"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_sec_gmt_egovgrouplist_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/sec/gmt/EgovGroupList.do",
+      "url_pattern": "//localhost:8080/sec/gmt/EgovGroupList.do",
+      "title": "내부업무 사이트 > 내부시스템관리 > 사용자그룹관리",
+      "title_ko": "사용자 그룹 관리",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "관리",
+      "is_business": false,
+      "purpose": "시스템 내 사용자 그룹 목록을 조회하고 관리한다.",
+      "fields": [
+        {
+          "name": "searchKeyword",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkAll",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "",
+            "그룹ID",
+            "그룹명",
+            "설명",
+            "등록일자"
+          ],
+          "row_count": 1,
+          "sample_row": [
+            "",
+            "GROUP_00000000000000",
+            "기본 그룹입니다",
+            "기본 그룹",
+            "2011-08-02 21:01:59"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_sec_ram_egovauthorlist_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/sec/ram/EgovAuthorList.do",
+      "url_pattern": "//localhost:8080/sec/ram/EgovAuthorList.do",
+      "title": "내부업무 사이트 > 내부시스템관리 > 권한관리",
+      "title_ko": "권한 관리",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "관리",
+      "is_business": false,
+      "purpose": "시스템 권한 목록을 조회하고 권한 정보를 관리한다.",
+      "fields": [
+        {
+          "name": "searchKeyword",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkAll",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "",
+            "권한코드",
+            "권한명",
+            "설명",
+            "등록일자",
+            "롤정보"
+          ],
+          "row_count": 3,
+          "sample_row": [
+            "",
+            "ROLE_ADMIN",
+            "관리자",
+            "시스템관리자",
+            "2011-08-03",
+            "이동"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/sec/rgm/EgovAuthorGroupListView.do",
+      "url_pattern": "//localhost:8080/sec/rgm/EgovAuthorGroupListView.do",
+      "title": "내부업무 사이트 > 내부시스템관리 > 사용자별권한관리",
+      "title_ko": "사용자별 권한 관리",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "관리",
+      "is_business": false,
+      "purpose": "사용자별로 부여된 권한 현황을 조회하고 관리한다.",
+      "fields": [
+        {
+          "name": "searchCondition",
+          "label": "사용자 ID 사용자 명 그룹",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "사용자 ID",
+            "사용자 명",
+            "그룹"
+          ]
+        },
+        {
+          "name": "searchKeyword",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkAll",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "",
+            "사용자ID",
+            "사용자명",
+            "사용자유형",
+            "권한",
+            "등록 여부"
+          ],
+          "row_count": 1,
+          "sample_row": [
+            "검색결과가 없습니다."
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_sec_rmt_egovrolelist_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/sec/rmt/EgovRoleList.do",
+      "url_pattern": "//localhost:8080/sec/rmt/EgovRoleList.do",
+      "title": "내부업무 사이트 > 내부시스템관리 > 롤관리",
+      "title_ko": "롤 관리",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "관리",
+      "is_business": false,
+      "purpose": "시스템 롤(Role) 목록을 조회하고 관리한다.",
+      "fields": [
+        {
+          "name": "searchKeyword",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkAll",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "",
+            "롤ID",
+            "롤명",
+            "롤타입",
+            "롤Sort",
+            "설명",
+            "등록일자"
+          ],
+          "row_count": 10,
+          "sample_row": [
+            "",
+            "cop-bbs",
+            "cop-bbs",
+            "URL",
+            "1",
+            "게시판",
+            "2011-08-31 15:41:24"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do",
+        "localhost_8080_sec_rmt_egovrolelist_do_pageindex_value"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_sec_rmt_egovrolelist_do_pageindex_value",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/sec/rmt/EgovRoleList.do?pageIndex=2",
+      "url_pattern": "//localhost:8080/sec/rmt/EgovRoleList.do?pageIndex={value}",
+      "title": "내부업무 사이트 > 내부시스템관리 > 롤관리",
+      "title_ko": "롤 관리(페이지)",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "관리",
+      "is_business": false,
+      "purpose": "롤 관리 목록의 페이지 이동 화면으로 롤 정보를 페이지 단위로 조회한다.",
+      "fields": [
+        {
+          "name": "searchKeyword",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkAll",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "delYn",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "",
+            "롤ID",
+            "롤명",
+            "롤타입",
+            "롤Sort",
+            "설명",
+            "등록일자"
+          ],
+          "row_count": 10,
+          "sample_row": [
+            "",
+            "sym-ccm-zip",
+            "sym-ccm-zip",
+            "URL",
+            "11",
+            "우편번호",
+            "2011-08-24 0:00"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_sts_cst_selectconectstats_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/sts/cst/selectConectStats.do",
+      "url_pattern": "//localhost:8080/sts/cst/selectConectStats.do",
+      "title": "내부업무 사이트 > 내부서비스관리 > 접속통계관리",
+      "title_ko": "접속 통계",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "조회",
+      "is_business": false,
+      "purpose": "기간·유형별 시스템 접속 통계를 조회하여 서비스 이용 현황을 파악한다.",
+      "fields": [
+        {
+          "name": "searchBgnDe",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "searchEndDe",
+          "label": "~",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "PD",
+          "label": "연도별 월별 일별",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "연도별",
+            "월별",
+            "일별"
+          ]
+        },
+        {
+          "name": "STKIND",
+          "label": "서비스별",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "서비스별"
+          ]
+        }
+      ],
+      "buttons": [],
+      "tables": [],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/sym/ccm/cca/EgovCcmCmmnCodeList.do",
+      "url_pattern": "//localhost:8080/sym/ccm/cca/EgovCcmCmmnCodeList.do",
+      "title": "내부업무 사이트 > 내부시스템관리 > 공통코드관리",
+      "title_ko": "공통 코드 관리",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "관리",
+      "is_business": false,
+      "purpose": "시스템 공통 코드 목록을 조회하고 관리한다.",
+      "fields": [
+        {
+          "name": "searchCondition",
+          "label": "선택하세요 코드ID 코드ID명",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "선택하세요",
+            "코드ID",
+            "코드ID명"
+          ]
+        },
+        {
+          "name": "searchKeyword",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "순번",
+            "분류명",
+            "코드ID",
+            "코드ID명",
+            "사용여부"
+          ],
+          "row_count": 10,
+          "sample_row": [
+            "10",
+            "전자정부 프레임워크 경량환경 템플릿",
+            "COM001",
+            "등록구분",
+            "사용"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/sym/ccm/ccc/EgovCcmCmmnClCodeList.do",
+      "url_pattern": "//localhost:8080/sym/ccm/ccc/EgovCcmCmmnClCodeList.do",
+      "title": "내부업무 사이트 > 내부시스템관리 > 분류코드관리",
+      "title_ko": "분류 코드 관리",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "관리",
+      "is_business": false,
+      "purpose": "공통 코드의 분류 코드 목록을 조회하고 관리한다.",
+      "fields": [
+        {
+          "name": "searchCondition",
+          "label": "선택하세요 분류코드 분류코드명",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "선택하세요",
+            "분류코드",
+            "분류코드명"
+          ]
+        },
+        {
+          "name": "searchKeyword",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "순번",
+            "분류코드",
+            "분류코드명",
+            "사용여부"
+          ],
+          "row_count": 1,
+          "sample_row": [
+            "1",
+            "LET",
+            "전자정부 프레임워크 경량환경 템플릿",
+            "사용"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/sym/ccm/cde/EgovCcmCmmnDetailCodeList.do",
+      "url_pattern": "//localhost:8080/sym/ccm/cde/EgovCcmCmmnDetailCodeList.do",
+      "title": "내부업무 사이트 > 내부시스템관리 > 상세코드관리",
+      "title_ko": "상세 코드 관리",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "관리",
+      "is_business": false,
+      "purpose": "공통 코드의 상세 코드 목록을 조회하고 관리한다.",
+      "fields": [
+        {
+          "name": "searchCondition",
+          "label": "선택하세요 코드ID 코드 코드명",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "선택하세요",
+            "코드ID",
+            "코드"
+          ]
+        },
+        {
+          "name": "searchKeyword",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "순번",
+            "코드ID",
+            "코드",
+            "코드명",
+            "사용여부"
+          ],
+          "row_count": 10,
+          "sample_row": [
+            "25",
+            "COM001",
+            "REGC01",
+            "단일 게시판 이용등록",
+            "사용"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_sym_ccm_zip_egovccmziplist_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/sym/ccm/zip/EgovCcmZipList.do",
+      "url_pattern": "//localhost:8080/sym/ccm/zip/EgovCcmZipList.do",
+      "title": "내부업무 사이트 > 내부시스템관리 > 우편번호관리",
+      "title_ko": "우편번호 관리",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "관리",
+      "is_business": false,
+      "purpose": "우편번호 데이터를 조건별로 검색하고 관리한다.",
+      "fields": [
+        {
+          "name": "searchCondition",
+          "label": "선택하세요 우편번호 시도명 시군구명 읍면동명 리건물명",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "선택하세요",
+            "우편번호",
+            "시도명"
+          ]
+        },
+        {
+          "name": "searchKeyword",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "순번",
+            "우편번호",
+            "주소"
+          ],
+          "row_count": 1,
+          "sample_row": [
+            "1",
+            "100-775",
+            "서울 중구 무교동 한국정보화진흥원"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_sym_log_clg_selectloginloglist_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/sym/log/clg/SelectLoginLogList.do",
+      "url_pattern": "//localhost:8080/sym/log/clg/SelectLoginLogList.do",
+      "title": "내부업무 사이트 > 내부서비스관리 > 접속로그관리",
+      "title_ko": "접속 로그 관리",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "조회",
+      "is_business": false,
+      "purpose": "발생일자 기준으로 시스템 접속 로그를 조회하고 상세 내용을 확인한다.",
+      "fields": [
+        {
+          "name": "searchBgnDe",
+          "label": "발생일자",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "searchEndDe",
+          "label": "~",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [],
+      "tables": [
+        {
+          "headers": [
+            "번호",
+            "로그ID",
+            "발생일자",
+            "로그유형",
+            "상세보기"
+          ],
+          "row_count": 5,
+          "sample_row": [
+            "5",
+            "LOGIN_00000000000005",
+            "2026-11-19 13:36",
+            "I",
+            "상세보기"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/sym/mnu/mcm/EgovMenuCreatManageSelect.do",
+      "url_pattern": "//localhost:8080/sym/mnu/mcm/EgovMenuCreatManageSelect.do",
+      "title": "내부업무 사이트 > 내부시스템관리 > 메뉴생성관리",
+      "title_ko": "메뉴 생성 관리",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "관리",
+      "is_business": false,
+      "purpose": "권한별 메뉴 생성 여부를 조회하고 메뉴를 생성·관리한다.",
+      "fields": [
+        {
+          "name": "searchKeyword",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "권한코드",
+            "권한명",
+            "권한설명",
+            "메뉴생성여부",
+            "메뉴생성"
+          ],
+          "row_count": 3,
+          "sample_row": [
+            "",
+            "",
+            "",
+            "",
+            "메뉴생성"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/sym/mnu/mpm/EgovMenuManageSelect.do",
+      "url_pattern": "//localhost:8080/sym/mnu/mpm/EgovMenuManageSelect.do",
+      "title": "내부업무 사이트 > 내부시스템관리 > 메뉴목록관리",
+      "title_ko": "메뉴 목록 관리",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "관리",
+      "is_business": false,
+      "purpose": "시스템에 등록된 메뉴 목록을 조회하고 메뉴 구조를 관리한다.",
+      "fields": [
+        {
+          "name": "searchKeyword",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkAll",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "",
+            "메뉴번호",
+            "메뉴명",
+            "프로그램파일명",
+            "메뉴설명",
+            "상위메뉴번호"
+          ],
+          "row_count": 10,
+          "sample_row": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/sym/prm/EgovProgramListManageSelect.do",
+      "url_pattern": "//localhost:8080/sym/prm/EgovProgramListManageSelect.do",
+      "title": "내부업무 사이트 > 내부시스템관리 > 프로그램목록관리",
+      "title_ko": "프로그램 목록 관리",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "관리",
+      "is_business": false,
+      "purpose": "시스템에 등록된 프로그램(URL) 목록을 조회하고 관리한다.",
+      "fields": [
+        {
+          "name": "searchKeyword",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkAll",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "",
+            "프로그램파일명",
+            "프로그램 한글명",
+            "URL",
+            "프로그램설명"
+          ],
+          "row_count": 10,
+          "sample_row": [
+            "",
+            "EgovAuthorGroupManage",
+            "권한그룹관리",
+            "/sec/rgm/EgovAuthorGroupListView.do",
+            "권한그룹관리"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_uat_uap_selectloginpolicylist_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/uat/uap/selectLoginPolicyList.do",
+      "url_pattern": "//localhost:8080/uat/uap/selectLoginPolicyList.do",
+      "title": "내부업무 사이트 > 내부서비스관리 > 로그인정책관리",
+      "title_ko": "로그인 정책 관리",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "관리",
+      "is_business": false,
+      "purpose": "사용자별 로그인 정책(IP 제한 등)을 조회하고 관리한다.",
+      "fields": [
+        {
+          "name": "searchKeyword",
+          "label": "사용자 명 :",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "사용자ID",
+            "사용자 명",
+            "IP 정보",
+            "제한여부"
+          ],
+          "row_count": 2,
+          "sample_row": [
+            "admin",
+            "관리자",
+            "",
+            ""
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_uat_uia_egovloginusr_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/uat/uia/egovLoginUsr.do",
+      "url_pattern": "//localhost:8080/uat/uia/egovLoginUsr.do",
+      "title": "로그인",
+      "title_ko": "로그인",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": false,
+      "kind": "인증",
+      "is_business": true,
+      "purpose": "사용자가 아이디와 비밀번호를 입력하여 시스템에 로그인한다.",
+      "fields": [
+        {
+          "name": "id",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "password",
+          "label": "",
+          "type": "password",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkId",
+          "label": "ID 저장",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [],
+      "tables": [],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_uss_ion_uas_selectuserabsncelist_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/uss/ion/uas/selectUserAbsnceList.do",
+      "url_pattern": "//localhost:8080/uss/ion/uas/selectUserAbsnceList.do",
+      "title": "내부업무 사이트 > 내부시스템관리 > 사용자부재관리",
+      "title_ko": "사용자 부재 목록",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "조회",
+      "is_business": false,
+      "purpose": "사용자별 부재 여부 및 등록 현황을 목록으로 조회한다.",
+      "fields": [
+        {
+          "name": "searchKeyword",
+          "label": "사용자 명 :",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "selAbsnceAt",
+          "label": "전체 Y N",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "전체",
+            "Y",
+            "N"
+          ]
+        }
+      ],
+      "buttons": [],
+      "tables": [
+        {
+          "headers": [
+            "사용자 ID",
+            "사용자명",
+            "부재여부",
+            "등록여부",
+            "등록일시"
+          ],
+          "row_count": 2,
+          "sample_row": [
+            "admin 등록",
+            "관리자",
+            "N",
+            "N",
+            ""
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/uss/ion/uas/selectUserAbsnceListView.do",
+      "url_pattern": "//localhost:8080/uss/ion/uas/selectUserAbsnceListView.do",
+      "title": "내부업무 사이트 > 내부시스템관리 > 사용자부재관리",
+      "title_ko": "사용자 부재 상세",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "조회",
+      "is_business": false,
+      "purpose": "사용자 부재 정보의 상세 내용을 조회한다.",
+      "fields": [
+        {
+          "name": "searchKeyword",
+          "label": "사용자 명 :",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "selAbsnceAt",
+          "label": "전체 Y N",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "전체",
+            "Y",
+            "N"
+          ]
+        }
+      ],
+      "buttons": [],
+      "tables": [
+        {
+          "headers": [
+            "사용자 ID",
+            "사용자명",
+            "부재여부",
+            "등록여부",
+            "등록일시"
+          ],
+          "row_count": 1,
+          "sample_row": [
+            "검색된 값이 없습니다."
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_uss_umt_user_egovuserinsertview_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/uss/umt/user/EgovUserInsertView.do",
+      "url_pattern": "//localhost:8080/uss/umt/user/EgovUserInsertView.do",
+      "title": "내부업무 사이트 > 내부서비스관리 > 사용자등록관리",
+      "title_ko": "사용자 등록",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "입력",
+      "is_business": false,
+      "purpose": "신규 사용자의 아이디·비밀번호·소속 등 정보를 입력하여 사용자를 등록한다.",
+      "fields": [
+        {
+          "name": "id_view",
+          "label": "사용자아이디 필수",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "moblphonNo",
+          "label": "핸드폰번호",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "password",
+          "label": "비밀번호",
+          "type": "password",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "password2",
+          "label": "비밀번호확인",
+          "type": "password",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "passwordHint",
+          "label": "비밀번호힌트",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "선택하세요",
+            "가장 기억에 남는 장소는?",
+            "나의 좌우명은?"
+          ]
+        },
+        {
+          "name": "passwordCnsr",
+          "label": "비밀번호정답",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "emplyrNm",
+          "label": "이름",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "insttCode",
+          "label": "소속기관",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "선택하세요",
+            "공공기관",
+            "금융기관"
+          ]
+        },
+        {
+          "name": "orgnztId",
+          "label": "조직코드",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "선택하세요",
+            "기본조직"
+          ]
+        },
+        {
+          "name": "ofcpsNm",
+          "label": "직위명",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "emailAdres",
+          "label": "이메일주소",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "areaNo",
+          "label": "집전화 지역번호",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "homemiddleTelno",
+          "label": "집전화 지역번호",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "homeendTelno",
+          "label": "집전화 지역번호",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "offmTelno",
+          "label": "사무실 전화번호",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "fxnum",
+          "label": "팩스번호",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "homeadres",
+          "label": "주소",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "detailAdres",
+          "label": "상세주소",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "emplyrSttusCode",
+          "label": "사용자상태 코드",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "선택하세요",
+            "회원 가입 신청 상태",
+            "회원 가입 삭제 상태"
+          ]
+        },
+        {
+          "name": "groupId",
+          "label": "그룹아이디",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "선택하세요",
+            "기본 그룹입니다"
+          ]
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "사용자아이디 필수",
+            "조회 (중복체크)",
+            "핸드폰번호 필수",
+            ""
+          ],
+          "row_count": 8,
+          "sample_row": [
+            "비밀번호 필수",
+            "",
+            "비밀번호확인 필수",
+            ""
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_umt_user_egovusermanage_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "localhost_8080_uss_umt_user_egovusermanage_do",
+      "domain": "localhost:8080",
+      "url": "http://localhost:8080/uss/umt/user/EgovUserManage.do",
+      "url_pattern": "//localhost:8080/uss/umt/user/EgovUserManage.do",
+      "title": "내부업무 사이트 > 내부시스템관리 > 사용자등록관리",
+      "title_ko": "사용자 목록 관리",
+      "headings": [
+        "알림정보",
+        "직급체계관리",
+        "진급관리",
+        "근태관리",
+        "내무서비스관리",
+        "내부업무게시판관리",
+        "사용현황관리",
+        "내부시스템관리"
+      ],
+      "requires_login": true,
+      "kind": "조회",
+      "is_business": false,
+      "purpose": "등록된 사용자 목록을 가입 상태·검색어 조건으로 조회하고 관리한다.",
+      "fields": [
+        {
+          "name": "sbscrbSttus",
+          "label": "상태(전체) 가입신청 삭제 승인",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "상태(전체)",
+            "가입신청",
+            "삭제"
+          ]
+        },
+        {
+          "name": "searchCondition",
+          "label": "ID Name",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "ID",
+            "Name"
+          ]
+        },
+        {
+          "name": "searchKeyword",
+          "label": "",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkAll",
+          "label": "",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "2",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "checkField",
+          "label": "1",
+          "type": "checkbox",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "번호",
+            "",
+            "아이디",
+            "이름",
+            "이메일",
+            "전화번호",
+            "등록일",
+            "가입상태"
+          ],
+          "row_count": 2,
+          "sample_row": [
+            "2",
+            "",
+            "",
+            "",
+            "",
+            ")-",
+            "",
+            "회원 가입 승인 상태"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [
+        "localhost_8080_cmm_main_mainpage_do",
+        "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+        "localhost_8080_cop_bbs_selectbbsmasterinfs_do",
+        "localhost_8080_cop_com_selectbbsuseinfs_do",
+        "localhost_8080_cop_bbs_admin_selectboardlist_do_bbsid_value",
+        "localhost_8080_sym_log_clg_selectloginloglist_do",
+        "localhost_8080_sts_cst_selectconectstats_do",
+        "localhost_8080_uat_uap_selectloginpolicylist_do",
+        "localhost_8080_uss_ion_uas_selectuserabsncelistview_do",
+        "localhost_8080_sec_ram_egovauthorlist_do",
+        "localhost_8080_sec_gmt_egovgrouplist_do",
+        "localhost_8080_sec_rgm_egovauthorgrouplistview_do",
+        "localhost_8080_sec_rmt_egovrolelist_do",
+        "localhost_8080_sym_prm_egovprogramlistmanageselect_do",
+        "localhost_8080_sym_mnu_mcm_egovmenucreatmanageselect_do",
+        "localhost_8080_sym_mnu_mpm_egovmenumanageselect_do",
+        "localhost_8080_sym_ccm_ccc_egovccmcmmnclcodelist_do",
+        "localhost_8080_sym_ccm_cca_egovccmcmmncodelist_do",
+        "localhost_8080_sym_ccm_cde_egovccmcmmndetailcodelist_do",
+        "localhost_8080_sym_ccm_zip_egovccmziplist_do",
+        "localhost_8080_uss_umt_user_egovuserinsertview_do"
+      ],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    }
+  ]
+}

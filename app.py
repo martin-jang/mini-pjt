@@ -18,7 +18,10 @@ import threading
 import uuid
 from typing import Any, Literal
 
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 app = FastAPI(title="Legacy2Next", version="0.2.0")
@@ -127,11 +130,110 @@ def query(req: QueryRequest) -> QueryResponse:
     return run_query(req)
 
 
+# ──────────────────────────────────────────────────────────────────
+# 작업(job) API: URL 하나 → 분석 → POC 생성 (작업 화면용, SERVICE.md "API 계약")
+# /query 는 채점 규약 경로라 그대로 두고, 같은 노드를 묶은 작업 그래프를 백그라운드로 돌립니다.
+# ──────────────────────────────────────────────────────────────────
+
+
+class JobRequest(BaseModel):
+    url: str = Field(..., min_length=1, description="현대화할 레거시 시스템 시작 URL")
+
+
+class JobAction(BaseModel):
+    """사용자 개입. approve/reject 는 승인 대기일 때, retry 는 실패·중단·부분 성공일 때만 받습니다."""
+
+    action: Literal["approve", "reject", "retry"]
+    edits: dict[str, Any] | None = None
+
+
+_jobs = None
+
+
+def get_jobs():
+    global _jobs
+    with _lock:
+        if _jobs is None:
+            from src.agent import build_pipeline_graph, default_checkpointer
+            from src.jobs import JobManager
+
+            _jobs = JobManager(lambda: build_pipeline_graph(default_checkpointer()))
+    return _jobs
+
+
+@app.get("/jobs/stages", include_in_schema=False)
+def job_stages() -> list[dict[str, str]]:
+    """화면에 그릴 단계 목록 (작업 시작 전에도 도식을 보여 주기 위해)."""
+    from src.jobs import STAGES
+
+    return STAGES
+
+
+@app.post("/jobs", status_code=202)
+def create_job(req: JobRequest) -> dict[str, Any]:
+    """작업 시작. 이미 실행 중인 작업이 있으면 409. 진행은 GET /jobs/{id} 로 확인합니다."""
+    try:
+        return get_jobs().start(req.url.strip())
+    except ValueError as e:
+        raise HTTPException(409, str(e))
+
+
+@app.get("/jobs/latest")
+def latest_job() -> dict[str, Any] | None:
+    """가장 최근 작업 (화면을 새로 고쳐도 진행 중인 작업을 이어서 보여 주기 위해)."""
+    return get_jobs().latest()
+
+
+@app.get("/jobs/{job_id}")
+def get_job(job_id: str) -> dict[str, Any]:
+    job = get_jobs().get(job_id)
+    if job is None:
+        raise HTTPException(404, f"존재하지 않는 작업입니다: {job_id}")
+    return job
+
+
+@app.post("/jobs/{job_id}/action")
+def job_action(job_id: str, req: JobAction) -> dict[str, Any]:
+    try:
+        return get_jobs().act(job_id, req.action, req.edits)
+    except KeyError:
+        raise HTTPException(404, f"존재하지 않는 작업입니다: {job_id}")
+    except ValueError as e:
+        raise HTTPException(409, str(e))
+
+
+_UI_PATH = Path(__file__).parent / "static" / "index.html"
+
+
+@app.get("/", include_in_schema=False)
+def ui() -> FileResponse:
+    """시연용 프롬프트 입력 화면 (static/index.html). 같은 출처의 POST /query 를 호출합니다."""
+    return FileResponse(_UI_PATH, media_type="text/html; charset=utf-8")
+
+
+@app.get("/examples", include_in_schema=False)
+def examples() -> list[str]:
+    """UI 예시 질의. 사이트 고유 값을 UI 코드에 넣지 않도록 평가셋(positive)에서 읽습니다.
+    평가셋이 없거나 깨져 있으면 빈 목록을 돌려줍니다 (UI는 예시 없이 동작)."""
+    import json
+
+    path = Path(__file__).parent / "evaluation" / "test_queries.json"
+    try:
+        cases = json.loads(path.read_text(encoding="utf-8"))
+        return [c["input"] for c in cases if c.get("category") == "positive"]
+    except (OSError, ValueError, KeyError, TypeError):
+        return []
+
+
 if __name__ == "__main__":
     import uvicorn
 
     from src.config import settings
 
+    import os
+
     server = settings()["server"]
-    # 가드레일 G5: 로컬 시연 전용으로 127.0.0.1에만 바인딩
-    uvicorn.run(app, host=server["host"], port=server["port"])
+    # 가드레일 G5: 로컬 시연 전용으로 127.0.0.1에만 바인딩.
+    # 컨테이너 안에서는 포트 매핑을 위해 LEGACY2NEXT_HOST=0.0.0.0 으로 덮어쓰고,
+    # 바깥 노출은 docker run -p 127.0.0.1:8000:8000 처럼 호스트의 루프백으로만 엽니다 (Dockerfile 참고).
+    uvicorn.run(app, host=os.getenv("LEGACY2NEXT_HOST", server["host"]), port=server["port"])

@@ -17,7 +17,7 @@
       "requires_login": false,
       "kind": "안내",
       "is_business": false,
-      "purpose": "ParaBank 데모 웹사이트의 회사 소개 정보를 제공합니다",
+      "purpose": "ParaBank 데모 웹사이트에 대한 회사 소개 정보를 제공한다.",
       "fields": [],
       "buttons": [],
       "tables": [],
@@ -55,7 +55,7 @@
       "requires_login": true,
       "kind": "조회",
       "is_business": true,
-      "purpose": "특정 계좌의 거래 내역을 기간 및 유형별로 조회합니다",
+      "purpose": "특정 계좌의 기간별·유형별 거래 내역을 조회한다.",
       "fields": [
         {
           "name": "month",
@@ -167,7 +167,7 @@
       "requires_login": false,
       "kind": "관리",
       "is_business": false,
-      "purpose": "시스템 관리자가 데이터베이스, JMS 서비스, 데이터 접근 모드를 설정하고 초기화합니다",
+      "purpose": "데이터베이스 초기화·정리, JMS 서비스 제어, 데이터 접근 모드 등 시스템 관리 기능을 수행한다.",
       "fields": [
         {
           "name": "accessMode",
@@ -362,7 +362,7 @@
       "url": "https://parabank.parasoft.com/parabank/api-docs/index.html",
       "url_pattern": "//parabank.parasoft.com/parabank/api-docs/index.html",
       "title": "Swagger UI",
-      "title_ko": "API 문서",
+      "title_ko": "API 문서 (Swagger UI)",
       "headings": [
         "The ParaBank REST API 3.0.0 OAS 3.0",
         "Accounts account centric operations",
@@ -374,9 +374,9 @@
         "Positions stock centric operations"
       ],
       "requires_login": true,
-      "kind": "관리",
+      "kind": "안내",
       "is_business": false,
-      "purpose": "ParaBank REST API의 Swagger 문서를 제공하여 개발자가 API 스펙을 확인합니다",
+      "purpose": "ParaBank REST API의 엔드포인트 목록과 사용법을 Swagger UI로 제공한다.",
       "fields": [
         {
           "name": "download-url-input",
@@ -476,7 +476,7 @@
       "url": "https://parabank.parasoft.com/parabank/billpay.htm",
       "url_pattern": "//parabank.parasoft.com/parabank/billpay.htm",
       "title": "Bill Pay",
-      "title_ko": "청구서 결제",
+      "title_ko": "청구서 납부",
       "headings": [
         "Account Services",
         "Bill Payment Service",
@@ -486,7 +486,7 @@
       "requires_login": true,
       "kind": "입력",
       "is_business": true,
-      "purpose": "수취인 정보와 금액을 입력하여 청구서를 결제합니다",
+      "purpose": "수취인 정보와 금액을 입력하여 청구서 대금을 납부한다.",
       "fields": [
         {
           "name": "payee.name",
@@ -607,7 +607,7 @@
       "url": "https://parabank.parasoft.com/parabank/contact.htm",
       "url_pattern": "//parabank.parasoft.com/parabank/contact.htm",
       "title": "Customer Care",
-      "title_ko": "고객 지원 문의",
+      "title_ko": "고객센터 문의",
       "headings": [
         "Account Services",
         "Customer Care"
@@ -615,7 +615,7 @@
       "requires_login": false,
       "kind": "입력",
       "is_business": false,
-      "purpose": "고객이 이름, 이메일, 전화번호, 메시지를 입력하여 고객 지원팀에 문의합니다",
+      "purpose": "고객이 이름·이메일·전화번호·메시지를 입력하여 고객센터에 문의를 전송한다.",
       "fields": [
         {
           "name": "name",
@@ -690,7 +690,7 @@
       "url": "https://parabank.parasoft.com/parabank/findtrans.htm",
       "url_pattern": "//parabank.parasoft.com/parabank/findtrans.htm",
       "title": "Find Transactions",
-      "title_ko": "거래 검색",
+      "title_ko": "거래 내역 검색",
       "headings": [
         "Account Services",
         "Find Transactions",
@@ -700,7 +700,7 @@
       "requires_login": true,
       "kind": "조회",
       "is_business": true,
-      "purpose": "거래 ID, 날짜, 금액 등의 조건으로 특정 거래를 검색합니다",
+      "purpose": "날짜·금액·유형 등 다양한 조건으로 거래 내역을 검색하여 결과를 표시한다.",
       "fields": [
         {
           "name": "accountId",
@@ -790,14 +790,14 @@
       "url": "https://parabank.parasoft.com/parabank/index.htm",
       "url_pattern": "//parabank.parasoft.com/parabank/index.htm",
       "title": "Welcome",
-      "title_ko": "로그인",
+      "title_ko": "로그인 (홈)",
       "headings": [
         "Customer Login"
       ],
       "requires_login": false,
       "kind": "인증",
       "is_business": true,
-      "purpose": "사용자가 아이디와 비밀번호를 입력하여 시스템에 로그인합니다",
+      "purpose": "사용자 아이디와 비밀번호를 입력하여 ParaBank에 로그인하는 첫 화면이다.",
       "fields": [
         {
           "name": "username",
@@ -846,7 +846,7 @@
       "requires_login": false,
       "kind": "인증",
       "is_business": true,
-      "purpose": "고객 정보를 입력하여 분실한 로그인 정보를 찾습니다",
+      "purpose": "개인 정보를 입력하여 잊어버린 로그인 아이디·비밀번호를 찾는다.",
       "fields": [
         {
           "name": "username",
@@ -964,7 +964,7 @@
       "requires_login": false,
       "kind": "안내",
       "is_business": false,
-      "purpose": "ParaBank의 최신 뉴스와 공지사항을 제공합니다",
+      "purpose": "ParaBank의 최신 뉴스 및 공지사항을 날짜별로 표시한다.",
       "fields": [],
       "buttons": [],
       "tables": [],
@@ -993,7 +993,7 @@
       "url": "https://parabank.parasoft.com/parabank/openaccount.htm",
       "url_pattern": "//parabank.parasoft.com/parabank/openaccount.htm",
       "title": "Open Account",
-      "title_ko": "신규 계좌 개설",
+      "title_ko": "계좌 개설",
       "headings": [
         "Account Services",
         "Open New Account",
@@ -1003,7 +1003,7 @@
       "requires_login": true,
       "kind": "입력",
       "is_business": true,
-      "purpose": "계좌 유형을 선택하고 자금 이체 계좌를 지정하여 새 계좌를 개설합니다",
+      "purpose": "계좌 유형을 선택하고 이체 원본 계좌를 지정하여 새 계좌를 개설한다.",
       "fields": [
         {
           "name": "type",
@@ -1064,7 +1064,7 @@
       "requires_login": true,
       "kind": "조회",
       "is_business": true,
-      "purpose": "사용자의 전체 계좌 목록과 잔액 정보를 조회합니다",
+      "purpose": "로그인한 고객의 전체 계좌 목록과 잔액·가용 금액을 한눈에 조회한다.",
       "fields": [],
       "buttons": [],
       "tables": [
@@ -1117,7 +1117,7 @@
       "requires_login": false,
       "kind": "인증",
       "is_business": true,
-      "purpose": "신규 사용자가 개인 정보를 입력하여 온라인 계정을 등록합니다",
+      "purpose": "신규 고객이 개인 정보와 로그인 정보를 입력하여 온라인 계정을 등록한다.",
       "fields": [
         {
           "name": "username",
@@ -1261,7 +1261,7 @@
       "requires_login": true,
       "kind": "입력",
       "is_business": true,
-      "purpose": "대출 금액과 계약금을 입력하여 대출을 신청합니다",
+      "purpose": "대출 금액·계약금·출금 계좌를 입력하여 대출을 신청한다.",
       "fields": [
         {
           "name": "amount",
@@ -1346,14 +1346,14 @@
       "url": "https://parabank.parasoft.com/parabank/services.htm",
       "url_pattern": "//parabank.parasoft.com/parabank/services.htm",
       "title": "Services",
-      "title_ko": "서비스 목록",
+      "title_ko": "서비스 안내",
       "headings": [
         "Account Services"
       ],
       "requires_login": false,
       "kind": "안내",
       "is_business": false,
-      "purpose": "ParaBank에서 제공하는 웹 서비스 목록과 엔드포인트 정보를 안내합니다",
+      "purpose": "ParaBank가 제공하는 외부 웹 서비스(Bookstore, LoanProcessor 등)의 엔드포인트와 WSDL 정보를 안내한다.",
       "fields": [],
       "buttons": [],
       "tables": [
@@ -1446,7 +1446,7 @@
       "requires_login": false,
       "kind": "안내",
       "is_business": false,
-      "purpose": "웹사이트의 전체 페이지 구조를 사이트맵으로 제공합니다",
+      "purpose": "사이트 전체 페이지 구조를 한눈에 파악할 수 있도록 사이트맵을 제공한다.",
       "fields": [],
       "buttons": [],
       "tables": [],
@@ -1482,7 +1482,7 @@
       "requires_login": true,
       "kind": "조회",
       "is_business": true,
-      "purpose": "특정 거래 ID에 해당하는 거래의 상세 정보를 조회합니다",
+      "purpose": "특정 거래의 ID·날짜·금액 등 상세 정보를 조회한다.",
       "fields": [],
       "buttons": [],
       "tables": [
@@ -1525,7 +1525,7 @@
       "url": "https://parabank.parasoft.com/parabank/transfer.htm",
       "url_pattern": "//parabank.parasoft.com/parabank/transfer.htm",
       "title": "Transfer Funds",
-      "title_ko": "계좌 이체",
+      "title_ko": "자금 이체",
       "headings": [
         "Account Services",
         "Transfer Funds",
@@ -1535,7 +1535,7 @@
       "requires_login": true,
       "kind": "입력",
       "is_business": true,
-      "purpose": "출금 계좌와 입금 계좌를 선택하고 금액을 입력하여 계좌 간 자금을 이체합니다",
+      "purpose": "출금 계좌와 입금 계좌, 금액을 지정하여 계좌 간 자금을 이체한다.",
       "fields": [
         {
           "name": "input",
@@ -1595,7 +1595,7 @@
       "url": "https://parabank.parasoft.com/parabank/transfer.htm",
       "url_pattern": "//parabank.parasoft.com/parabank/transfer.htm#result",
       "title": "Transfer Funds",
-      "title_ko": "계좌 이체 결과",
+      "title_ko": "자금 이체 결과",
       "headings": [
         "Account Services",
         "Transfer Funds",
@@ -1605,7 +1605,7 @@
       "requires_login": true,
       "kind": "결과",
       "is_business": true,
-      "purpose": "계좌 이체 처리 완료 결과를 표시합니다",
+      "purpose": "자금 이체 완료 후 처리 결과(성공 또는 오류)를 사용자에게 표시한다.",
       "fields": [
         {
           "name": "input",
@@ -1676,7 +1676,7 @@
       "requires_login": true,
       "kind": "입력",
       "is_business": true,
-      "purpose": "사용자의 개인 정보(이름, 주소, 전화번호 등)를 수정합니다",
+      "purpose": "로그인한 고객이 이름·주소·전화번호 등 개인 프로필 정보를 수정한다.",
       "fields": [
         {
           "name": "customer.firstName",

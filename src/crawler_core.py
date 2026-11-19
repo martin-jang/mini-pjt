@@ -331,10 +331,11 @@ async def submit_once_and_capture(name: str, approved: bool) -> dict[str, Any]:
     언제 쓰지 않나: 승인 전, 설정에 없는 폼, 이미 한 번 실행한 경우 → 실행하지 않고 사유를 돌려줍니다.
     로그인이 필요하면 내부에서 데모 계정으로 로그인합니다 (stdio MCP는 호출 간 세션이 유지되지 않음).
     """
-    from src.config import demo_credentials
+    from src.config import demo_credentials, targets
 
-    target = settings()["target"]
-    spec = next((s for s in target.get("submit_once", []) if s["name"] == name), None)
+    # 이름이 일치하는 1회 제출 폼을 가진 대상 설정을 찾습니다 (사이트별 설정, 코드에는 사이트 값 없음)
+    target = next((t for t in targets() if any(s["name"] == name for s in t.get("submit_once") or [])), {})
+    spec = next((s for s in target.get("submit_once") or [] if s["name"] == name), None)
     if spec is None:
         return {"error": f"거부: 1회 제출이 허용된 폼이 아닙니다 ({name}). 읽기 전용 정책상 실행하지 않습니다."}
     if not approved:
@@ -350,7 +351,7 @@ async def submit_once_and_capture(name: str, approved: bool) -> dict[str, Any]:
     if not ok:
         return {"error": reason}
     if not SESSION.logged_in:
-        u, p = demo_credentials()
+        u, p = demo_credentials(host)
         lg = await login_with_demo_account(start, u or "", p or "", approved=True)
         if not lg.get("logged_in"):
             return {"error": lg.get("error", "로그인 실패")}
@@ -406,7 +407,7 @@ async def crawl_with_login(start_url: str, login_approved: bool, max_depth: int 
         result["needs_approval"] = True
         result["reason"] = "로그인 후 화면을 수집하려면 데모 계정 로그인 승인이 필요합니다."
         return result
-    u, p = demo_credentials()
+    u, p = demo_credentials((urlparse(start_url).hostname or "").lower())
     lg = await login_with_demo_account(start_url, u or "", p or "", approved=True)
     if not lg.get("logged_in"):
         result["error"] = lg.get("error")
@@ -414,6 +415,32 @@ async def crawl_with_login(start_url: str, login_approved: bool, max_depth: int 
     private = await crawl_site(lg["landing_url"], max_depth=max_depth, max_pages=max_pages)
     result.update(private_screens=private.get("screens", []), logged_in=True, skipped=private.get("skipped", []))
     return result
+
+
+_LOGIN_TEXT = re.compile(r"(로그인|login|log\s*in|sign\s*in)", re.IGNORECASE)
+
+
+async def _submit_login(form, pw) -> None:
+    """로그인 폼을 제출합니다 (사이트별 선택자 없이 일반 규칙만 사용).
+
+    1) 폼 안의 제출 버튼(submit/button/image) → 2) 폼 안에서 '로그인' 글자를 가진 링크·클릭 요소
+    (레거시에서 흔한 <a onclick="..."> 제출) → 3) 비밀번호 입력란에서 Enter.
+    """
+    submit = form.locator("input[type=submit]:visible,button:visible,input[type=image]:visible")
+    if await submit.count():
+        await submit.first.click()
+        return
+    link = form.locator("a:visible,[onclick]:visible").filter(has_text=_LOGIN_TEXT)
+    if await link.count():
+        await link.first.click()
+        return
+    imgs = form.locator("a:visible:has(img[alt]),[onclick]:visible:has(img[alt])")
+    for i in range(await imgs.count()):
+        alt = await imgs.nth(i).locator("img[alt]").first.get_attribute("alt") or ""
+        if _LOGIN_TEXT.search(alt):
+            await imgs.nth(i).click()
+            return
+    await pw.press("Enter")
 
 
 async def login_with_demo_account(login_url: str, username: str, password: str, approved: bool) -> dict[str, Any]:
@@ -433,13 +460,25 @@ async def login_with_demo_account(login_url: str, username: str, password: str, 
     page = await SESSION.page()
     try:
         await page.goto(login_url, timeout=_timeout())
-        pw = page.locator("input[type=password]").first
+        await page.wait_for_load_state("networkidle", timeout=10000)
+        pw = page.locator("input[type=password]:visible").first
         form = pw.locator("xpath=ancestor::form")
-        await form.locator("input[type=text],input[type=email],input:not([type])").first.fill(username)
+        await form.locator("input[type=text]:visible,input[type=email]:visible,input:not([type]):visible").first.fill(username)
         await pw.fill(password)
-        await form.locator("input[type=submit],button[type=submit],button").first.click()
-        await page.wait_for_load_state("domcontentloaded")
-        still_login = await page.locator("input[type=password]").count() > 0
+        await _submit_login(form, pw)
+        # 제출 후 리다이렉트가 여러 번 이어질 수 있으므로, 비밀번호 입력란이 사라질 때까지(최대 10초) 기다립니다.
+        # 실패한 로그인은 입력란이 그대로 남아 있으므로 아래에서 판정됩니다.
+        try:
+            await page.wait_for_function(
+                "() => !document.querySelector('input[type=password]') || "
+                "!document.querySelector('input[type=password]').offsetParent", timeout=10000)
+        except Exception:
+            pass
+        try:
+            await page.wait_for_load_state("networkidle", timeout=10000)
+        except Exception:
+            pass
+        still_login = await page.locator("input[type=password]:visible").count() > 0
         SESSION.logged_in = not still_login
         if not SESSION.logged_in:
             return {"error": "로그인에 실패했습니다 (계정 또는 화면 구조 확인)."}

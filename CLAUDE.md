@@ -40,6 +40,7 @@ Day 1~7에서 만든 체인 · RAG · Agent · MCP · 가드레일 · Supervisor
 ## 기술 스택 (교육 과정 고정 — 임의 변경 금지)
 
 - LLM: `us.anthropic.claude-sonnet-4-5-20250929-v1:0` (Amazon Bedrock, `us-east-1`)
+  - **현재 사용: `global.anthropic.claude-sonnet-4-6` (`ap-northeast-2`)** — us-east-1 일일 토큰 한도 초과로 사용자 지시에 따라 전환 (2026-11-19). 값은 `config/settings.yaml` 의 `llm` 항목
 - 임베딩: `amazon.titan-embed-text-v2:0` (1024차원)
 - 프레임워크: LangChain / LangGraph (`langgraph-supervisor`, `langchain-mcp-adapters`, `fastmcp`)
 - 벡터DB: Chroma, `persist_directory="./chroma_db"`
@@ -74,7 +75,7 @@ Day 1~7에서 만든 체인 · RAG · Agent · MCP · 가드레일 · Supervisor
 
 - `.env`(AWS 키 등)는 절대 커밋하지 않습니다. 키 값은 `.env.example`에 빈 값으로만 둡니다.
 - `chroma_db/`, `checkpoints.sqlite`, `.venv/`, `node_modules/`, `logs/`는 커밋하지 않습니다.
-- 크롤링은 허용 도메인(`parabank.parasoft.com`)만. 상태 변경 제출은 승인된 이체 1회 외에는 하지 않습니다.
+- 크롤링은 허용 도메인(`parabank.parasoft.com`, 일반화 검증용 로컬 eGov 샘플 `localhost:8080`)만. 로컬 샘플은 `config/settings.yaml`의 `extra_targets`에 `allow_loopback_ports`로 명시한 포트만 허용합니다 (사용자 승인 2026-11-19). 상태 변경 제출은 승인된 이체 1회 외에는 하지 않습니다.
 
 ## Git / 제출
 

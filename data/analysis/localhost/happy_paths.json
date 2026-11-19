@@ -1,0 +1,71 @@
+{
+  "domain": "localhost",
+  "flows": [
+    {
+      "flow_id": "hp1",
+      "name": "공지사항 조회",
+      "why": "로그인 후 메인 화면에서 공지사항 목록을 확인하는 것은 모든 사용자가 가장 빈번하게 수행하는 기본 업무이다.",
+      "steps": [
+        {
+          "step_id": "hp1-s1",
+          "screen_id": "localhost_8080_uat_uia_egovloginusr_do",
+          "screen_title": "로그인",
+          "slug": "egovloginusr",
+          "action": "login",
+          "description": "아이디와 비밀번호를 입력하여 시스템에 로그인한다.",
+          "page_testid": "egovloginusr-page",
+          "action_testid": "egovloginusr-submit",
+          "next_slug": "mainpage",
+          "fields": [
+            {
+              "name": "id",
+              "label": "",
+              "type": "text",
+              "testid": "egovloginusr-field-id"
+            },
+            {
+              "name": "password",
+              "label": "",
+              "type": "password",
+              "testid": "egovloginusr-field-password"
+            }
+          ]
+        },
+        {
+          "step_id": "hp1-s2",
+          "screen_id": "localhost_8080_cmm_main_mainpage_do",
+          "screen_title": "메인 홈(대시보드)",
+          "slug": "mainpage",
+          "action": "view",
+          "description": "로그인 후 메인 홈 화면에서 주요 메뉴와 공지사항 요약을 확인한다.",
+          "page_testid": "mainpage-page",
+          "action_testid": "mainpage-to-bbsSelectboardlist",
+          "next_slug": "bbsSelectboardlist",
+          "fields": []
+        },
+        {
+          "step_id": "hp1-s3",
+          "screen_id": "localhost_8080_cop_bbs_selectboardlist_do_bbsid_value",
+          "screen_title": "공지사항 목록",
+          "slug": "bbsSelectboardlist",
+          "action": "view",
+          "description": "공지사항 게시판 목록으로 이동하여 게시글을 검색·조회한다.",
+          "page_testid": "bbsSelectboardlist-page",
+          "action_testid": null,
+          "next_slug": null,
+          "fields": []
+        }
+      ]
+    }
+  ],
+  "rejected": [
+    {
+      "name": "공지사항 게시글 등록",
+      "reason": "제출 결과 화면 근거 없음: localhost_8080_cop_bbs_addboardarticle_do_bbsid_value_pageindex_value"
+    },
+    {
+      "name": "사용자 관리 조회",
+      "reason": "수집되지 않은 화면 포함: ['localhost_8080_uss_umt_user_egovusermanage_do']"
+    }
+  ]
+}
