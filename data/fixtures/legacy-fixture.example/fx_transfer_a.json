@@ -1,0 +1,173 @@
+{
+  "screen_id": "fx_transfer_a",
+  "url": "https://legacy-fixture.example/fx_transfer_a.jsp",
+  "url_pattern": "//legacy-fixture.example/fx_transfer_a.jsp",
+  "requires_login": true,
+  "title": "이체 A",
+  "headings": [
+    "Account Services",
+    "Transfer Funds",
+    "Transfer Complete!",
+    "Error!"
+  ],
+  "forms": [
+    {
+      "index": 0,
+      "id": "transferForm",
+      "action": null,
+      "method": "GET",
+      "fields": [
+        {
+          "name": "input",
+          "type": "text",
+          "label": "$",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "fromAccountId",
+          "type": "select",
+          "label": "From account #",
+          "required": false,
+          "options": [
+            "[ACCOUNT]",
+            "[ACCOUNT]",
+            "[ACCOUNT]",
+            "[ACCOUNT]",
+            "[ACCOUNT]"
+          ]
+        },
+        {
+          "name": "toAccountId",
+          "type": "select",
+          "label": "to account #",
+          "required": false,
+          "options": [
+            "[ACCOUNT]",
+            "[ACCOUNT]",
+            "[ACCOUNT]",
+            "[ACCOUNT]",
+            "[ACCOUNT]"
+          ]
+        }
+      ],
+      "buttons": [
+        "Transfer"
+      ]
+    }
+  ],
+  "loose_fields": [],
+  "tables": [],
+  "links": [
+    {
+      "text": "",
+      "href": "https://parabank.parasoft.com/parabank/admin.htm"
+    },
+    {
+      "text": "",
+      "href": "https://parabank.parasoft.com/parabank/index.htm"
+    },
+    {
+      "text": "About Us",
+      "href": "https://parabank.parasoft.com/parabank/about.htm"
+    },
+    {
+      "text": "Services",
+      "href": "https://parabank.parasoft.com/parabank/services.htm"
+    },
+    {
+      "text": "Products",
+      "href": "http://www.parasoft.com/jsp/products.jsp"
+    },
+    {
+      "text": "Locations",
+      "href": "http://www.parasoft.com/jsp/pr/contacts.jsp"
+    },
+    {
+      "text": "Admin Page",
+      "href": "https://parabank.parasoft.com/parabank/admin.htm"
+    },
+    {
+      "text": "home",
+      "href": "https://parabank.parasoft.com/parabank/index.htm"
+    },
+    {
+      "text": "about",
+      "href": "https://parabank.parasoft.com/parabank/about.htm"
+    },
+    {
+      "text": "contact",
+      "href": "https://parabank.parasoft.com/parabank/contact.htm"
+    },
+    {
+      "text": "Open New Account",
+      "href": "https://parabank.parasoft.com/parabank/openaccount.htm"
+    },
+    {
+      "text": "Accounts Overview",
+      "href": "https://parabank.parasoft.com/parabank/overview.htm"
+    },
+    {
+      "text": "Transfer Funds",
+      "href": "https://parabank.parasoft.com/parabank/transfer.htm"
+    },
+    {
+      "text": "Bill Pay",
+      "href": "https://parabank.parasoft.com/parabank/billpay.htm"
+    },
+    {
+      "text": "Find Transactions",
+      "href": "https://parabank.parasoft.com/parabank/findtrans.htm"
+    },
+    {
+      "text": "Update Contact Info",
+      "href": "https://parabank.parasoft.com/parabank/updateprofile.htm"
+    },
+    {
+      "text": "Request Loan",
+      "href": "https://parabank.parasoft.com/parabank/requestloan.htm"
+    },
+    {
+      "text": "Log Out",
+      "href": "https://parabank.parasoft.com/parabank/logout.htm"
+    },
+    {
+      "text": "Home",
+      "href": "https://parabank.parasoft.com/parabank/index.htm"
+    },
+    {
+      "text": "About Us",
+      "href": "https://parabank.parasoft.com/parabank/about.htm"
+    },
+    {
+      "text": "Services",
+      "href": "https://parabank.parasoft.com/parabank/services.htm"
+    },
+    {
+      "text": "Products",
+      "href": "http://www.parasoft.com/jsp/products.jsp"
+    },
+    {
+      "text": "Locations",
+      "href": "http://www.parasoft.com/jsp/pr/contacts.jsp"
+    },
+    {
+      "text": "Site Map",
+      "href": "https://parabank.parasoft.com/parabank/sitemap.htm"
+    },
+    {
+      "text": "Contact Us",
+      "href": "https://parabank.parasoft.com/parabank/contact.htm"
+    },
+    {
+      "text": "www.parasoft.com",
+      "href": "http://www.parasoft.com/"
+    }
+  ],
+  "buttons": [],
+  "text": "Transfer Funds Amount: $ From account # [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] to account # [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT] [ACCOUNT]",
+  "fixture_note": "교육용 더미 데이터입니다. 실제 시스템 화면이 아니라 변이를 주입한 합성 픽스처입니다.",
+  "flow": {
+    "confirm_step": true
+  }
+}

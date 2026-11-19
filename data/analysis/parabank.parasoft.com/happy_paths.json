@@ -1,0 +1,140 @@
+{
+  "domain": "parabank.parasoft.com",
+  "flows": [
+    {
+      "flow_id": "hp1",
+      "name": "계좌 이체",
+      "why": "은행 시스템의 가장 핵심적인 거래 업무이며, 입력부터 결과 확인까지 완전한 흐름이 존재합니다",
+      "steps": [
+        {
+          "step_id": "hp1-s1",
+          "screen_id": "parabank_parasoft_com_parabank_index_htm",
+          "screen_title": "Welcome",
+          "action": "login",
+          "description": "아이디와 비밀번호를 입력하여 로그인합니다",
+          "page_testid": "hp1-s1-page",
+          "action_testid": "hp1-s1-next",
+          "fields": [
+            {
+              "name": "username",
+              "label": "",
+              "type": "text",
+              "testid": "hp1-s1-field-username"
+            },
+            {
+              "name": "password",
+              "label": "",
+              "type": "password",
+              "testid": "hp1-s1-field-password"
+            }
+          ]
+        },
+        {
+          "step_id": "hp1-s2",
+          "screen_id": "parabank_parasoft_com_parabank_overview_htm",
+          "screen_title": "Accounts Overview",
+          "action": "view",
+          "description": "로그인 후 계좌 목록과 잔액을 확인합니다",
+          "page_testid": "hp1-s2-page",
+          "action_testid": "hp1-s2-next",
+          "fields": []
+        },
+        {
+          "step_id": "hp1-s3",
+          "screen_id": "parabank_parasoft_com_parabank_transfer_htm",
+          "screen_title": "Transfer Funds",
+          "action": "fill_submit",
+          "description": "출금 계좌, 입금 계좌, 이체 금액을 입력하고 제출합니다",
+          "page_testid": "hp1-s3-page",
+          "action_testid": "hp1-s3-next",
+          "fields": [
+            {
+              "name": "input",
+              "label": "$",
+              "type": "text",
+              "testid": "hp1-s3-field-input"
+            },
+            {
+              "name": "fromAccountId",
+              "label": "From account #",
+              "type": "select",
+              "testid": "hp1-s3-field-fromaccountid"
+            },
+            {
+              "name": "toAccountId",
+              "label": "to account #",
+              "type": "select",
+              "testid": "hp1-s3-field-toaccountid"
+            }
+          ]
+        },
+        {
+          "step_id": "hp1-s4",
+          "screen_id": "parabank_parasoft_com_parabank_transfer_htm__result",
+          "screen_title": "Transfer Funds",
+          "action": "view",
+          "description": "계좌 이체 완료 결과를 확인합니다",
+          "page_testid": "hp1-s4-page",
+          "action_testid": null,
+          "fields": []
+        }
+      ]
+    },
+    {
+      "flow_id": "hp2",
+      "name": "계좌 조회",
+      "why": "사용자가 가장 빈번하게 수행하는 기본 조회 업무로, 계좌 잔액과 거래 내역을 확인하는 필수 기능입니다",
+      "steps": [
+        {
+          "step_id": "hp2-s1",
+          "screen_id": "parabank_parasoft_com_parabank_index_htm",
+          "screen_title": "Welcome",
+          "action": "login",
+          "description": "아이디와 비밀번호를 입력하여 로그인합니다",
+          "page_testid": "hp2-s1-page",
+          "action_testid": "hp2-s1-next",
+          "fields": [
+            {
+              "name": "username",
+              "label": "",
+              "type": "text",
+              "testid": "hp2-s1-field-username"
+            },
+            {
+              "name": "password",
+              "label": "",
+              "type": "password",
+              "testid": "hp2-s1-field-password"
+            }
+          ]
+        },
+        {
+          "step_id": "hp2-s2",
+          "screen_id": "parabank_parasoft_com_parabank_overview_htm",
+          "screen_title": "Accounts Overview",
+          "action": "view",
+          "description": "전체 계좌 목록과 잔액 정보를 조회합니다",
+          "page_testid": "hp2-s2-page",
+          "action_testid": "hp2-s2-next",
+          "fields": []
+        },
+        {
+          "step_id": "hp2-s3",
+          "screen_id": "parabank_parasoft_com_parabank_activity_htm_id_value",
+          "screen_title": "Account Activity",
+          "action": "view",
+          "description": "특정 계좌를 선택하여 거래 내역을 상세 조회합니다",
+          "page_testid": "hp2-s3-page",
+          "action_testid": null,
+          "fields": []
+        }
+      ]
+    }
+  ],
+  "rejected": [
+    {
+      "name": "청구서 결제",
+      "reason": "제출 결과 화면 근거 없음: parabank_parasoft_com_parabank_billpay_htm"
+    }
+  ]
+}

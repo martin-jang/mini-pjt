@@ -1,0 +1,209 @@
+{
+  "screen_id": "parabank_parasoft_com_parabank_updateprofile_htm",
+  "url": "https://parabank.parasoft.com/parabank/updateprofile.htm",
+  "url_pattern": "//parabank.parasoft.com/parabank/updateprofile.htm",
+  "requires_login": true,
+  "captured_at": "2026-11-18T17:49:27",
+  "title": "ParaBank | Update Profile",
+  "headings": [
+    "Account Services",
+    "Update Profile",
+    "Profile Updated",
+    "Error!"
+  ],
+  "forms": [
+    {
+      "index": 0,
+      "id": "contact",
+      "action": null,
+      "method": "GET",
+      "fields": [
+        {
+          "name": "customer.firstName",
+          "type": "text",
+          "label": "First Name:",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "customer.lastName",
+          "type": "text",
+          "label": "Last Name:",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "customer.address.street",
+          "type": "text",
+          "label": "Address:",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "customer.address.city",
+          "type": "text",
+          "label": "City:",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "customer.address.state",
+          "type": "text",
+          "label": "State:",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "customer.address.zipCode",
+          "type": "text",
+          "label": "Zip Code:",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "customer.phoneNumber",
+          "type": "text",
+          "label": "Phone #:",
+          "required": false,
+          "options": null
+        }
+      ],
+      "buttons": [
+        "Update Profile"
+      ]
+    }
+  ],
+  "loose_fields": [],
+  "tables": [
+    {
+      "index": 0,
+      "id": null,
+      "headers": [
+        "First Name:",
+        "",
+        ""
+      ],
+      "row_count": 7,
+      "sample_rows": [
+        [
+          "Last Name:",
+          "",
+          ""
+        ],
+        [
+          "Address:",
+          "",
+          ""
+        ]
+      ]
+    }
+  ],
+  "links": [
+    {
+      "text": "",
+      "href": "https://parabank.parasoft.com/parabank/admin.htm"
+    },
+    {
+      "text": "",
+      "href": "https://parabank.parasoft.com/parabank/index.htm"
+    },
+    {
+      "text": "About Us",
+      "href": "https://parabank.parasoft.com/parabank/about.htm"
+    },
+    {
+      "text": "Services",
+      "href": "https://parabank.parasoft.com/parabank/services.htm"
+    },
+    {
+      "text": "Products",
+      "href": "http://www.parasoft.com/jsp/products.jsp"
+    },
+    {
+      "text": "Locations",
+      "href": "http://www.parasoft.com/jsp/pr/contacts.jsp"
+    },
+    {
+      "text": "Admin Page",
+      "href": "https://parabank.parasoft.com/parabank/admin.htm"
+    },
+    {
+      "text": "home",
+      "href": "https://parabank.parasoft.com/parabank/index.htm"
+    },
+    {
+      "text": "about",
+      "href": "https://parabank.parasoft.com/parabank/about.htm"
+    },
+    {
+      "text": "contact",
+      "href": "https://parabank.parasoft.com/parabank/contact.htm"
+    },
+    {
+      "text": "Open New Account",
+      "href": "https://parabank.parasoft.com/parabank/openaccount.htm"
+    },
+    {
+      "text": "Accounts Overview",
+      "href": "https://parabank.parasoft.com/parabank/overview.htm"
+    },
+    {
+      "text": "Transfer Funds",
+      "href": "https://parabank.parasoft.com/parabank/transfer.htm"
+    },
+    {
+      "text": "Bill Pay",
+      "href": "https://parabank.parasoft.com/parabank/billpay.htm"
+    },
+    {
+      "text": "Find Transactions",
+      "href": "https://parabank.parasoft.com/parabank/findtrans.htm"
+    },
+    {
+      "text": "Update Contact Info",
+      "href": "https://parabank.parasoft.com/parabank/updateprofile.htm"
+    },
+    {
+      "text": "Request Loan",
+      "href": "https://parabank.parasoft.com/parabank/requestloan.htm"
+    },
+    {
+      "text": "Log Out",
+      "href": "https://parabank.parasoft.com/parabank/logout.htm"
+    },
+    {
+      "text": "Home",
+      "href": "https://parabank.parasoft.com/parabank/index.htm"
+    },
+    {
+      "text": "About Us",
+      "href": "https://parabank.parasoft.com/parabank/about.htm"
+    },
+    {
+      "text": "Services",
+      "href": "https://parabank.parasoft.com/parabank/services.htm"
+    },
+    {
+      "text": "Products",
+      "href": "http://www.parasoft.com/jsp/products.jsp"
+    },
+    {
+      "text": "Locations",
+      "href": "http://www.parasoft.com/jsp/pr/contacts.jsp"
+    },
+    {
+      "text": "Site Map",
+      "href": "https://parabank.parasoft.com/parabank/sitemap.htm"
+    },
+    {
+      "text": "Contact Us",
+      "href": "https://parabank.parasoft.com/parabank/contact.htm"
+    },
+    {
+      "text": "www.parasoft.com",
+      "href": "http://www.parasoft.com/"
+    }
+  ],
+  "buttons": [],
+  "text": "Update Profile First Name: Last Name: Address: City: State: Zip Code: Phone #:"
+}

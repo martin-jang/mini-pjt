@@ -1,0 +1,101 @@
+{
+  "note": "교육용 더미 데이터입니다. 실제 시스템 화면이 아니라 변이를 주입한 합성 픽스처입니다.",
+  "groups": [
+    {
+      "group_id": "G1_search_action",
+      "role": "검색 실행 버튼",
+      "members": [
+        {
+          "screen_id": "fx_activity_a",
+          "value": "Go"
+        },
+        {
+          "screen_id": "fx_activity_b",
+          "value": "Search"
+        },
+        {
+          "screen_id": "fx_activity_c",
+          "value": "조회"
+        }
+      ]
+    },
+    {
+      "group_id": "G2_date_format",
+      "role": "날짜 표기 형식",
+      "members": [
+        {
+          "screen_id": "fx_activity_a",
+          "value": "MM-DD-YYYY"
+        },
+        {
+          "screen_id": "fx_activity_b",
+          "value": "YYYY/MM/DD"
+        },
+        {
+          "screen_id": "fx_activity_c",
+          "value": "YYYYMMDD"
+        }
+      ]
+    },
+    {
+      "group_id": "G3_account_headers",
+      "role": "계좌 목록 컬럼 라벨",
+      "members": [
+        {
+          "screen_id": "fx_account_list_a",
+          "value": "Account / Balance* / Available Amount"
+        },
+        {
+          "screen_id": "fx_account_list_b",
+          "value": "Acct No / Balance / Avail. Amt"
+        }
+      ]
+    },
+    {
+      "group_id": "G4_search_panel_layout",
+      "role": "조회조건 영역 위치",
+      "members": [
+        {
+          "screen_id": "fx_activity_a",
+          "value": "top"
+        },
+        {
+          "screen_id": "fx_activity_b",
+          "value": "left"
+        },
+        {
+          "screen_id": "fx_activity_c",
+          "value": "top"
+        }
+      ]
+    },
+    {
+      "group_id": "G5_total_row",
+      "role": "목록 합계 행",
+      "members": [
+        {
+          "screen_id": "fx_account_list_a",
+          "value": true
+        },
+        {
+          "screen_id": "fx_account_list_b",
+          "value": false
+        }
+      ]
+    },
+    {
+      "group_id": "G6_confirm_step",
+      "role": "제출 전 확인 단계",
+      "members": [
+        {
+          "screen_id": "fx_transfer_a",
+          "value": true
+        },
+        {
+          "screen_id": "fx_payment_b",
+          "value": false
+        }
+      ]
+    }
+  ]
+}

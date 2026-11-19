@@ -1,0 +1,208 @@
+{
+  "screen_id": "parabank_parasoft_com_parabank_lookup_htm",
+  "url": "https://parabank.parasoft.com/parabank/lookup.htm",
+  "url_pattern": "//parabank.parasoft.com/parabank/lookup.htm",
+  "requires_login": false,
+  "captured_at": "2026-11-18T17:49:11",
+  "title": "ParaBank | Customer Lookup",
+  "headings": [
+    "Customer Login",
+    "Customer Lookup"
+  ],
+  "forms": [
+    {
+      "index": 0,
+      "id": "login",
+      "action": "login.htm",
+      "method": "POST",
+      "fields": [
+        {
+          "name": "username",
+          "type": "text",
+          "label": "",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "password",
+          "type": "password",
+          "label": "",
+          "required": false,
+          "options": null
+        }
+      ],
+      "buttons": [
+        "Log In"
+      ]
+    },
+    {
+      "index": 1,
+      "id": "lookupForm",
+      "action": "lookup.htm",
+      "method": "POST",
+      "fields": [
+        {
+          "name": "firstName",
+          "type": "text",
+          "label": "First Name:",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "lastName",
+          "type": "text",
+          "label": "Last Name:",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "address.street",
+          "type": "text",
+          "label": "Address:",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "address.city",
+          "type": "text",
+          "label": "City:",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "address.state",
+          "type": "text",
+          "label": "State:",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "address.zipCode",
+          "type": "text",
+          "label": "Zip Code:",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "ssn",
+          "type": "text",
+          "label": "SSN:",
+          "required": false,
+          "options": null
+        }
+      ],
+      "buttons": [
+        "Find My Login Info"
+      ]
+    }
+  ],
+  "loose_fields": [],
+  "tables": [
+    {
+      "index": 0,
+      "id": null,
+      "headers": [
+        "First Name:",
+        "",
+        ""
+      ],
+      "row_count": 7,
+      "sample_rows": [
+        [
+          "Last Name:",
+          "",
+          ""
+        ],
+        [
+          "Address:",
+          "",
+          ""
+        ]
+      ]
+    }
+  ],
+  "links": [
+    {
+      "text": "",
+      "href": "https://parabank.parasoft.com/parabank/admin.htm"
+    },
+    {
+      "text": "",
+      "href": "https://parabank.parasoft.com/parabank/index.htm"
+    },
+    {
+      "text": "About Us",
+      "href": "https://parabank.parasoft.com/parabank/about.htm"
+    },
+    {
+      "text": "Services",
+      "href": "https://parabank.parasoft.com/parabank/services.htm"
+    },
+    {
+      "text": "Products",
+      "href": "http://www.parasoft.com/jsp/products.jsp"
+    },
+    {
+      "text": "Locations",
+      "href": "http://www.parasoft.com/jsp/pr/contacts.jsp"
+    },
+    {
+      "text": "Admin Page",
+      "href": "https://parabank.parasoft.com/parabank/admin.htm"
+    },
+    {
+      "text": "home",
+      "href": "https://parabank.parasoft.com/parabank/index.htm"
+    },
+    {
+      "text": "about",
+      "href": "https://parabank.parasoft.com/parabank/about.htm"
+    },
+    {
+      "text": "contact",
+      "href": "https://parabank.parasoft.com/parabank/contact.htm"
+    },
+    {
+      "text": "Forgot login info?",
+      "href": "https://parabank.parasoft.com/parabank/lookup.htm"
+    },
+    {
+      "text": "Register",
+      "href": "https://parabank.parasoft.com/parabank/register.htm"
+    },
+    {
+      "text": "Home",
+      "href": "https://parabank.parasoft.com/parabank/index.htm"
+    },
+    {
+      "text": "About Us",
+      "href": "https://parabank.parasoft.com/parabank/about.htm"
+    },
+    {
+      "text": "Services",
+      "href": "https://parabank.parasoft.com/parabank/services.htm"
+    },
+    {
+      "text": "Products",
+      "href": "http://www.parasoft.com/jsp/products.jsp"
+    },
+    {
+      "text": "Locations",
+      "href": "http://www.parasoft.com/jsp/pr/contacts.jsp"
+    },
+    {
+      "text": "Site Map",
+      "href": "https://parabank.parasoft.com/parabank/sitemap.htm"
+    },
+    {
+      "text": "Contact Us",
+      "href": "https://parabank.parasoft.com/parabank/contact.htm"
+    },
+    {
+      "text": "www.parasoft.com",
+      "href": "http://www.parasoft.com/"
+    }
+  ],
+  "buttons": [],
+  "text": "Customer Lookup Please fill out the following information in order to validate your account. First Name: Last Name: Address: City: State: Zip Code: SSN:"
+}

@@ -1,0 +1,57 @@
+{
+  "domain": "parabank.parasoft.com",
+  "group_count": 2,
+  "summary": {
+    "unify": 0,
+    "keep_variant": 2,
+    "hold": 0
+  },
+  "decisions": [
+    {
+      "group_id": "BTN5",
+      "element_type": "action_button",
+      "role": "사용자 정보 제출 버튼",
+      "asis_variants": [
+        {
+          "screen_id": "parabank_parasoft_com_parabank_lookup_htm",
+          "value": "Find My Login Info"
+        },
+        {
+          "screen_id": "parabank_parasoft_com_parabank_register_htm",
+          "value": "Register"
+        },
+        {
+          "screen_id": "parabank_parasoft_com_parabank_updateprofile_htm",
+          "value": "Update Profile"
+        }
+      ],
+      "decision": "keep_variant",
+      "standard": null,
+      "basis": "business_meaning",
+      "reason": "각 버튼이 서로 다른 업무 동작을 수행합니다. 'Find My Login Info'는 로그인 정보 조회, 'Register'는 신규 계정 등록, 'Update Profile'은 기존 정보 수정으로 업무 의미가 명확히 구분됩니다.",
+      "confidence": 0.95,
+      "guard_note": null
+    },
+    {
+      "group_id": "BTN6",
+      "element_type": "action_button",
+      "role": "금융 거래 실행 버튼",
+      "asis_variants": [
+        {
+          "screen_id": "parabank_parasoft_com_parabank_openaccount_htm",
+          "value": "Open New Account"
+        },
+        {
+          "screen_id": "parabank_parasoft_com_parabank_transfer_htm",
+          "value": "Transfer"
+        }
+      ],
+      "decision": "keep_variant",
+      "standard": null,
+      "basis": "business_meaning",
+      "reason": "'Open New Account'는 신규 계좌 개설, 'Transfer'는 계좌 간 자금 이체로 서로 다른 금융 거래를 실행하는 버튼입니다. 업무 동작이 다르므로 라벨을 통일하면 안 됩니다.",
+      "confidence": 0.95,
+      "guard_note": null
+    }
+  ]
+}

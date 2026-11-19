@@ -17,6 +17,7 @@ Day 1~7에서 만든 체인 · RAG · Agent · MCP · 가드레일 · Supervisor
 | `ASSIGNMENT.md` | 과제 요건·산출물 규약·채점 기준 (원본) |
 | `SERVICE.md` | **기획서이자 설계의 단일 기준.** 범위·에이전트·도구·API 계약·평가 기준 |
 | `docs/GUARDRAILS.md` | 가드레일 G1~G5 상세, HITL 지점 H1~H4 |
+| `tasks/README.md` | 구현 작업 T01~T20 (30분~1시간 단위), 순서·의존·체크포인트·절단 매핑. 작업은 해당 `tasks/Txx-*.md`의 완료 기준으로 확인 |
 | `evaluation/README.md` | 인-아웃 세트 작성 가이드. 작성은 `test_queries.json`, 제출용 CSV는 `json_to_csv.py`로 변환 |
 | `~/.gstack/projects/martin-jang-mini-pjt/ceo-review-2026-11-18.md` | CEO 리뷰 결정 원장(D1~D19), 일정표, 구현 작업 T1~T8 |
 

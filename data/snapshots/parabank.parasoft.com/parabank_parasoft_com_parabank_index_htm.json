@@ -1,0 +1,172 @@
+{
+  "screen_id": "parabank_parasoft_com_parabank_index_htm",
+  "url": "https://parabank.parasoft.com/parabank/index.htm",
+  "url_pattern": "//parabank.parasoft.com/parabank/index.htm",
+  "requires_login": false,
+  "captured_at": "2026-11-19T09:13:04",
+  "title": "ParaBank | Welcome | Online Banking",
+  "headings": [
+    "Customer Login"
+  ],
+  "forms": [
+    {
+      "index": 0,
+      "id": "login",
+      "action": "login.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6",
+      "method": "POST",
+      "fields": [
+        {
+          "name": "username",
+          "type": "text",
+          "label": "",
+          "required": false,
+          "options": null
+        },
+        {
+          "name": "password",
+          "type": "password",
+          "label": "",
+          "required": false,
+          "options": null
+        }
+      ],
+      "buttons": [
+        "Log In"
+      ]
+    }
+  ],
+  "loose_fields": [],
+  "tables": [],
+  "links": [
+    {
+      "text": "",
+      "href": "https://parabank.parasoft.com/parabank/admin.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6"
+    },
+    {
+      "text": "",
+      "href": "https://parabank.parasoft.com/parabank/index.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6"
+    },
+    {
+      "text": "About Us",
+      "href": "https://parabank.parasoft.com/parabank/about.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6"
+    },
+    {
+      "text": "Services",
+      "href": "https://parabank.parasoft.com/parabank/services.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6"
+    },
+    {
+      "text": "Products",
+      "href": "http://www.parasoft.com/jsp/products.jsp"
+    },
+    {
+      "text": "Locations",
+      "href": "http://www.parasoft.com/jsp/pr/contacts.jsp"
+    },
+    {
+      "text": "Admin Page",
+      "href": "https://parabank.parasoft.com/parabank/admin.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6"
+    },
+    {
+      "text": "home",
+      "href": "https://parabank.parasoft.com/parabank/index.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6"
+    },
+    {
+      "text": "about",
+      "href": "https://parabank.parasoft.com/parabank/about.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6"
+    },
+    {
+      "text": "contact",
+      "href": "https://parabank.parasoft.com/parabank/contact.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6"
+    },
+    {
+      "text": "Forgot login info?",
+      "href": "https://parabank.parasoft.com/parabank/lookup.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6"
+    },
+    {
+      "text": "Register",
+      "href": "https://parabank.parasoft.com/parabank/register.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6"
+    },
+    {
+      "text": "Withdraw Funds",
+      "href": "https://parabank.parasoft.com/parabank/services/ParaBank;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6?wsdl"
+    },
+    {
+      "text": "Transfer Funds",
+      "href": "https://parabank.parasoft.com/parabank/services/ParaBank;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6?wsdl"
+    },
+    {
+      "text": "Check Balances",
+      "href": "https://parabank.parasoft.com/parabank/services/ParaBank;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6?wsdl"
+    },
+    {
+      "text": "Make Deposits",
+      "href": "https://parabank.parasoft.com/parabank/services/ParaBank;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6?wsdl"
+    },
+    {
+      "text": "Bill Pay",
+      "href": "https://parabank.parasoft.com/parabank/services/bank;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6?_wadl&_type=xml"
+    },
+    {
+      "text": "Account History",
+      "href": "https://parabank.parasoft.com/parabank/services/bank;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6?_wadl&_type=xml"
+    },
+    {
+      "text": "Transfer Funds",
+      "href": "https://parabank.parasoft.com/parabank/services/bank;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6?_wadl&_type=xml"
+    },
+    {
+      "text": "READ MORE",
+      "href": "https://parabank.parasoft.com/parabank/services.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6"
+    },
+    {
+      "text": "ParaBank Is Now Re-Opened",
+      "href": "https://parabank.parasoft.com/parabank/news.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6#6"
+    },
+    {
+      "text": "New! Online Bill Pay",
+      "href": "https://parabank.parasoft.com/parabank/news.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6#5"
+    },
+    {
+      "text": "New! Online Account Transfers",
+      "href": "https://parabank.parasoft.com/parabank/news.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6#4"
+    },
+    {
+      "text": "READ MORE",
+      "href": "https://parabank.parasoft.com/parabank/news.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6"
+    },
+    {
+      "text": "Home",
+      "href": "https://parabank.parasoft.com/parabank/index.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6"
+    },
+    {
+      "text": "About Us",
+      "href": "https://parabank.parasoft.com/parabank/about.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6"
+    },
+    {
+      "text": "Services",
+      "href": "https://parabank.parasoft.com/parabank/services.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6"
+    },
+    {
+      "text": "Products",
+      "href": "http://www.parasoft.com/jsp/products.jsp"
+    },
+    {
+      "text": "Locations",
+      "href": "http://www.parasoft.com/jsp/pr/contacts.jsp"
+    },
+    {
+      "text": "Site Map",
+      "href": "https://parabank.parasoft.com/parabank/sitemap.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6"
+    },
+    {
+      "text": "Contact Us",
+      "href": "https://parabank.parasoft.com/parabank/contact.htm;jsessionid=B0FDFF158F7D1C639B0738FA[ACCOUNT]EF6"
+    },
+    {
+      "text": "www.parasoft.com",
+      "href": "http://www.parasoft.com/"
+    }
+  ],
+  "buttons": [],
+  "text": "ATM Services Withdraw Funds Transfer Funds Check Balances Make Deposits Online Services Bill Pay Account History Transfer Funds READ MORE LATEST NEWS 11/18/2026 ParaBank Is Now Re-Opened New! Online Bill Pay New! Online Account Transfers READ MORE"
+}

@@ -1,0 +1,14 @@
+{
+  "imports": [
+    "antd",
+    "msw",
+    "react",
+    "react-dom",
+    "react-router",
+    "react-dom/client",
+    "react/jsx-runtime",
+    "msw/browser",
+    "@storybook/react-vite",
+    "@playwright/test"
+  ]
+}

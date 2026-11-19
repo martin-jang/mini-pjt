@@ -1,0 +1,121 @@
+{
+  "parabank_parasoft_com_parabank_activity_htm_id_value": [
+    "month",
+    "transactionType"
+  ],
+  "parabank_parasoft_com_parabank_billpay_htm": [
+    "amount",
+    "fromAccountId",
+    "payee.accountNumber",
+    "payee.address.city",
+    "payee.address.state",
+    "payee.address.street",
+    "payee.address.zipCode",
+    "payee.name",
+    "payee.phoneNumber",
+    "verifyAccount"
+  ],
+  "parabank_parasoft_com_parabank_findtrans_htm": [
+    "accountId",
+    "amount",
+    "fromDate",
+    "toDate",
+    "transactionDate",
+    "transactionId"
+  ],
+  "parabank_parasoft_com_parabank_index_htm": [
+    "password",
+    "username"
+  ],
+  "parabank_parasoft_com_parabank_lookup_htm": [
+    "address.city",
+    "address.state",
+    "address.street",
+    "address.zipCode",
+    "firstName",
+    "lastName",
+    "password",
+    "ssn",
+    "username"
+  ],
+  "parabank_parasoft_com_parabank_openaccount_htm": [
+    "fromAccountId",
+    "type"
+  ],
+  "parabank_parasoft_com_parabank_overview_htm": [],
+  "parabank_parasoft_com_parabank_register_htm": [
+    "customer.address.city",
+    "customer.address.state",
+    "customer.address.street",
+    "customer.address.zipCode",
+    "customer.firstName",
+    "customer.lastName",
+    "customer.password",
+    "customer.phoneNumber",
+    "customer.ssn",
+    "customer.username",
+    "password",
+    "repeatedPassword",
+    "username"
+  ],
+  "parabank_parasoft_com_parabank_requestloan_htm": [
+    "amount",
+    "downPayment",
+    "fromAccountId"
+  ],
+  "parabank_parasoft_com_parabank_transaction_htm_id_value": [],
+  "parabank_parasoft_com_parabank_transfer_htm": [
+    "fromAccountId",
+    "input",
+    "toAccountId"
+  ],
+  "parabank_parasoft_com_parabank_transfer_htm__result": [
+    "fromAccountId",
+    "input",
+    "toAccountId"
+  ],
+  "parabank_parasoft_com_parabank_updateprofile_htm": [
+    "customer.address.city",
+    "customer.address.state",
+    "customer.address.street",
+    "customer.address.zipCode",
+    "customer.firstName",
+    "customer.lastName",
+    "customer.phoneNumber"
+  ],
+  "fx_account_list_a": [],
+  "fx_account_list_b": [],
+  "fx_activity_a": [
+    "month",
+    "transactionType"
+  ],
+  "fx_activity_b": [
+    "month",
+    "transactionType"
+  ],
+  "fx_activity_c": [
+    "accountId",
+    "amount",
+    "fromDate",
+    "toDate",
+    "transactionDate",
+    "transactionId"
+  ],
+  "fx_transfer_a": [
+    "fromAccountId",
+    "input",
+    "toAccountId"
+  ],
+  "fx_payment_b": [
+    "amount",
+    "fromAccountId",
+    "payee.accountNumber",
+    "payee.address.city",
+    "payee.address.state",
+    "payee.address.street",
+    "payee.address.zipCode",
+    "payee.name",
+    "payee.phoneNumber",
+    "verifyAccount"
+  ]
+}

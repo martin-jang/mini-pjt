@@ -1,0 +1,549 @@
+{
+  "domain": "legacy-fixture.example",
+  "screen_count": 7,
+  "business_count": 7,
+  "screens": [
+    {
+      "screen_id": "fx_account_list_a",
+      "domain": "legacy-fixture.example",
+      "url": "https://legacy-fixture.example/fx_account_list_a.jsp",
+      "url_pattern": "//legacy-fixture.example/fx_account_list_a.jsp",
+      "title": "계좌 목록 A",
+      "title_ko": "계좌 목록",
+      "headings": [
+        "Account Services",
+        "Accounts Overview",
+        "Error!"
+      ],
+      "requires_login": true,
+      "kind": "조회",
+      "is_business": true,
+      "purpose": "사용자의 계좌 목록과 잔액 및 사용 가능 금액을 조회하는 화면",
+      "fields": [],
+      "buttons": [],
+      "tables": [
+        {
+          "headers": [
+            "Account",
+            "Balance*",
+            "Available Amount"
+          ],
+          "row_count": 18,
+          "sample_row": [
+            "[ACCOUNT]",
+            "-$2250.00",
+            "$0.00"
+          ],
+          "date_format": null,
+          "has_total_row": true
+        }
+      ],
+      "links_to": [],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "fx_account_list_b",
+      "domain": "legacy-fixture.example",
+      "url": "https://legacy-fixture.example/fx_account_list_b.jsp",
+      "url_pattern": "//legacy-fixture.example/fx_account_list_b.jsp",
+      "title": "계좌 조회 B",
+      "title_ko": "계좌 조회",
+      "headings": [
+        "Account Services",
+        "Accounts Overview",
+        "Error!"
+      ],
+      "requires_login": true,
+      "kind": "조회",
+      "is_business": true,
+      "purpose": "사용자의 계좌 번호와 잔액 및 사용 가능 금액을 조회하는 화면",
+      "fields": [],
+      "buttons": [],
+      "tables": [
+        {
+          "headers": [
+            "Acct No",
+            "Balance",
+            "Avail. Amt"
+          ],
+          "row_count": 18,
+          "sample_row": [
+            "[ACCOUNT]",
+            "-$2250.00",
+            "$0.00"
+          ],
+          "date_format": null,
+          "has_total_row": false
+        }
+      ],
+      "links_to": [],
+      "layout": {},
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "fx_activity_a",
+      "domain": "legacy-fixture.example",
+      "url": "https://legacy-fixture.example/fx_activity_a.jsp",
+      "url_pattern": "//legacy-fixture.example/fx_activity_a.jsp",
+      "title": "거래내역 A",
+      "title_ko": "계좌 거래내역",
+      "headings": [
+        "Account Services",
+        "Account Details",
+        "Account Activity",
+        "Error!"
+      ],
+      "requires_login": true,
+      "kind": "조회",
+      "is_business": true,
+      "purpose": "특정 계좌의 거래내역을 기간 및 유형별로 조회하는 화면",
+      "fields": [
+        {
+          "name": "month",
+          "label": "Activity Period:",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "All",
+            "January",
+            "February"
+          ]
+        },
+        {
+          "name": "transactionType",
+          "label": "Type:",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "All",
+            "Credit",
+            "Debit"
+          ]
+        }
+      ],
+      "buttons": [
+        "Go"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "Account Number:",
+            "[ACCOUNT]"
+          ],
+          "row_count": 3,
+          "sample_row": [
+            "Account Type:",
+            "CHECKING"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        },
+        {
+          "headers": [
+            "Activity Period:",
+            "All January February March April May June July August September October November December"
+          ],
+          "row_count": 2,
+          "sample_row": [
+            "Type:",
+            "All Credit Debit"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        },
+        {
+          "headers": [
+            "Date",
+            "Transaction",
+            "Debit (-)",
+            "Credit (+)"
+          ],
+          "row_count": 9,
+          "sample_row": [
+            "12-11-2025",
+            "Check # 1111",
+            "",
+            "$300.00"
+          ],
+          "date_format": "MM-DD-YYYY",
+          "has_total_row": null
+        }
+      ],
+      "links_to": [],
+      "layout": {
+        "search_panel": "top"
+      },
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "fx_activity_b",
+      "domain": "legacy-fixture.example",
+      "url": "https://legacy-fixture.example/fx_activity_b.jsp",
+      "url_pattern": "//legacy-fixture.example/fx_activity_b.jsp",
+      "title": "거래내역 조회 B",
+      "title_ko": "거래내역 조회",
+      "headings": [
+        "Account Services",
+        "Account Details",
+        "Account Activity",
+        "Error!"
+      ],
+      "requires_login": true,
+      "kind": "조회",
+      "is_business": true,
+      "purpose": "특정 계좌의 거래내역을 기간 및 유형별로 검색하여 조회하는 화면",
+      "fields": [
+        {
+          "name": "month",
+          "label": "Activity Period:",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "All",
+            "January",
+            "February"
+          ]
+        },
+        {
+          "name": "transactionType",
+          "label": "Type:",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "All",
+            "Credit",
+            "Debit"
+          ]
+        }
+      ],
+      "buttons": [
+        "Search"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "Account Number:",
+            "[ACCOUNT]"
+          ],
+          "row_count": 3,
+          "sample_row": [
+            "Account Type:",
+            "CHECKING"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        },
+        {
+          "headers": [
+            "Activity Period:",
+            "All January February March April May June July August September October November December"
+          ],
+          "row_count": 2,
+          "sample_row": [
+            "Type:",
+            "All Credit Debit"
+          ],
+          "date_format": null,
+          "has_total_row": null
+        },
+        {
+          "headers": [
+            "Date",
+            "Transaction",
+            "Debit (-)",
+            "Credit (+)"
+          ],
+          "row_count": 9,
+          "sample_row": [
+            "2025/12/11",
+            "Check # 1111",
+            "",
+            "$300.00"
+          ],
+          "date_format": "YYYY/MM/DD",
+          "has_total_row": null
+        }
+      ],
+      "links_to": [],
+      "layout": {
+        "search_panel": "left"
+      },
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "fx_activity_c",
+      "domain": "legacy-fixture.example",
+      "url": "https://legacy-fixture.example/fx_activity_c.jsp",
+      "url_pattern": "//legacy-fixture.example/fx_activity_c.jsp",
+      "title": "거래 검색 C",
+      "title_ko": "거래 검색",
+      "headings": [
+        "Account Services",
+        "Find Transactions",
+        "Transaction Results",
+        "Error!"
+      ],
+      "requires_login": true,
+      "kind": "조회",
+      "is_business": true,
+      "purpose": "다양한 조건으로 거래를 검색하고 결과를 조회하는 화면",
+      "fields": [
+        {
+          "name": "accountId",
+          "label": ":",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "[ACCOUNT]",
+            "[ACCOUNT]",
+            "[ACCOUNT]"
+          ]
+        },
+        {
+          "name": "transactionId",
+          "label": ":",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "transactionDate",
+          "label": ":",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "fromDate",
+          "label": "Between",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "toDate",
+          "label": "and",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "amount",
+          "label": ":",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        }
+      ],
+      "buttons": [
+        "조회"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "Date",
+            "Transaction",
+            "Debit (-)",
+            "Credit (+)"
+          ],
+          "row_count": 0,
+          "sample_row": [
+            "20251211"
+          ],
+          "date_format": "YYYYMMDD",
+          "has_total_row": null
+        }
+      ],
+      "links_to": [],
+      "layout": {
+        "search_panel": "top"
+      },
+      "flow": {},
+      "result_of": null
+    },
+    {
+      "screen_id": "fx_payment_b",
+      "domain": "legacy-fixture.example",
+      "url": "https://legacy-fixture.example/fx_payment_b.jsp",
+      "url_pattern": "//legacy-fixture.example/fx_payment_b.jsp",
+      "title": "납부 B",
+      "title_ko": "청구서 납부",
+      "headings": [
+        "Account Services",
+        "Bill Payment Service",
+        "Bill Payment Complete",
+        "Error!"
+      ],
+      "requires_login": true,
+      "kind": "입력",
+      "is_business": true,
+      "purpose": "청구서 납부를 위해 수취인 정보와 금액을 입력하고 제출하는 화면",
+      "fields": [
+        {
+          "name": "payee.name",
+          "label": "Payee Name:",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "payee.address.street",
+          "label": "Address:",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "payee.address.city",
+          "label": "City:",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "payee.address.state",
+          "label": "State:",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "payee.address.zipCode",
+          "label": "Zip Code:",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "payee.phoneNumber",
+          "label": "Phone #:",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "payee.accountNumber",
+          "label": "Account #:",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "verifyAccount",
+          "label": "Verify Account #:",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "amount",
+          "label": "Amount: $",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "fromAccountId",
+          "label": "From account #:",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "[ACCOUNT]",
+            "[ACCOUNT]",
+            "[ACCOUNT]"
+          ]
+        }
+      ],
+      "buttons": [
+        "Submit"
+      ],
+      "tables": [
+        {
+          "headers": [
+            "Payee Name:",
+            "",
+            ""
+          ],
+          "row_count": 13,
+          "sample_row": [
+            "Address:",
+            "",
+            ""
+          ],
+          "date_format": null,
+          "has_total_row": null
+        }
+      ],
+      "links_to": [],
+      "layout": {},
+      "flow": {
+        "confirm_step": false
+      },
+      "result_of": null
+    },
+    {
+      "screen_id": "fx_transfer_a",
+      "domain": "legacy-fixture.example",
+      "url": "https://legacy-fixture.example/fx_transfer_a.jsp",
+      "url_pattern": "//legacy-fixture.example/fx_transfer_a.jsp",
+      "title": "이체 A",
+      "title_ko": "계좌 이체",
+      "headings": [
+        "Account Services",
+        "Transfer Funds",
+        "Transfer Complete!",
+        "Error!"
+      ],
+      "requires_login": true,
+      "kind": "입력",
+      "is_business": true,
+      "purpose": "계좌 간 자금을 이체하기 위해 금액과 출금/입금 계좌를 입력하는 화면",
+      "fields": [
+        {
+          "name": "input",
+          "label": "$",
+          "type": "text",
+          "required": false,
+          "options_sample": []
+        },
+        {
+          "name": "fromAccountId",
+          "label": "From account #",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "[ACCOUNT]",
+            "[ACCOUNT]",
+            "[ACCOUNT]"
+          ]
+        },
+        {
+          "name": "toAccountId",
+          "label": "to account #",
+          "type": "select",
+          "required": false,
+          "options_sample": [
+            "[ACCOUNT]",
+            "[ACCOUNT]",
+            "[ACCOUNT]"
+          ]
+        }
+      ],
+      "buttons": [
+        "Transfer"
+      ],
+      "tables": [],
+      "links_to": [],
+      "layout": {},
+      "flow": {
+        "confirm_step": true
+      },
+      "result_of": null
+    }
+  ]
+}

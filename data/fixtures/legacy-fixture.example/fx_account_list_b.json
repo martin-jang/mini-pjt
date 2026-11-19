@@ -1,0 +1,212 @@
+{
+  "screen_id": "fx_account_list_b",
+  "url": "https://legacy-fixture.example/fx_account_list_b.jsp",
+  "url_pattern": "//legacy-fixture.example/fx_account_list_b.jsp",
+  "requires_login": true,
+  "title": "계좌 조회 B",
+  "headings": [
+    "Account Services",
+    "Accounts Overview",
+    "Error!"
+  ],
+  "forms": [],
+  "loose_fields": [],
+  "tables": [
+    {
+      "index": 0,
+      "id": "accountTable",
+      "headers": [
+        "Acct No",
+        "Balance",
+        "Avail. Amt"
+      ],
+      "row_count": 18,
+      "sample_rows": [
+        [
+          "[ACCOUNT]",
+          "-$2250.00",
+          "$0.00"
+        ],
+        [
+          "[ACCOUNT]",
+          "-$589.55",
+          "$0.00"
+        ]
+      ],
+      "has_total_row": false
+    }
+  ],
+  "links": [
+    {
+      "text": "",
+      "href": "https://parabank.parasoft.com/parabank/admin.htm"
+    },
+    {
+      "text": "",
+      "href": "https://parabank.parasoft.com/parabank/index.htm"
+    },
+    {
+      "text": "About Us",
+      "href": "https://parabank.parasoft.com/parabank/about.htm"
+    },
+    {
+      "text": "Services",
+      "href": "https://parabank.parasoft.com/parabank/services.htm"
+    },
+    {
+      "text": "Products",
+      "href": "http://www.parasoft.com/jsp/products.jsp"
+    },
+    {
+      "text": "Locations",
+      "href": "http://www.parasoft.com/jsp/pr/contacts.jsp"
+    },
+    {
+      "text": "Admin Page",
+      "href": "https://parabank.parasoft.com/parabank/admin.htm"
+    },
+    {
+      "text": "home",
+      "href": "https://parabank.parasoft.com/parabank/index.htm"
+    },
+    {
+      "text": "about",
+      "href": "https://parabank.parasoft.com/parabank/about.htm"
+    },
+    {
+      "text": "contact",
+      "href": "https://parabank.parasoft.com/parabank/contact.htm"
+    },
+    {
+      "text": "Open New Account",
+      "href": "https://parabank.parasoft.com/parabank/openaccount.htm"
+    },
+    {
+      "text": "Accounts Overview",
+      "href": "https://parabank.parasoft.com/parabank/overview.htm"
+    },
+    {
+      "text": "Transfer Funds",
+      "href": "https://parabank.parasoft.com/parabank/transfer.htm"
+    },
+    {
+      "text": "Bill Pay",
+      "href": "https://parabank.parasoft.com/parabank/billpay.htm"
+    },
+    {
+      "text": "Find Transactions",
+      "href": "https://parabank.parasoft.com/parabank/findtrans.htm"
+    },
+    {
+      "text": "Update Contact Info",
+      "href": "https://parabank.parasoft.com/parabank/updateprofile.htm"
+    },
+    {
+      "text": "Request Loan",
+      "href": "https://parabank.parasoft.com/parabank/requestloan.htm"
+    },
+    {
+      "text": "Log Out",
+      "href": "https://parabank.parasoft.com/parabank/logout.htm"
+    },
+    {
+      "text": "[ACCOUNT]",
+      "href": "https://parabank.parasoft.com/parabank/activity.htm?id=[ACCOUNT]"
+    },
+    {
+      "text": "[ACCOUNT]",
+      "href": "https://parabank.parasoft.com/parabank/activity.htm?id=[ACCOUNT]"
+    },
+    {
+      "text": "[ACCOUNT]",
+      "href": "https://parabank.parasoft.com/parabank/activity.htm?id=[ACCOUNT]"
+    },
+    {
+      "text": "[ACCOUNT]",
+      "href": "https://parabank.parasoft.com/parabank/activity.htm?id=[ACCOUNT]"
+    },
+    {
+      "text": "[ACCOUNT]",
+      "href": "https://parabank.parasoft.com/parabank/activity.htm?id=[ACCOUNT]"
+    },
+    {
+      "text": "[ACCOUNT]",
+      "href": "https://parabank.parasoft.com/parabank/activity.htm?id=[ACCOUNT]"
+    },
+    {
+      "text": "[ACCOUNT]",
+      "href": "https://parabank.parasoft.com/parabank/activity.htm?id=[ACCOUNT]"
+    },
+    {
+      "text": "[ACCOUNT]",
+      "href": "https://parabank.parasoft.com/parabank/activity.htm?id=[ACCOUNT]"
+    },
+    {
+      "text": "[ACCOUNT]",
+      "href": "https://parabank.parasoft.com/parabank/activity.htm?id=[ACCOUNT]"
+    },
+    {
+      "text": "[ACCOUNT]",
+      "href": "https://parabank.parasoft.com/parabank/activity.htm?id=[ACCOUNT]"
+    },
+    {
+      "text": "[ACCOUNT]",
+      "href": "https://parabank.parasoft.com/parabank/activity.htm?id=[ACCOUNT]"
+    },
+    {
+      "text": "[ACCOUNT]",
+      "href": "https://parabank.parasoft.com/parabank/activity.htm?id=[ACCOUNT]"
+    },
+    {
+      "text": "[ACCOUNT]",
+      "href": "https://parabank.parasoft.com/parabank/activity.htm?id=[ACCOUNT]"
+    },
+    {
+      "text": "[ACCOUNT]",
+      "href": "https://parabank.parasoft.com/parabank/activity.htm?id=[ACCOUNT]"
+    },
+    {
+      "text": "[ACCOUNT]",
+      "href": "https://parabank.parasoft.com/parabank/activity.htm?id=[ACCOUNT]"
+    },
+    {
+      "text": "[ACCOUNT]",
+      "href": "https://parabank.parasoft.com/parabank/activity.htm?id=[ACCOUNT]"
+    },
+    {
+      "text": "Home",
+      "href": "https://parabank.parasoft.com/parabank/index.htm"
+    },
+    {
+      "text": "About Us",
+      "href": "https://parabank.parasoft.com/parabank/about.htm"
+    },
+    {
+      "text": "Services",
+      "href": "https://parabank.parasoft.com/parabank/services.htm"
+    },
+    {
+      "text": "Products",
+      "href": "http://www.parasoft.com/jsp/products.jsp"
+    },
+    {
+      "text": "Locations",
+      "href": "http://www.parasoft.com/jsp/pr/contacts.jsp"
+    },
+    {
+      "text": "Site Map",
+      "href": "https://parabank.parasoft.com/parabank/sitemap.htm"
+    },
+    {
+      "text": "Contact Us",
+      "href": "https://parabank.parasoft.com/parabank/contact.htm"
+    },
+    {
+      "text": "www.parasoft.com",
+      "href": "http://www.parasoft.com/"
+    }
+  ],
+  "buttons": [],
+  "text": "Accounts Overview Account Balance* Available Amount [ACCOUNT] -$2250.00 $0.00 [ACCOUNT] -$589.55 $0.00 [ACCOUNT] $100.00 $100.00 [ACCOUNT] -$100.00 $0.00 [ACCOUNT] $100.00 $100.00 [ACCOUNT] $0.00 $0.00 [ACCOUNT] $100.00 $100.00 [ACCOUNT] $1100.00 $1100.00 [ACCOUNT] $100.00 $100.00 [ACCOUNT] $831.10 $831.10 [ACCOUNT] $100.00 $100.00 [ACCOUNT] $100.00 $100.00 [ACCOUNT] $5000.00 $5000.00 [ACCOUNT] $100.00 $100.00 [ACCOUNT] $100.00 $100.00 [ACCOUNT] $1351.12 $1351.12 Total $6142.67 *Balance includes deposits that may be subject to holds",
+  "fixture_note": "교육용 더미 데이터입니다. 실제 시스템 화면이 아니라 변이를 주입한 합성 픽스처입니다."
+}

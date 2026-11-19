@@ -1,0 +1,48 @@
+# Legacy2Next 설정 파일
+# 사이트 고유 값(도메인·시작 URL·계정)은 이 파일과 .env에만 둡니다.
+# 에이전트 코드(src/)에는 특정 사이트 이름이나 URL을 하드코딩하지 않습니다 (CLAUDE.md 과적합 방지 규칙).
+
+target:
+  # 크롤링을 허용할 도메인 목록 (G1). 이 밖의 도메인·사설 IP는 모두 거부합니다.
+  allowed_domains:
+    - parabank.parasoft.com
+  # 분석 시작 URL
+  start_url: https://parabank.parasoft.com/parabank/index.htm
+  # 데모 계정은 값이 아니라 환경변수 이름만 둡니다. 실제 값은 .env에 있습니다.
+  demo_account_env:
+    username: DEMO_USERNAME
+    password: DEMO_PASSWORD
+  # 결과물 이름 (output/{project_name})
+  project_name: parabank-next
+  # 가드레일 G2의 유일한 예외: 결과 화면 수집을 위해 승인 후 1회만 제출할 수 있는 폼
+  # 이 목록에 없는 폼은 승인을 받아도 제출하지 않습니다.
+  submit_once:
+    - name: transfer
+      page_path: /parabank/transfer.htm
+      form_id: transferForm
+      # 최소 더미 값. select는 옵션 인덱스(0=첫 번째, 1=두 번째)
+      values:
+        input: "1"
+        fromAccountId: { option_index: 0 }
+        toAccountId: { option_index: 1 }
+
+crawl:
+  max_depth: 2
+  max_pages: 30
+  timeout_ms: 15000
+  # live: 실제 사이트 크롤링 / replay: data/snapshots 재생 (평가·시연 기본값)
+  snapshot_mode: replay
+
+paths:
+  snapshots: data/snapshots
+  fixtures: data/fixtures
+  analysis: data/analysis
+  output: output
+  template: templates/tobe-app
+  chroma: chroma_db
+  checkpoints: checkpoints.sqlite
+  trace_log: logs/trace.jsonl
+
+server:
+  host: 127.0.0.1
+  port: 8000
