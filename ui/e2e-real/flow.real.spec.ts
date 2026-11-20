@@ -17,6 +17,8 @@ test('실제 서버: 새 요청 → 승인 2곳 → 결과', async ({ page }) =>
   await expect(page.getByTestId('guardrail-events')).toContainText('차단됨');
   await expect(page.getByTestId('guardrail-events')).toContainText('localhost:8766');
   await expect(page.getByTestId('log-viewer')).toContainText('이동 후');
+  // T07b: 화면마다 원본·파생 파일을 저장한다 (next-pjt/<별칭>/crawl/)
+  await expect(page.getByTestId('log-viewer')).toContainText('화면 저장: board-html-');
 
   // 승인 1
   await page.getByTestId('go-analysis-review').click({ timeout: 40_000 });

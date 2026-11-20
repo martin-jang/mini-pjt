@@ -6,13 +6,14 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import re
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from contextlib import AsyncExitStack
 from dataclasses import dataclass, field
 from pathlib import Path
-from types import TracebackType
+from types import MappingProxyType, TracebackType
 from typing import Any, Literal, Protocol
 
 from mcp.client.stdio import stdio_client
@@ -38,9 +39,17 @@ ALLOWED_TOOLS: frozenset[str] = frozenset(
         "browser_press_key",
         "browser_wait_for",
         "browser_network_requests",
+        "browser_console_messages",
         "browser_close",
     }
 )
+# G1 예외: 코드에 고정된 읽기 전용 추출 스크립트 (이름 → 함수 원문). 도구 래퍼만 실행하고,
+# 호출하는 쪽은 이름만 고른다. browser_evaluate를 직접 부르는 것은 계속 막힌다
+SCRIPTS_DIR = Path(__file__).resolve().parent / "scripts"
+FIXED_SCRIPTS: Mapping[str, str] = MappingProxyType(
+    {"capture_dom": (SCRIPTS_DIR / "capture_dom.js").read_text(encoding="utf-8").strip()}
+)
+RESULT_SECTION = re.compile(r"### Result\n(.*?)(?=\n### |\Z)", re.S)
 # 도구 실행 뒤 페이지가 바뀔 수 있는 도구 (이동 후 검사 대상)
 PAGE_CHANGING = frozenset(
     {
@@ -91,6 +100,12 @@ def parse_result(content: Sequence[Any], is_error: bool = False) -> ToolResult:
         is_error=is_error,
         images=images,
     )
+
+
+def result_section(text: str) -> str:
+    """도구 응답의 `### Result` 부분만 돌려준다 (없으면 빈 문자열)."""
+    m = RESULT_SECTION.search(text)
+    return m.group(1).strip() if m else ""
 
 
 class ToolCaller(Protocol):
@@ -252,6 +267,22 @@ class GuardedBrowser:
                 self.current_url = url
                 self._last_allowed_url = url
         return result
+
+    async def run_fixed_script(self, name: str) -> Any:
+        """고정 추출 스크립트를 실행해 결과(JSON 값)를 돌려준다 (G1 예외, 읽기 전용).
+
+        스크립트 원문은 FIXED_SCRIPTS에서만 가져온다. 목록에 없는 이름은 G1 차단.
+        """
+        script = FIXED_SCRIPTS.get(name)
+        if script is None:
+            self._emit(
+                "G1", f"등록되지 않은 스크립트 {name}", "blocked", f"G1 고정 스크립트 아님: {name}"
+            )
+            raise ToolNotAllowedError(name)
+        result = await self._browser.call("browser_evaluate", {"function": script})
+        if result.is_error:
+            raise BrowserActionError(f"추출 스크립트 실패: {name}")
+        return json.loads(result_section(result.text))
 
     async def _restore(self) -> None:
         """이전 화면으로 되돌린다. 그래도 밖이면 마지막 허용 URL로 이동한다."""

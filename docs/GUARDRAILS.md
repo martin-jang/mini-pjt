@@ -28,6 +28,7 @@
 
 **허용 도구 목록**: Explorer는 Playwright MCP 도구 중 이동·스냅샷·스크린샷·클릭·입력·네트워크 조회만 쓴다. 임의 JS 실행(`browser_evaluate` 등)과 파일 업로드 도구는 쓰지 않는다.
 - 예외: 레이아웃 bbox·적용된 스타일(토큰)을 읽는 **코드에 고정된 읽기 전용 추출 스크립트**는 도구 래퍼가 직접 실행할 수 있다. LLM이 스크립트 내용을 만들거나 바꾸지 못하게 한다
+  - 구현(T07b): 스크립트는 `agent/legacy2next/scripts/`에 두고, 이름→원문 목록(`FIXED_SCRIPTS`)은 코드에 고정한다. `GuardedBrowser.run_fixed_script(이름)`만 `browser_evaluate`로 실행하고, `browser_evaluate`를 직접 부르면 계속 G1 차단된다
 
 **테스트 데이터 만들기** — 빈 조회 결과 때문에 등록 흐름을 실행해 데이터를 만드는 것도 쓰기 동작이다. 위와 똑같이 승인을 받고, 만든 데이터는 실행 로그에 남겨 사용자가 정리할 수 있게 한다.
 

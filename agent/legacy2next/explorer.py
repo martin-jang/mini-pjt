@@ -10,7 +10,7 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
 from urllib.parse import urldefrag, urljoin, urlsplit
 
@@ -83,10 +83,12 @@ async def explore_links(
     max_links: int,
     log: Callable[[str], None],
     login_url: str | None = None,
+    on_page: Callable[[VisitedPage], Awaitable[None]] | None = None,
 ) -> ExploreReport:
     """시작 화면 → 링크 하나씩 이동 → 돌아오기. 막힌 이동은 기록하고 계속한다.
 
     login_url을 주면, 로그인 화면이 아닌 곳으로 갔는데 로그인 화면에 닿을 때 세션 만료로 본다.
+    on_page는 새 화면에 처음 도착할 때마다 그 화면이 열린 상태로 불린다 (원본 수집).
     """
     report = ExploreReport()
 
@@ -99,8 +101,11 @@ async def explore_links(
     except BrowserActionError as e:
         raise ExplorerError(f"시작 화면을 열 수 없습니다: {start_url} ({e})") from e
     check_session(start_url, first.page_url)
-    report.pages.append(VisitedPage(url=first.page_url or start_url, title=first.page_title or ""))
+    start_page = VisitedPage(url=first.page_url or start_url, title=first.page_title or "")
+    report.pages.append(start_page)
     log(f"시작 화면: {first.page_title or ''} ({first.page_url or start_url})")
+    if on_page:
+        await on_page(start_page)
 
     snapshot = await browser.call("browser_snapshot", {})
     base = snapshot.page_url or start_url
@@ -125,8 +130,11 @@ async def explore_links(
         check_session(link.url, page.page_url)
         visited = page.page_url or link.url
         if all(p.url != visited for p in report.pages):
-            report.pages.append(VisitedPage(url=visited, title=page.page_title or ""))
+            new_page = VisitedPage(url=visited, title=page.page_title or "")
+            report.pages.append(new_page)
             log(f"화면 확인: {page.page_title or ''} ({visited})")
+            if on_page:
+                await on_page(new_page)
         try:
             await browser.call("browser_navigate", {"url": base})
         except OriginBlockedError:

@@ -1,6 +1,8 @@
 """Explorer 검증용 시험 사이트.
 
 - `/`: G2 검증. 내부 링크, 다른 origin 링크, 다른 origin으로 가는 리다이렉트, 로그아웃 링크
+- `/board.html`: 수집 데이터 구조 검증 (T07b). 머리글·왼쪽 메뉴·검색 폼·표·탭·페이징·바닥글과
+  브랜드 색이 있는 전형적인 레거시 목록 화면
 - `/idpw/`: ID/PW 로그인이 필요한 영역 (T07a). 로그인하지 않으면 `/idpw/login`으로 보낸다
 - `/cert/`: 간편인증(사람이 해야 하는 인증)이 필요한 영역 (T07a). 로그인 화면은 인증 승인을
   기다리며 `/cert/status`를 확인하고, 승인되면 세션 쿠키를 받는다.
@@ -42,6 +44,57 @@ LOGIN_FORM = _page(
         '<button type="submit">로그인</button></form>'
     ),
 )
+
+BOARD = (
+    """<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>공지사항 목록</title>
+<style>
+body { margin: 0; font-family: "Malgun Gothic", sans-serif; font-size: 13px; color: #333333; }
+#header { background: #1f4e8c; color: #ffffff; height: 60px; padding: 0 20px; }
+#header .gnb a { color: #ffffff; margin-right: 16px; font-weight: 700; }
+#wrap { display: flex; }
+#lnb { width: 200px; min-height: 500px; background: #f2f5fa; padding: 12px; }
+#lnb li { padding: 6px 0; }
+#contents { flex: 1; padding: 20px; }
+.tab { display: flex; gap: 4px; padding: 0; list-style: none; }
+.tab li { padding: 6px 12px; border: 1px solid #cccccc; border-radius: 4px 4px 0 0; }
+.btn { background: #1f4e8c; color: #ffffff; border: 0; padding: 4px 12px; border-radius: 3px; }
+table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+th { background: #e9eef6; padding: 8px; border-top: 2px solid #1f4e8c; }
+td { padding: 8px; border-bottom: 1px solid #dddddd; }
+.paging { text-align: center; margin-top: 12px; }
+.paging a, .paging strong { margin: 0 4px; }
+#footer { background: #444444; color: #cccccc; padding: 16px 20px; font-size: 12px; }
+</style></head><body>
+<div id="header"><h1>시험 기관 업무시스템</h1>
+<div class="gnb"><a href="/board.html">게시판</a><a href="/page2.html">공지</a></div></div>
+<div id="wrap">
+<div id="lnb"><ul><li><a href="/board.html">공지사항</a></li>
+<li><a href="/page2.html">자료실</a></li></ul></div>
+<div id="contents">
+<h2>공지사항</h2>
+<ul class="tab"><li>전체</li><li>일반</li><li>긴급</li></ul>
+<form method="get" action="/board.html">
+<label for="searchCnd">검색조건</label>
+<select id="searchCnd" name="searchCnd"><option>제목</option><option>내용</option></select>
+<label for="searchWrd">검색어</label>
+<input id="searchWrd" name="searchWrd" type="text" required maxlength="50">
+<label>등록일 <input name="regDate" type="date"></label>
+<input type="submit" class="btn" value="조회">
+</form>
+<table><thead><tr><th>번호</th><th>제목</th><th>작성자</th><th>등록일</th></tr></thead>
+<tbody>
+<tr><td>3</td><td>시스템 점검 안내</td><td>관리자</td><td>2026-11-01</td></tr>
+<tr><td>2</td><td>개인정보 처리방침 변경</td><td>관리자</td><td>2026-10-15</td></tr>
+<tr><td>1</td><td>홈페이지 개설</td><td>관리자</td><td>2026-09-01</td></tr>
+</tbody></table>
+<div class="paging"><a href="#">처음</a><strong>1</strong>
+<a href="#">2</a><a href="#">3</a><a href="#">다음</a></div>
+<button type="button" class="btn">등록</button>
+</div></div>
+<div id="footer">Copyright 시험 기관. All rights reserved.</div>
+<script>console.log("board loaded")</script>
+</body></html>"""
+).encode()
 
 CERT_LOGIN = _page(
     "인증 로그인",
@@ -116,12 +169,15 @@ class Handler(BaseHTTPRequestHandler):
                     "시험 사이트 홈",
                     (
                         '<a href="/page2.html">공지 목록</a> '
+                        '<a href="/board.html">게시판</a> '
                         f'<a href="{external}/external.html">외부 사이트</a> '
                         '<a href="/go-out">외부로 가는 리다이렉트</a> '
                         '<a href="/logout">로그아웃</a>'
                     ),
                 ),
             )
+        elif path == "/board.html":
+            self._send(200, BOARD)
         elif path == "/page2.html":
             self._send(200, _page("공지 목록", '<a href="/">홈</a>'))
         elif path == "/go-out":

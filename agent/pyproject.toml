@@ -13,6 +13,7 @@ ignore = ["ANN401"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["ANN"]
+"tests/test_crawl.py" = ["ANN", "E501"]
 # 예시 데이터 문장은 줄 길이 예외
 "legacy2next/stubs.py" = ["E501"]
 # LLM 프롬프트 문장은 줄 길이 예외

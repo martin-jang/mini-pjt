@@ -20,9 +20,11 @@ from langgraph.types import Command, interrupt
 
 from . import stubs
 from .browser import BrowserActionError, GuardedBrowser, McpBrowser
+from .capture import capture_screen
 from .config import AgentConfig, load_site_credentials
+from .crawl import CrawlStore, ScreenCapture
 from .events import EventLog, EventType, RunEvent
-from .explorer import ExplorerError, SessionExpiredError, explore_links
+from .explorer import ExplorerError, SessionExpiredError, VisitedPage, explore_links
 from .llm import LlmGateway
 from .login import (
     AuthHandoffs,
@@ -32,6 +34,7 @@ from .login import (
     secrets_file,
     staging_dir,
 )
+from .masking import secrets
 from .schemas import (
     AnalysisDecision,
     AnalysisReview,
@@ -317,6 +320,26 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
                 "explorer", "화면 수집 시작" + (" (저장된 로그인 세션 사용)" if has_session else "")
             )
             browser = GuardedBrowser(mcp, origins, guard_emit(em))
+            store = CrawlStore(cfg.site_dir(alias) / "crawl")
+            captures: list[ScreenCapture] = []
+
+            async def save_screen(page: VisitedPage) -> None:
+                """화면 원본을 저장하고 파생 파일을 만든다. 실패해도 수집은 계속한다."""
+                try:
+                    raw = await capture_screen(browser, page.url, page.title, secrets.mask)
+                    store.save_raw(raw)
+                    layout, components, _ = store.derive(raw.capture.screen_id)
+                except (BrowserActionError, OSError, ValueError) as e:
+                    em.log("explorer", f"화면 저장 실패: {page.url} ({e})", "warn")
+                    return
+                captures.append(raw.capture)
+                em.log(
+                    "explorer",
+                    f"화면 저장: {raw.capture.screen_id} "
+                    f"(영역 {len(layout.regions)}·표 {len(components.tables)}·"
+                    f"폼 {len(components.forms)}·버튼 {len(components.buttons)})",
+                )
+
             try:
                 report = await explore_links(
                     browser,
@@ -324,6 +347,7 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
                     cfg.explorer.max_links,
                     lambda m: em.log("explorer", m),
                     login_url=state.get("login_url"),
+                    on_page=save_screen,
                 )
             except SessionExpiredError as e:
                 session.unlink(missing_ok=True)
@@ -331,11 +355,13 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
                 return Command(goto="login")
             if not extension:
                 await browser.call("browser_close", {})
+        store.update_manifest(alias, captures)
         em.metrics(screens_collected=len(report.pages))
         em.log(
             "explorer",
             f"확인한 화면 {len(report.pages)}개, 차단 {len(report.blocked)}건, "
-            f"건너뜀 {len(report.skipped)}건 (사이트맵 수집은 T07c)",
+            f"건너뜀 {len(report.skipped)}건, 원본·파생 저장 {len(captures)}개 "
+            f"(next-pjt/{alias}/crawl/, 사이트맵 수집은 T07c)",
         )
         em.stage("explorer", "done", f"{len(report.pages)}개 화면")
         return Command(goto="analyst")
