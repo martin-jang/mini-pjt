@@ -32,3 +32,6 @@ e2e-results.json
 
 # 사이트별 생성 결과물
 next-pjt/
+
+# Playwright MCP 기본 출력 폴더 (--output-dir 없이 띄운 경우)
+.playwright-mcp/

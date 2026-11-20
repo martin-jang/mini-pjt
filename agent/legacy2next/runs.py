@@ -137,11 +137,10 @@ class RunService:
         config: AgentConfig,
         events: EventLog,
         checkpointer: BaseCheckpointSaver,
-        step_delay: float,
     ) -> None:
         self._config = config
         self._events = events
-        self._graph = build_graph(GraphDeps(events, step_delay), checkpointer)
+        self._graph = build_graph(GraphDeps(events, config), checkpointer)
         self._tasks: dict[str, asyncio.Task[None]] = {}
 
     @staticmethod

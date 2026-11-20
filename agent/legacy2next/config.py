@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+from typing import Literal
 from urllib.parse import urlsplit
 
 import yaml
@@ -47,10 +48,23 @@ class SiteConfig(BaseModel):
         return [origin_of(v) for v in values]
 
 
+class ExplorerConfig(BaseModel):
+    """화면 수집 설정."""
+
+    # mcp: Playwright MCP로 실제 브라우저 수집, stub: 예시 데이터 (브라우저 없이 흐름만 확인)
+    mode: Literal["mcp", "stub"] = "mcp"
+    headless: bool = True
+    # 시작 화면에서 따라가 볼 링크 수 상한 (T07c 사이트맵 수집 전 임시)
+    max_links: int = Field(default=15, ge=0)
+
+
 class AgentConfig(BaseModel):
     """settings.yaml 내용."""
 
     limits: Limits = Field(default_factory=Limits)
+    explorer: ExplorerConfig = Field(default_factory=ExplorerConfig)
+    # 사이트별 생성 결과물 루트 (저장소 루트 기준). 에이전트는 이 아래 <별칭>/ 밖에 쓰지 않는다 (G9)
+    output_root: Path = Path("next-pjt")
     cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:5173"])
     log_dir: Path = Path("logs")
     # LangGraph 체크포인트 SQLite 파일 (저장소 루트 기준, git 제외)
@@ -62,6 +76,11 @@ class AgentConfig(BaseModel):
     def resolved_log_dir(self) -> Path:
         """log_dir가 상대 경로면 저장소 루트 기준으로 푼다."""
         return self.log_dir if self.log_dir.is_absolute() else REPO_ROOT / self.log_dir
+
+    def site_dir(self, alias: str) -> Path:
+        """사이트 결과물 폴더 next-pjt/<별칭>/."""
+        root = self.output_root if self.output_root.is_absolute() else REPO_ROOT / self.output_root
+        return root / alias
 
     def resolved_checkpoint_path(self) -> Path:
         """checkpoint_path가 상대 경로면 저장소 루트 기준으로 푼다."""

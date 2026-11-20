@@ -20,6 +20,15 @@ checkpoint_path: checkpoints.sqlite
 # 스텁 노드의 단계 간 지연(ms). 실제 노드가 붙으면 쓰지 않는다
 stub_step_ms: 500
 
+# 사이트별 생성 결과물 루트 (G9: 에이전트는 이 아래 <별칭>/ 밖에 쓰지 않는다)
+output_root: next-pjt
+
+# 화면 수집. mode: mcp(Playwright MCP 실제 브라우저) / stub(브라우저 없이 예시 데이터)
+explorer:
+  mode: mcp
+  headless: true
+  max_links: 15
+
 # 사이트별 설정. 키는 사이트 별칭이다. 설정이 없는 사이트는 요청 URL의 origin만 허용한다
 sites: {}
 #  hr-portal:

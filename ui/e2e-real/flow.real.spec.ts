@@ -5,15 +5,21 @@ import { expect, test } from '@playwright/test';
 test('실제 서버: 새 요청 → 승인 2곳 → 결과', async ({ page }) => {
   const alias = `real-${Date.now() % 100000}`;
   await page.goto('/new');
-  await page.getByTestId('input-url').fill('https://legacy.example.com');
+  await page.getByTestId('input-url').fill('http://127.0.0.1:8766/');
   await page.getByTestId('input-alias').fill(alias);
   await page.getByTestId('submit-request').click();
   await expect(page).toHaveURL(new RegExp(`/sites/${alias}$`));
   await expect(page.getByTestId(`site-${alias}`)).toBeVisible();
   await expect(page.getByTestId('log-viewer')).toContainText('[explorer]');
+  // T06 (EXP-02): 실제 브라우저로 시험 사이트를 돌며 다른 origin 이동을 막고 콘솔에 남긴다
+  await expect(page.getByTestId('log-viewer')).toContainText('Playwright MCP 브라우저 시작');
+  await expect(page.getByTestId('guardrail-events')).toContainText('G2', { timeout: 30_000 });
+  await expect(page.getByTestId('guardrail-events')).toContainText('차단됨');
+  await expect(page.getByTestId('guardrail-events')).toContainText('localhost:8766');
+  await expect(page.getByTestId('log-viewer')).toContainText('이동 후');
 
   // 승인 1
-  await page.getByTestId('go-analysis-review').click({ timeout: 20_000 });
+  await page.getByTestId('go-analysis-review').click({ timeout: 40_000 });
   await expect(page.getByTestId('site-profile')).toContainText('업무 도메인');
   await page.getByTestId('analysis-approve').click();
   await expect(page).toHaveURL(new RegExp(`/sites/${alias}$`));

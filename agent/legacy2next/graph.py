@@ -8,7 +8,7 @@ interrupt()가 있는 노드는 재개 때 처음부터 다시 실행되므로, 
 from __future__ import annotations
 
 import asyncio
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Literal, TypedDict
 
 from langgraph.checkpoint.base import BaseCheckpointSaver
@@ -17,7 +17,10 @@ from langgraph.graph.state import CompiledStateGraph
 from langgraph.types import Command, interrupt
 
 from . import stubs
+from .browser import GuardedBrowser, McpBrowser
+from .config import AgentConfig
 from .events import EventLog, EventType, RunEvent
+from .explorer import explore_links
 from .schemas import (
     AnalysisDecision,
     AnalysisReview,
@@ -76,6 +79,10 @@ class Emitter:
     def status(self, status: RunStatus, **data: Any) -> None:
         self._emit("status", "system", status, status=status, **data)
 
+    def guardrail(self, rule: str, detail: str, outcome: str, message: str) -> None:
+        level = "block" if outcome == "blocked" else "warn"
+        self._emit("guardrail", "guard", message, level, rule=rule, detail=detail, outcome=outcome)
+
     def metrics(self, **values: int) -> None:
         self._emit("metrics", "system", "metrics", **values)
 
@@ -88,7 +95,11 @@ class Emitter:
 @dataclass
 class GraphDeps:
     events: EventLog
-    step_delay: float = 0.5
+    config: AgentConfig = field(default_factory=AgentConfig)
+
+    @property
+    def step_delay(self) -> float:
+        return self.config.stub_step_ms / 1000
 
     def emitter(self, state: GraphState) -> Emitter:
         return Emitter(self.events, state["run_id"], self.step_delay)
@@ -108,12 +119,35 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
     async def explorer(state: GraphState) -> dict[str, Any]:
         em = deps.emitter(state)
         em.stage("explorer", "running")
-        em.log("explorer", f"{STUB}대상 {state['url']} — 실제 화면 수집은 T06~T09에서 붙습니다")
-        await em.step()
-        em.metrics(screens_collected=stubs.TOTAL_COLLECTED_SCREENS)
-        em.log("explorer", f"{STUB}예시 화면 {stubs.TOTAL_COLLECTED_SCREENS}개를 수집 결과로 사용")
-        await em.step()
-        em.stage("explorer", "done", f"{stubs.TOTAL_COLLECTED_SCREENS}개 화면")
+        if deps.config.explorer.mode == "stub":
+            em.log("explorer", f"{STUB}대상 {state['url']} — 브라우저 없이 예시 화면을 씁니다")
+            await em.step()
+            em.metrics(screens_collected=stubs.TOTAL_COLLECTED_SCREENS)
+            em.stage("explorer", "done", f"{stubs.TOTAL_COLLECTED_SCREENS}개 화면")
+            return {}
+
+        cfg = deps.config
+        origins = cfg.allowed_origins(state["alias"], state["url"])
+        em.log("explorer", f"허용 origin: {', '.join(origins)}")
+
+        def guard(rule: str, detail: str, outcome: str, message: str) -> None:
+            em.guardrail(rule, detail, outcome, message)
+
+        output_dir = cfg.site_dir(state["alias"]) / "crawl" / "_mcp"
+        async with McpBrowser(origins, output_dir, headless=cfg.explorer.headless) as mcp:
+            em.log("explorer", "Playwright MCP 브라우저 시작")
+            browser = GuardedBrowser(mcp, origins, guard)
+            report = await explore_links(
+                browser, state["url"], cfg.explorer.max_links, lambda m: em.log("explorer", m)
+            )
+            await browser.call("browser_close", {})
+        em.metrics(screens_collected=len(report.pages))
+        em.log(
+            "explorer",
+            f"확인한 화면 {len(report.pages)}개, 차단 {len(report.blocked)}건, "
+            f"건너뜀 {len(report.skipped)}건 (사이트맵 수집은 T07c)",
+        )
+        em.stage("explorer", "done", f"{len(report.pages)}개 화면")
         return {}
 
     async def analyst(state: GraphState) -> dict[str, Any]:

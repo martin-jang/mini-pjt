@@ -85,7 +85,7 @@ def create_app(
         checkpoint.parent.mkdir(parents=True, exist_ok=True)
         async with AsyncSqliteSaver.from_conn_string(str(checkpoint)) as saver:
             events = EventLog(cfg.resolved_log_dir())
-            runs = RunService(cfg, events, saver, cfg.stub_step_ms / 1000)
+            runs = RunService(cfg, events, saver)
             runs.mark_interrupted_runs()
             settings = Secrets()
             client = llm_client or (

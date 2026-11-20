@@ -22,6 +22,7 @@ def main() -> None:
     parser.add_argument("--log-dir", type=Path)
     parser.add_argument("--checkpoint", type=Path)
     parser.add_argument("--stub-step-ms", type=int)
+    parser.add_argument("--output-root", type=Path, help="next-pjt 대신 쓸 결과물 루트")
     parser.add_argument("--cors-origin", action="append", default=[])
     parser.add_argument(
         "--fake-llm", action="store_true", help="실제 Bedrock 대신 테스트용 가짜 LLM (E2E용)"
@@ -40,6 +41,8 @@ def main() -> None:
         overrides["log_dir"] = args.log_dir.resolve()
     if args.checkpoint:
         overrides["checkpoint_path"] = args.checkpoint.resolve()
+    if args.output_root:
+        overrides["output_root"] = args.output_root.resolve()
     if args.stub_step_ms is not None:
         overrides["stub_step_ms"] = args.stub_step_ms
     if args.cors_origin:

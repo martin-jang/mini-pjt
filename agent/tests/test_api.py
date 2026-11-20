@@ -11,7 +11,10 @@ from legacy2next.config import AgentConfig
 @pytest.fixture
 def client(tmp_path: Path):
     cfg = AgentConfig(
-        log_dir=tmp_path / "logs", checkpoint_path=tmp_path / "cp.sqlite", stub_step_ms=0
+        log_dir=tmp_path / "logs",
+        checkpoint_path=tmp_path / "cp.sqlite",
+        stub_step_ms=0,
+        explorer={"mode": "stub"},  # 그래프 흐름 테스트는 브라우저 없이
     )
     with TestClient(create_app(cfg, fake_llm=True)) as c:
         yield c

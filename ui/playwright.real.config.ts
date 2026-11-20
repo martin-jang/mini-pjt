@@ -7,6 +7,7 @@ import { join, resolve } from 'node:path';
 const dataDir = join(tmpdir(), `l2n-e2e-${process.pid}`);
 const agentUrl = 'http://127.0.0.1:8010';
 const consoleUrl = 'http://localhost:5180';
+const siteUrl = 'http://127.0.0.1:8766/';
 
 export default defineConfig({
   testDir: './e2e-real',
@@ -19,7 +20,14 @@ export default defineConfig({
   },
   webServer: [
     {
-      command: `"${resolve('../agent/.venv/Scripts/python.exe')}" -m legacy2next --port 8010 --fake-llm --stub-step-ms 30 --log-dir "${join(dataDir, 'logs')}" --checkpoint "${join(dataDir, 'cp.sqlite')}" --cors-origin ${consoleUrl}`,
+      // G2 검증용 시험 사이트 (외부 링크·외부 리다이렉트 포함)
+      command: `"${resolve('../agent/.venv/Scripts/python.exe')}" tests/fixtures/site_server.py --port 8766`,
+      cwd: '../agent',
+      url: siteUrl,
+      reuseExistingServer: false,
+    },
+    {
+      command: `"${resolve('../agent/.venv/Scripts/python.exe')}" -m legacy2next --port 8010 --fake-llm --stub-step-ms 30 --output-root "${join(dataDir, 'next-pjt')}" --log-dir "${join(dataDir, 'logs')}" --checkpoint "${join(dataDir, 'cp.sqlite')}" --cors-origin ${consoleUrl}`,
       cwd: '../agent',
       url: `${agentUrl}/health`,
       reuseExistingServer: false,

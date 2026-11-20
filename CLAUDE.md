@@ -36,8 +36,11 @@
   - `stubs.py` — 실제 노드가 붙기 전 스텁 데이터. 노드가 구현되면 줄여 나간다
   - `router.py` — Router: 자유 문장 의도 분류(신규 생성·확장·질의·범위 밖), LLM 출력 재검사, 범위 밖 거절(G4, `logs/router/`에 기록). 새 요청 폼은 LLM을 부르지 않는다
   - `fake_llm.py` — 테스트용 가짜 LLM 클라이언트(`--fake-llm`)
+  - `browser.py` — Playwright MCP 연결(`McpBrowser`)과 가드 래퍼(`GuardedBrowser`): 허용 도구 목록(G1), 이동 전·후 origin 검사와 되돌림(G2). Explorer는 이 래퍼로만 브라우저를 다룬다
+  - `explorer.py` — 화면 수집. T06은 시작 화면 링크 따라가기, 사이트맵·흐름 걷기는 T07c·T07d
   - `api.py`, `__main__.py` — FastAPI 앱(`/query`, `/runs`, 승인·중단, SSE)과 서버 실행
-- `tests/` — pytest (실제 Bedrock 호출 없이 가짜 모델로 검증)
+- `tests/` — pytest (실제 Bedrock 호출 없이 가짜 모델로 검증). `tests/fixtures/site_server.py`: 외부 링크·외부 리다이렉트가 있는 G2 시험 사이트
+- `mcp/` — 에이전트가 띄우는 MCP 서버 npm 패키지 (버전 고정, `node_modules`는 git 제외)
 
 ### `next-pjt/<별칭>/` — 사이트별 생성 결과물 (git 제외)
 - 요청한 웹 사이트마다 별칭 폴더 하나 (예: `next-pjt/parabank/`)
@@ -62,8 +65,8 @@ PowerShell 기준. 명령이 생기거나 바뀌면 여기에 추가한다.
 - `.\run.ps1` — 에이전트 서버와 콘솔 UI를 함께 실행 (에이전트 서버 실행 명령이 정해지면 작성)
 
 ### 에이전트 (`agent/`)
-- 의존성 설치: `agent\.venv\Scripts\python -m pip install -r agent/requirements.txt`
-- 서버 실행: `cd agent; .venv\Scripts\python -m legacy2next --port 8000` (상태 확인: `GET /health`, API 문서: `/docs`). 덮어쓰기 옵션: `--log-dir`, `--checkpoint`, `--stub-step-ms`, `--cors-origin`, `--fake-llm`(Bedrock 대신 규칙 기반 가짜 LLM, E2E·자격 증명 없이 확인용)
+- 의존성 설치: `agent\.venv\Scripts\python -m pip install -r agent/requirements.txt`, Playwright MCP: `npm install --prefix agent/mcp` (버전 고정 `@playwright/mcp@0.0.84`)
+- 서버 실행: `cd agent; .venv\Scripts\python -m legacy2next --port 8000` (상태 확인: `GET /health`, API 문서: `/docs`). 덮어쓰기 옵션: `--log-dir`, `--checkpoint`, `--stub-step-ms`, `--cors-origin`, `--output-root`, `--fake-llm`(Bedrock 대신 규칙 기반 가짜 LLM, E2E·자격 증명 없이 확인용)
 - 테스트: `agent\.venv\Scripts\python -m pytest agent` (실제 Bedrock을 부르는 테스트는 건너뜀)
 - 실제 LLM 평가 샘플(RTR 등, 호출 비용 발생): `$env:L2N_LIVE="1"; agent\.venv\Scripts\python -m pytest agent -k live -s`
 - 린트·포맷: `agent\.venv\Scripts\python -m ruff check agent`, `agent\.venv\Scripts\python -m ruff format agent`
