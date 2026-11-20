@@ -263,7 +263,9 @@ export function buildDesignScreens(
       path: t?.path ?? '/',
       majorChange: t?.majorChange ?? false,
       changes: t?.changes ?? [],
-      state: 'pending',
+      // 일반 변경 화면은 자동 승인, 대폭 변경 화면만 사용자 승인
+      state: t?.majorChange ? 'pending' : 'approved',
+      autoApproved: !t?.majorChange,
       asis: t?.asis ?? legacyPage,
       tobe: t?.tobe ?? legacyPage,
     };

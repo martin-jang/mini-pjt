@@ -26,6 +26,7 @@ from legacy2next.crawl import (
     Layout,
     NetworkLog,
     ScreenCapture,
+    SiteGraph,
     Tokens,
     main,
     screen_id_for,
@@ -183,6 +184,15 @@ def test_collected_screens_are_saved_and_rederivable(tmp_path: Path):
     assert "화면 저장: board-html-" in log
 
     crawl = tmp_path / "next-pjt" / "crawl-t" / "crawl"
+    # T07c: 사이트맵이 저장되고 콘솔 스냅샷에 보인다
+    graph = SiteGraph.model_validate_json((crawl / "graph.json").read_text("utf-8"))
+    assert graph.nodes[0].depth == 0 and len(graph.nodes) == len(run["sitemap"]["screens"])
+    titles = {s["title"] for s in run["sitemap"]["screens"]}
+    assert {"시험 사이트 홈", "공지사항 목록"} <= titles
+    assert run["sitemap"]["edgeCounts"]["blocked"] >= 2  # 외부 링크·외부 리다이렉트
+    reasons = {(link["label"], link["status"]) for link in run["sitemap"]["notFollowed"]}
+    assert ("로그아웃", "skipped") in reasons
+    assert any(item["label"] == "공지사항" for item in run["sitemap"]["menu"])  # 게시판 왼쪽 메뉴
     manifest = CrawlManifest.model_validate_json((crawl / "manifest.json").read_text("utf-8"))
     assert {s.title for s in manifest.screens} >= {"시험 사이트 홈", "공지 목록", "공지사항 목록"}
     assert all(s.url.startswith(site) for s in manifest.screens)  # 다른 origin 화면은 없다

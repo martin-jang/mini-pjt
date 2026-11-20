@@ -284,9 +284,25 @@ export function createMockAgentApi(options: { tickMs: number }): AgentApi {
           d.status = 'awaiting_analysis';
           log(run, now, 'gate', '승인 1 대기: 분석 리뷰');
         } else {
+          const screens = d.design?.screens ?? [];
+          const auto = screens.filter((s) => s.autoApproved).length;
+          if (auto > 0) log(run, now, 'gate', `일반 변경 화면 ${auto}개 자동 승인`);
+          if (!screens.some((s) => s.state === 'pending')) {
+            const stage = d.stages.find((s) => s.id === 'designReview');
+            if (stage) stage.note = '대폭 변경 없음 · 자동 승인';
+            setStage(run, 'designReview', 'done');
+            log(run, now, 'gate', '대폭 변경 화면이 없어 승인 2를 건너뜁니다');
+            run.queue = builderSteps(run);
+            return true;
+          }
           setStage(run, 'designReview', 'waiting');
           d.status = 'awaiting_design';
-          log(run, now, 'gate', '승인 2 대기: 디자인 확인');
+          log(
+            run,
+            now,
+            'gate',
+            `승인 2 대기: 대폭 변경 화면 ${screens.length - auto}개 디자인 확인`,
+          );
         }
         enterWait(run, now);
         return false;
@@ -620,14 +636,6 @@ export function createMockAgentApi(options: { tickMs: number }): AgentApi {
             if (!screen) throw new ApiError('화면을 찾을 수 없습니다.');
             screen.state = 'approved';
             log(run, now, 'gate', `화면 승인: ${screen.path}`);
-            break;
-          }
-          case 'approveRegular': {
-            const regular = design.screens.filter((s) => !s.majorChange && s.state === 'pending');
-            regular.forEach((s) => {
-              s.state = 'approved';
-            });
-            log(run, now, 'gate', `일반 화면 ${regular.length}개 일괄 승인`);
             break;
           }
           case 'revise': {

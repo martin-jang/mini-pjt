@@ -71,16 +71,23 @@ def test_full_flow_with_two_approvals(client):
     }
     assert client.post("/runs/demo/analysis", json=approve).status_code == 202
 
-    # 승인 2에서 멈춘다: 대폭 변경 화면은 일괄 승인에 포함되지 않는다
+    # 승인 2: 일반 변경 화면은 자동 승인, 대폭 변경 화면만 승인 대기
     run = wait_status(client, "demo", "awaiting_design")
     assert run["approvedAnalysis"]["happyPathIds"] == ["hp1", "hp2"]
     screens = run["design"]["screens"]
     major = [s for s in screens if s["majorChange"]]
-    assert len(major) == 1
+    regular = [s for s in screens if not s["majorChange"]]
+    assert len(major) == 1 and regular
     assert all(c["why"] for c in major[0]["changes"])  # 바뀐 점마다 이유가 있다
-    assert client.post("/runs/demo/design", json={"action": "approveRegular"}).status_code == 202
-    run = wait_status(client, "demo", "awaiting_design")
-    assert [s["state"] for s in run["design"]["screens"] if s["majorChange"]] == ["pending"]
+    assert [s["state"] for s in major] == ["pending"]
+    assert all(s["state"] == "approved" and s["autoApproved"] for s in regular)
+    assert any("자동 승인" in line["message"] for line in run["logs"])
+    # 자동 승인된 화면은 다시 승인·수정 요청할 수 없다, 일괄 승인 동작은 없다
+    res = client.post(
+        "/runs/demo/design", json={"action": "approveScreen", "screenId": regular[0]["id"]}
+    )
+    assert res.status_code == 400 and "자동 승인" in res.json()["detail"]
+    assert client.post("/runs/demo/design", json={"action": "approveRegular"}).status_code == 422
     res = client.post(
         "/runs/demo/design", json={"action": "approveScreen", "screenId": major[0]["id"]}
     )
@@ -91,6 +98,23 @@ def test_full_flow_with_two_approvals(client):
     assert all(s["state"] == "done" for s in run["stages"])
     assert run["timing"]["finishedAt"] is not None
     assert any("승인 2 완료" in line["message"] for line in run["logs"])
+
+
+def test_design_gate_is_skipped_without_major_change(client):
+    client.post("/query", json={"alias": "nomajor", "url": "https://a.example.com"})
+    wait_status(client, "nomajor", "awaiting_analysis")
+    approve = {
+        "action": "approve",
+        "happyPathIds": ["hp1"],
+        "dataMode": "mock",
+        "variantDecisions": {},
+    }
+    assert client.post("/runs/nomajor/analysis", json=approve).status_code == 202
+    run = wait_status(client, "nomajor", "done")  # 승인 2에서 멈추지 않는다
+    stages = {s["id"]: s for s in run["stages"]}
+    assert stages["designReview"]["state"] == "done"
+    assert "자동 승인" in stages["designReview"]["note"]
+    assert all(s["autoApproved"] for s in run["design"]["screens"])
 
 
 def test_reject_and_stop(client):

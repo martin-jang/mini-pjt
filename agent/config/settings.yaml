@@ -30,7 +30,10 @@ session_dir: sessions
 explorer:
   mode: mcp
   headless: true
-  max_links: 15
+  # Map(사이트맵) 상한: 수집 화면 수, 링크 깊이, 같은 형태 URL(예: 게시글 상세) 수
+  max_screens: 40
+  max_depth: 3
+  max_per_pattern: 5
   # 사용자 인증 브라우저 창을 띄우지 않음 (테스트용). 실제로는 false로 두고 사용자가 창에서 인증한다
   auth_headless: false
   # 한 실행에서 로그인·인증을 다시 시도하는 횟수 상한 (세션 만료 재요청 포함)

@@ -23,6 +23,13 @@ const SCREEN_STATE: Record<ScreenReviewState, { label: string; tone: Tone }> = {
   revise: { label: '수정 중', tone: 'running' },
 };
 
+/** 화면 상태 표시. 일반 변경 화면은 "자동 승인"으로 보인다 */
+function stateOf(screen: DesignScreen): { label: string; tone: Tone } {
+  return screen.autoApproved && screen.state === 'approved'
+    ? { label: '자동 승인', tone: 'success' }
+    : SCREEN_STATE[screen.state];
+}
+
 /** 레이아웃 비교 도식: 메뉴 위치와 영역 배치만 보여준다 */
 function Sketch({
   sketch,
@@ -84,7 +91,8 @@ function ScreenDetail({
           title="레이아웃이 크게 바뀐 화면입니다"
           testId="major-change-notice"
         >
-          일괄 승인에 포함되지 않습니다. 레거시와 TOBE 배치를 비교한 뒤 이 화면을 따로 승인하세요.
+          일반 변경 화면은 자동 승인되고, 이렇게 레이아웃이 크게 바뀐 화면만 따로 승인합니다.
+          레거시와 TOBE 배치를 비교한 뒤 승인하거나 수정을 요청하세요.
         </Callout>
       )}
       <Card
@@ -94,9 +102,7 @@ function ScreenDetail({
             <span className="font-mono text-xs font-normal text-body">{screen.path}</span>
           </span>
         }
-        actions={
-          <Badge tone={SCREEN_STATE[screen.state].tone}>{SCREEN_STATE[screen.state].label}</Badge>
-        }
+        actions={<Badge tone={stateOf(screen).tone}>{stateOf(screen).label}</Badge>}
       >
         <div className="flex gap-4">
           <Sketch sketch={screen.asis} label="ASIS · 레거시 (마스킹본 기준)" testId="sketch-asis" />
@@ -167,9 +173,8 @@ function DesignView({ run, design }: { run: RunDetail; design: DesignReview }) {
   const [error, setError] = useState<string>();
   const [busy, setBusy] = useState(false);
   const approved = design.screens.filter((s) => s.state === 'approved').length;
-  const pendingRegular = design.screens.filter(
-    (s) => !s.majorChange && s.state === 'pending',
-  ).length;
+  const autoApproved = design.screens.filter((s) => s.autoApproved).length;
+  const major = design.screens.length - autoApproved;
   const selected = design.screens.find((s) => s.id === selectedId) ?? design.screens[0];
 
   const decide = async (decision: DesignDecision): Promise<boolean> => {
@@ -181,8 +186,7 @@ function DesignView({ run, design }: { run: RunDetail; design: DesignReview }) {
       const remaining = design.screens.filter(
         (s) =>
           s.state !== 'approved' &&
-          !(decision.action === 'approveScreen' && s.id === decision.screenId) &&
-          !(decision.action === 'approveRegular' && !s.majorChange && s.state === 'pending'),
+          !(decision.action === 'approveScreen' && s.id === decision.screenId),
       );
       if (decision.action === 'rejectAll' || remaining.length === 0)
         navigate(`/sites/${run.alias}`);
@@ -209,29 +213,26 @@ function DesignView({ run, design }: { run: RunDetail; design: DesignReview }) {
         }
         actions={
           editable && (
-            <>
-              <Button
-                variant="danger"
-                icon="close"
-                disabled={busy}
-                onClick={() => void decide({ action: 'rejectAll' })}
-                data-testid="design-reject-all"
-              >
-                전체 반려
-              </Button>
-              <Button
-                variant="secondary"
-                icon="done_all"
-                disabled={busy || pendingRegular === 0}
-                onClick={() => void decide({ action: 'approveRegular' })}
-                data-testid="design-approve-regular"
-              >
-                일반 화면 일괄 승인 ({pendingRegular})
-              </Button>
-            </>
+            <Button
+              variant="danger"
+              icon="close"
+              disabled={busy}
+              onClick={() => void decide({ action: 'rejectAll' })}
+              data-testid="design-reject-all"
+            >
+              전체 반려
+            </Button>
           )
         }
       />
+      {autoApproved > 0 && (
+        <div className="mb-6">
+          <Callout icon="done_all" testId="auto-approved-notice">
+            {`일반 변경 화면 ${autoApproved}개는 자동 승인했습니다. ` +
+              `레이아웃이 크게 바뀐 화면 ${major}개만 확인하세요.`}
+          </Callout>
+        </div>
+      )}
       {error && (
         <div className="mb-6">
           <Callout tone="error" icon="error" testId="design-error">
@@ -255,8 +256,8 @@ function DesignView({ run, design }: { run: RunDetail; design: DesignReview }) {
                 >
                   <span className="flex items-center justify-between gap-2">
                     <span className="truncate text-sm font-medium">{s.name}</span>
-                    <Badge tone={SCREEN_STATE[s.state].tone} plain>
-                      {SCREEN_STATE[s.state].label}
+                    <Badge tone={stateOf(s).tone} plain>
+                      {stateOf(s).label}
                     </Badge>
                   </span>
                   <span className="mt-0.5 block font-mono text-xs text-body">{s.path}</span>

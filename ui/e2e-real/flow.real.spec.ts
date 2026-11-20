@@ -19,6 +19,16 @@ test('실제 서버: 새 요청 → 승인 2곳 → 결과', async ({ page }) =>
   await expect(page.getByTestId('log-viewer')).toContainText('이동 후');
   // T07b: 화면마다 원본·파생 파일을 저장한다 (next-pjt/<별칭>/crawl/)
   await expect(page.getByTestId('log-viewer')).toContainText('화면 저장: board-html-');
+  // T07c: 수집 화면 목록과 사이트맵(메뉴·따라가지 않은 링크)이 콘솔에 보인다
+  const sitemap = page.getByTestId('sitemap');
+  await expect(sitemap.getByTestId('sitemap-screens')).toContainText('공지사항 목록', {
+    timeout: 30_000,
+  });
+  await expect(sitemap.getByTestId('sitemap-screens')).toContainText('/board.html');
+  await expect(sitemap.getByTestId('sitemap-menu-item').first()).toBeVisible();
+  await expect(page.getByTestId('sitemap-summary')).toContainText('차단 2');
+  await sitemap.getByText(/따라가지 않은 링크/).click();
+  await expect(page.getByTestId('sitemap-not-followed')).toContainText('로그아웃');
 
   // 승인 1
   await page.getByTestId('go-analysis-review').click({ timeout: 40_000 });
@@ -26,13 +36,12 @@ test('실제 서버: 새 요청 → 승인 2곳 → 결과', async ({ page }) =>
   await page.getByTestId('analysis-approve').click();
   await expect(page).toHaveURL(new RegExp(`/sites/${alias}$`));
 
-  // 승인 2: 대폭 변경 화면은 따로, 나머지는 일괄
+  // 승인 2: 일반 변경 화면은 자동 승인, 대폭 변경 화면만 승인
   await page.getByTestId('go-design-review').click({ timeout: 20_000 });
   await expect(page.getByTestId('major-change-notice')).toBeVisible();
   await expect(page.getByTestId('change-why').first()).toContainText('입력 실수');
+  await expect(page.getByTestId('auto-approved-notice')).toContainText('자동 승인');
   await page.getByTestId('screen-approve').click();
-  await expect(page.getByTestId('design-progress')).toContainText('승인 1 /');
-  await page.getByTestId('design-approve-regular').click();
   await expect(page).toHaveURL(new RegExp(`/sites/${alias}$`));
 
   await page.getByTestId('go-result').click({ timeout: 20_000 });
@@ -82,8 +91,6 @@ test('실제 서버: ID/PW 자동 로그인 → 수집 → 결과에서 세션 �
   await page.getByTestId('analysis-approve').click();
   await page.getByTestId('go-design-review').click({ timeout: 20_000 });
   await page.getByTestId('screen-approve').click();
-  await expect(page.getByTestId('design-progress')).toContainText('승인 1 /');
-  await page.getByTestId('design-approve-regular').click();
   await page.getByTestId('go-result').click({ timeout: 20_000 });
 
   // G10: 저장된 세션을 결과 화면에서 지운다

@@ -181,6 +181,69 @@ class Tokens(Versioned):
     radius: list[TokenCount] = Field(default_factory=list)
 
 
+# ── 사이트맵 (T07c) ─────────────────────────────
+
+LinkArea = Literal["header", "nav", "main", "aside", "footer", "other"]
+
+
+class PageLink(BaseModel):
+    """화면 안의 링크. kind: url(주소로 이동), script(주소 없음, 클릭해야 함), download, none."""
+
+    label: str
+    href: str
+    kind: Literal["url", "script", "download", "none"]
+    area: LinkArea
+
+
+class MenuItem(BaseModel):
+    label: str
+    href: str | None = None
+    # 이 메뉴로 수집한 화면 (못 갔으면 None)
+    screen_id: str | None = None
+    children: list[MenuItem] = Field(default_factory=list)
+
+
+class GraphNode(BaseModel):
+    screen_id: str
+    url: str
+    title: str
+    depth: int
+    # 같은 형태 URL 묶음 (숫자 경로·숫자 값을 뺀 모양)
+    pattern: str
+    regions: list[str] = Field(default_factory=list)
+    tables: int = 0
+    forms: int = 0
+    buttons: int = 0
+
+
+EdgeStatus = Literal["followed", "duplicate", "blocked", "skipped", "failed", "limit"]
+
+
+class GraphEdge(BaseModel):
+    """화면 → 화면 이동. 따라가지 않은 링크도 이유와 함께 남긴다."""
+
+    source: str
+    target: str | None = None
+    label: str
+    url: str | None = None
+    via: Literal["link", "click"]
+    area: LinkArea
+    status: EdgeStatus
+    reason: str = ""
+
+
+class SiteGraph(Versioned):
+    """crawl/graph.json: 사이트맵 (화면 노드 + 이동 엣지 + 메뉴 트리). 조회만, LLM 호출 없음."""
+
+    start_url: str
+    generated_at: str
+    nodes: list[GraphNode] = Field(default_factory=list)
+    edges: list[GraphEdge] = Field(default_factory=list)
+    menu: list[MenuItem] = Field(default_factory=list)
+    # 화면 수·깊이 상한에 닿아 멈췄는지
+    truncated: bool = False
+
+
 # ── manifest ─────────────────────────────
 
 
@@ -266,6 +329,17 @@ class CrawlStore:
         for screen_id in ids:
             self.derive(screen_id)
         return ids
+
+    def save_graph(self, graph: SiteGraph) -> None:
+        self.root.mkdir(parents=True, exist_ok=True)
+        path = self._inside(self.root / "graph.json")
+        path.write_text(graph.model_dump_json(indent=2), "utf-8")
+
+    def load_graph(self) -> SiteGraph | None:
+        path = self.root / "graph.json"
+        if not path.exists():
+            return None
+        return SiteGraph.model_validate_json(path.read_text("utf-8"))
 
     def load_manifest(self) -> CrawlManifest | None:
         path = self.root / "manifest.json"

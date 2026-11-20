@@ -18,9 +18,8 @@ from fastapi.testclient import TestClient
 from pydantic import SecretStr
 
 from legacy2next.api import create_app
-from legacy2next.browser import MCP_CLI, GuardedBrowser, ToolResult
+from legacy2next.browser import MCP_CLI
 from legacy2next.config import AgentConfig, SiteCredentials
-from legacy2next.explorer import SessionExpiredError, explore_links
 from legacy2next.fake_llm import detect_login
 from legacy2next.login import (
     LoginAnalysis,
@@ -99,29 +98,6 @@ def test_session_values_are_registered_for_masking(tmp_path: Path):
     registry = SecretRegistry()
     assert register_session_secrets(path, registry) == 2  # 짧은 값은 제외
     assert registry.mask("a cookie-value-123456 b token-abcdefgh") == "a *** b ***"
-
-
-class LoginBounceBrowser:
-    """공지 링크를 누르면 로그인 화면으로 되돌아가는 가짜 MCP (세션 만료)."""
-
-    async def call(self, name: str, arguments: dict) -> ToolResult:
-        if name == "browser_snapshot":
-            return ToolResult(text=HOME_SNAPSHOT, page_url="https://a.example.com/home")
-        url = arguments.get("url", "")
-        landed = "https://a.example.com/login" if "notice" in url else url
-        return ToolResult(text="", page_url=landed)
-
-
-async def test_explorer_detects_session_expiry():
-    browser = GuardedBrowser(LoginBounceBrowser(), ["https://a.example.com"], lambda *e: None)
-    with pytest.raises(SessionExpiredError):
-        await explore_links(
-            browser,
-            "https://a.example.com/home",
-            5,
-            lambda m: None,
-            login_url="https://a.example.com/login",
-        )
 
 
 # ── 통합 (실제 Playwright MCP) ─────────────────────────────

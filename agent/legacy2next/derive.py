@@ -12,6 +12,7 @@ from collections import Counter
 from collections.abc import Iterator
 from dataclasses import dataclass, field
 from html.parser import HTMLParser
+from typing import Literal
 
 from .crawl import (
     Box,
@@ -20,6 +21,8 @@ from .crawl import (
     Form,
     FormField,
     Layout,
+    MenuItem,
+    PageLink,
     Paging,
     Region,
     RegionRole,
@@ -422,3 +425,105 @@ def derive_tokens(root: Node) -> Tokens:
 def derive_all(html: str) -> tuple[Layout, Components, Tokens]:
     root = parse_dom(html)
     return derive_layout(root), derive_components(root), derive_tokens(root)
+
+
+# ── 링크·메뉴 (T07c Map) ─────────────────────────────
+
+# 따라가지 않는 파일 내려받기 주소
+DOWNLOAD_EXT = re.compile(
+    r"\.(pdf|zip|hwp|hwpx|xls|xlsx|doc|docx|ppt|pptx|csv|txt|jpg|png|gif)$", re.I
+)
+MAX_MENU_ITEMS = 200
+
+
+def link_area(node: Node) -> str:
+    """링크가 놓인 영역 (가장 가까운 영역 조상). 없으면 other."""
+    parent = node.parent
+    while parent is not None:
+        role = _region_role(parent)
+        if role:
+            return role
+        parent = parent.parent
+    return "other"
+
+
+def _href_kind(href: str) -> Literal["url", "script", "anchor", "none"]:
+    """주소 종류. 주소 없는 링크(javascript:, #, 빈 값)는 스크립트 메뉴로 보고 클릭 대상이 된다."""
+    h = href.strip().lower()
+    if h.startswith("javascript:") or h in ("", "#"):
+        return "script"
+    if h.startswith("#"):
+        return "anchor"
+    if h.startswith(("mailto:", "tel:")):
+        return "none"
+    return "url"
+
+
+def extract_links(root: Node) -> list[PageLink]:
+    """화면의 링크 목록 (문서 순서, 같은 화면 안 앵커 제외)."""
+    links: list[PageLink] = []
+    for n in root.iter():
+        if n.tag != "a":
+            continue
+        label = n.all_text() or n.attrs.get("title", "") or n.attrs.get("aria-label", "")
+        href = n.attrs.get("href", "")
+        kind: str = _href_kind(href)
+        if kind == "anchor":
+            continue
+        if kind == "url" and DOWNLOAD_EXT.search(href.split("?", 1)[0]):
+            kind = "download"
+        links.append(PageLink(label=label[:100], href=href, kind=kind, area=link_area(n)))  # type: ignore[arg-type]
+    return links
+
+
+def _menu_items(node: Node) -> list[MenuItem]:
+    """ul/ol 중첩을 메뉴 트리로. li 안의 첫 링크(또는 글자)가 항목 이름이다."""
+    items: list[MenuItem] = []
+    for li in (c for c in node.children if c.tag == "li"):
+        link = next((d for d in li.iter() if d.tag == "a"), None)
+        sub = next((d for d in li.iter() if d is not li and d.tag in ("ul", "ol")), None)
+        if link is not None and sub is not None and _contains(sub, link):
+            link = None  # 첫 링크가 하위 메뉴 안에 있으면 이 항목은 이름만 있다
+        label = (link.all_text() if link else li.text) or ""
+        children = _menu_items(sub) if sub else []
+        if label or children:
+            items.append(
+                MenuItem(
+                    label=label[:100],
+                    href=link.attrs.get("href") if link else None,
+                    children=children,
+                )
+            )
+    return items
+
+
+def _contains(tree: Node, target: Node) -> bool:
+    return any(n is target for n in tree.iter())
+
+
+def extract_menu(root: Node) -> list[MenuItem]:
+    """메뉴 영역(nav, 없으면 header)의 메뉴 트리."""
+    areas = [n for n in root.iter() if _region_role(n) == "nav"]
+    if not areas:
+        areas = [n for n in root.iter() if _region_role(n) == "header"]
+    # 바깥 영역 안에 들어 있는 영역은 바깥 것으로 합친다
+    areas = [a for a in areas if not any(o is not a and _contains(o, a) for o in areas)]
+    menu: list[MenuItem] = []
+    seen: set[tuple[str, str | None]] = set()
+    for area in areas:
+        lists = [n for n in area.iter() if n.tag in ("ul", "ol")]
+        top = [u for u in lists if not any(o is not u and _contains(o, u) for o in lists)]
+        if top:
+            items = [item for u in top for item in _menu_items(u)]
+        else:
+            items = [
+                MenuItem(label=a.all_text()[:100], href=a.attrs.get("href"))
+                for a in area.iter()
+                if a.tag == "a" and a.all_text()
+            ]
+        for item in items:
+            key = (item.label, item.href)
+            if key not in seen and len(seen) < MAX_MENU_ITEMS:
+                seen.add(key)
+                menu.append(item)
+    return menu

@@ -163,6 +163,8 @@ class DesignScreen(ApiModel):
     major_change: bool
     changes: list[DesignChange]
     state: ScreenReviewState = "pending"
+    # 일반 변경 화면은 자동 승인한다 (대폭 변경 화면만 사용자 승인)
+    auto_approved: bool = False
     asis: LayoutSketch
     tobe: LayoutSketch
 
@@ -173,7 +175,8 @@ class DesignReview(ApiModel):
 
 
 class DesignDecision(ApiModel):
-    action: Literal["approveScreen", "approveRegular", "revise", "rejectAll"]
+    # 일반 변경 화면은 자동 승인되므로 대폭 변경 화면만 승인·수정 요청한다
+    action: Literal["approveScreen", "revise", "rejectAll"]
     screen_id: str | None = None
     comment: str | None = None
 
@@ -234,6 +237,43 @@ class AuthDecision(ApiModel):
     action: Literal["done", "cancel"]
 
 
+class SiteMapScreen(ApiModel):
+    screen_id: str
+    title: str
+    url: str
+    depth: int
+    tables: int
+    forms: int
+    buttons: int
+    # 이 화면으로 들어오는 이동 수 (메뉴·링크)
+    inbound: int
+
+
+class SiteMapMenuItem(ApiModel):
+    label: str
+    screen_id: str | None = None
+    children: list[SiteMapMenuItem] = Field(default_factory=list)
+
+
+class SiteMapLink(ApiModel):
+    """따라가지 않은 링크와 이유 (차단·건너뜀·상한·실패)."""
+
+    label: str
+    url: str | None = None
+    status: str
+    reason: str
+
+
+class SiteMapView(ApiModel):
+    """콘솔용 사이트맵 요약 (crawl/graph.json에서 만든다)."""
+
+    screens: list[SiteMapScreen] = Field(default_factory=list)
+    menu: list[SiteMapMenuItem] = Field(default_factory=list)
+    edge_counts: dict[str, int] = Field(default_factory=dict)
+    not_followed: list[SiteMapLink] = Field(default_factory=list)
+    truncated: bool = False
+
+
 class RunDetail(SiteSummary):
     kind: RunKind
     stages: list[StageInfo]
@@ -244,6 +284,7 @@ class RunDetail(SiteSummary):
     auth: AuthRequest | None = None
     # 저장된 로그인 세션 파일이 있는지 (G10: 실행이 끝나면 삭제 여부를 묻는다)
     session_saved: bool = False
+    sitemap: SiteMapView | None = None
     analysis: AnalysisReview | None = None
     approved_analysis: ApprovedAnalysis | None = None
     design: DesignReview | None = None

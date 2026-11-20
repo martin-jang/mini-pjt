@@ -59,8 +59,10 @@ class ExplorerConfig(BaseModel):
     # mcp: Playwright MCP로 실제 브라우저 수집, stub: 예시 데이터 (브라우저 없이 흐름만 확인)
     mode: Literal["mcp", "stub"] = "mcp"
     headless: bool = True
-    # 시작 화면에서 따라가 볼 링크 수 상한 (T07c 사이트맵 수집 전 임시)
-    max_links: int = Field(default=15, ge=0)
+    # Map(사이트맵) 상한: 수집 화면 수, 시작 화면에서 링크를 따라간 깊이, 같은 형태 URL 수
+    max_screens: int = Field(default=40, ge=1)
+    max_depth: int = Field(default=3, ge=0)
+    max_per_pattern: int = Field(default=5, ge=1)
     # 사용자 인증용 브라우저를 화면에 띄우지 않음 (테스트용. 실제로는 사용자가 창에서 인증한다)
     auth_headless: bool = False
     # 한 실행에서 로그인·인증을 다시 시도하는 횟수 상한 (세션 만료 재요청 포함)

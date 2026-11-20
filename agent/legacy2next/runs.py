@@ -9,6 +9,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import re
+from collections import Counter
 from datetime import datetime
 from typing import Any
 
@@ -17,6 +18,7 @@ from langgraph.types import Command
 from pydantic import ValidationError
 
 from .config import AgentConfig, origin_of
+from .crawl import CrawlStore, MenuItem
 from .events import EventLog, RunEvent
 from .graph import GraphDeps, build_graph
 from .llm import LlmGateway
@@ -36,6 +38,10 @@ from .schemas import (
     RunMetrics,
     RunStatus,
     RunTiming,
+    SiteMapLink,
+    SiteMapMenuItem,
+    SiteMapScreen,
+    SiteMapView,
     SiteSummary,
     StageInfo,
 )
@@ -47,6 +53,8 @@ ACTIVE: set[str] = {"running", "awaiting_auth", "awaiting_analysis", "awaiting_d
 WAITING: set[str] = {"awaiting_auth", "awaiting_analysis", "awaiting_design"}
 FINAL: set[str] = {"done", "stopped", "failed"}
 PREVIOUS_TASK_WAIT_SECONDS = 5
+# 콘솔에 보여 줄 '따라가지 않은 링크' 수 상한
+NOT_FOLLOWED_LIMIT = 40
 
 
 class RunError(ValueError):
@@ -243,8 +251,11 @@ class RunService:
         if decision.action in ("approveScreen", "revise"):
             state = await self._graph.aget_state(self._thread(alias))
             design = DesignReview.model_validate(state.values["design"])
-            if decision.screen_id not in {s.id for s in design.screens}:
+            screen = next((s for s in design.screens if s.id == decision.screen_id), None)
+            if screen is None:
                 raise RunError("화면을 찾을 수 없습니다.")
+            if not screen.major_change:
+                raise RunError("일반 변경 화면은 자동 승인됩니다. 대폭 변경 화면만 확인하세요.")
         if decision.action == "revise" and not (decision.comment or "").strip():
             raise RunError("수정 요청 내용을 입력하세요.")
         self._launch(alias, Command(resume=decision.model_dump()))
@@ -318,10 +329,60 @@ class RunService:
                 if values.get(key)
             }
             update["session_saved"] = self._config.session_path(alias).exists()
+            sitemap = self._sitemap(alias)
+            if sitemap:
+                update["sitemap"] = sitemap
             return detail.model_validate({**detail.model_dump(), **update})
         except ValidationError:
             logger.exception("그래프 상태를 읽지 못했습니다: %s", alias)
             return detail
+
+    def _sitemap(self, alias: str) -> SiteMapView | None:
+        """crawl/graph.json을 콘솔용 요약으로 바꾼다. 없거나 읽지 못하면 None."""
+        try:
+            graph = CrawlStore(self._config.site_dir(alias) / "crawl").load_graph()
+        except OSError, ValidationError:
+            logger.exception("사이트맵을 읽지 못했습니다: %s", alias)
+            return None
+        if graph is None:
+            return None
+        inbound = Counter(
+            e.target for e in graph.edges if e.target and e.status in ("followed", "duplicate")
+        )
+
+        def menu(items: list[MenuItem]) -> list[SiteMapMenuItem]:
+            return [
+                SiteMapMenuItem(label=i.label, screen_id=i.screen_id, children=menu(i.children))
+                for i in items
+            ]
+
+        not_followed: dict[tuple[str, str], SiteMapLink] = {}
+        for e in graph.edges:
+            if e.status in ("blocked", "skipped", "limit", "failed"):
+                key = (e.label, e.status)
+                if key not in not_followed and len(not_followed) < NOT_FOLLOWED_LIMIT:
+                    not_followed[key] = SiteMapLink(
+                        label=e.label, url=e.url, status=e.status, reason=e.reason
+                    )
+        return SiteMapView(
+            screens=[
+                SiteMapScreen(
+                    screen_id=n.screen_id,
+                    title=n.title,
+                    url=n.url,
+                    depth=n.depth,
+                    tables=n.tables,
+                    forms=n.forms,
+                    buttons=n.buttons,
+                    inbound=inbound[n.screen_id],
+                )
+                for n in graph.nodes
+            ],
+            menu=menu(graph.menu),
+            edge_counts=dict(Counter(e.status for e in graph.edges)),
+            not_followed=list(not_followed.values()),
+            truncated=graph.truncated,
+        )
 
     def answer(self, alias: str, question: str) -> QueryAnswer:
         """질의 스텁. 실제 답변(Chroma 검색)은 T17, 범위 밖 거절(Router)은 T05에서 붙는다."""

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import asyncio
 import shutil
+from collections import Counter
 from dataclasses import dataclass, field
 from typing import Any, Literal, TypedDict
 
@@ -22,9 +23,15 @@ from . import stubs
 from .browser import BrowserActionError, GuardedBrowser, McpBrowser
 from .capture import capture_screen
 from .config import AgentConfig, load_site_credentials
-from .crawl import CrawlStore, ScreenCapture
+from .crawl import CrawlStore, ScreenCapture, SiteGraph
 from .events import EventLog, EventType, RunEvent
-from .explorer import ExplorerError, SessionExpiredError, VisitedPage, explore_links
+from .explorer import (
+    ExplorerError,
+    MapLimits,
+    ScreenResult,
+    SessionExpiredError,
+    map_site,
+)
 from .llm import LlmGateway
 from .login import (
     AuthHandoffs,
@@ -323,15 +330,15 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
             store = CrawlStore(cfg.site_dir(alias) / "crawl")
             captures: list[ScreenCapture] = []
 
-            async def save_screen(page: VisitedPage) -> None:
+            async def save_screen(url: str, title: str) -> ScreenResult | None:
                 """화면 원본을 저장하고 파생 파일을 만든다. 실패해도 수집은 계속한다."""
                 try:
-                    raw = await capture_screen(browser, page.url, page.title, secrets.mask)
+                    raw = await capture_screen(browser, url, title, secrets.mask)
                     store.save_raw(raw)
                     layout, components, _ = store.derive(raw.capture.screen_id)
                 except (BrowserActionError, OSError, ValueError) as e:
-                    em.log("explorer", f"화면 저장 실패: {page.url} ({e})", "warn")
-                    return
+                    em.log("explorer", f"화면 저장 실패: {url} ({e})", "warn")
+                    return None
                 captures.append(raw.capture)
                 em.log(
                     "explorer",
@@ -339,15 +346,27 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
                     f"(영역 {len(layout.regions)}·표 {len(components.tables)}·"
                     f"폼 {len(components.forms)}·버튼 {len(components.buttons)})",
                 )
+                return ScreenResult(raw.capture, raw.dom_html, layout, components)
 
+            def progress(graph: SiteGraph) -> None:
+                # 콘솔이 사이트맵을 바로 다시 읽도록 화면이 늘 때마다 저장하고 지표를 보낸다
+                store.save_graph(graph)
+                em.metrics(screens_collected=len(graph.nodes))
+
+            limits = MapLimits(
+                max_screens=cfg.explorer.max_screens,
+                max_depth=cfg.explorer.max_depth,
+                max_per_pattern=cfg.explorer.max_per_pattern,
+            )
             try:
-                report = await explore_links(
+                graph = await map_site(
                     browser,
                     state["url"],
-                    cfg.explorer.max_links,
+                    limits,
+                    save_screen,
                     lambda m: em.log("explorer", m),
                     login_url=state.get("login_url"),
-                    on_page=save_screen,
+                    on_progress=progress,
                 )
             except SessionExpiredError as e:
                 session.unlink(missing_ok=True)
@@ -355,15 +374,19 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
                 return Command(goto="login")
             if not extension:
                 await browser.call("browser_close", {})
+        store.save_graph(graph)
         store.update_manifest(alias, captures)
-        em.metrics(screens_collected=len(report.pages))
+        em.metrics(screens_collected=len(graph.nodes))
+        count = Counter(e.status for e in graph.edges)
         em.log(
             "explorer",
-            f"확인한 화면 {len(report.pages)}개, 차단 {len(report.blocked)}건, "
-            f"건너뜀 {len(report.skipped)}건, 원본·파생 저장 {len(captures)}개 "
-            f"(next-pjt/{alias}/crawl/, 사이트맵 수집은 T07c)",
+            f"사이트맵: 화면 {len(graph.nodes)}개, 메뉴 {len(graph.menu)}개, "
+            f"이동 {count['followed'] + count['duplicate']}건, 차단 {count['blocked']}건, "
+            f"건너뜀 {count['skipped']}건, 상한 {count['limit']}건"
+            + (" (화면 수 상한에 닿음)" if graph.truncated else "")
+            + f" — next-pjt/{alias}/crawl/graph.json",
         )
-        em.stage("explorer", "done", f"{len(report.pages)}개 화면")
+        em.stage("explorer", "done", f"{len(graph.nodes)}개 화면")
         return Command(goto="analyst")
 
     async def analyst(state: GraphState) -> dict[str, Any]:
@@ -433,7 +456,7 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
             update={"approved_analysis": approved.model_dump(), "design": design.model_dump()},
         )
 
-    async def designer(state: GraphState) -> dict[str, Any]:
+    async def designer(state: GraphState) -> Command[str]:
         em = deps.emitter(state)
         design = DesignReview.model_validate(state["design"])
         em.stage("designer", "running")
@@ -445,8 +468,21 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
             em.stage("designer", "running", f"화면 {total}개 중 {i}개")
             await em.step()
         em.stage("designer", "done", f"화면 {total}개")
-        em.log("gate", "승인 2 대기: 디자인 확인")
-        return {}
+        # 일반 변경 화면은 자동 승인하고, 레이아웃 대폭 변경 화면만 사용자 승인을 받는다
+        regular = [s for s in design.screens if not s.major_change]
+        for s in regular:
+            s.state = "approved"
+            s.auto_approved = True
+        major = len(design.screens) - len(regular)
+        update = {"design": design.model_dump()}
+        if regular:
+            em.log("gate", f"일반 변경 화면 {len(regular)}개 자동 승인")
+        if major == 0:
+            em.stage("designReview", "done", "대폭 변경 없음 · 자동 승인")
+            em.log("gate", "대폭 변경 화면이 없어 승인 2를 건너뜁니다")
+            return Command(goto="builder", update=update)
+        em.log("gate", f"승인 2 대기: 대폭 변경 화면 {major}개 디자인 확인")
+        return Command(goto="design_gate", update=update)
 
     async def design_review(state: GraphState) -> Command[str]:
         raw = interrupt({"gate": "design"})
@@ -465,11 +501,6 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
             screen = by_id[decision.screen_id]
             screen.state = "approved"
             em.log("gate", f"화면 승인: {screen.path}")
-        elif decision.action == "approveRegular":
-            regular = [s for s in design.screens if not s.major_change and s.state == "pending"]
-            for s in regular:
-                s.state = "approved"
-            em.log("gate", f"일반 화면 {len(regular)}개 일괄 승인")
         elif decision.action == "revise" and decision.screen_id in by_id:
             screen = by_id[decision.screen_id]
             em.log("gate", f"화면 수정 요청: {screen.path} — {decision.comment}")
@@ -524,7 +555,7 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
     graph.add_node(
         "analysis_review", analysis_review, destinations=("designer", "analysis_gate", END)
     )
-    graph.add_node("designer", designer)
+    graph.add_node("designer", designer, destinations=("design_gate", "builder"))
     graph.add_node("design_gate", design_gate)
     graph.add_node("design_review", design_review, destinations=("builder", "design_gate", END))
     graph.add_node("builder", builder)
@@ -536,7 +567,6 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
     graph.add_edge("auth_gate", "auth_wait")
     graph.add_edge("analyst", "analysis_gate")
     graph.add_edge("analysis_gate", "analysis_review")
-    graph.add_edge("designer", "design_gate")
     graph.add_edge("design_gate", "design_review")
     graph.add_edge("builder", "verifier")
     graph.add_edge("verifier", "finish")

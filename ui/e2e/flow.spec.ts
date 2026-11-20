@@ -22,15 +22,16 @@ test('새 요청부터 결과까지 전체 흐름', async ({ page }) => {
   await page.getByTestId('analysis-approve').click();
   await expect(page).toHaveURL(/\/sites\/e2e-site$/);
 
-  // ③ 진행 → 승인 2: 대폭 변경 화면은 개별 승인, 나머지는 일괄 승인
+  // ③ 진행 → 승인 2: 일반 변경 화면은 자동 승인, 대폭 변경 화면만 승인
   await page.getByTestId('go-design-review').click({ timeout: 20_000 });
   await expect(page.getByTestId('major-change-notice')).toBeVisible();
   await expect(page.getByTestId('sketch-asis')).toBeVisible();
   await expect(page.getByTestId('sketch-tobe')).toBeVisible();
   await expect(page.getByTestId('change-why').first()).toContainText('입력 실수');
+  await expect(page.getByTestId('auto-approved-notice')).toContainText('자동 승인');
+  await expect(page.getByTestId('design-screen-list')).toContainText('자동 승인');
+  await expect(page.getByTestId('design-approve-regular')).toHaveCount(0);
   await page.getByTestId('screen-approve').click();
-  await expect(page.getByTestId('design-progress')).toContainText('승인 1 /');
-  await page.getByTestId('design-approve-regular').click();
   await expect(page).toHaveURL(/\/sites\/e2e-site$/);
 
   // ④⑤ 진행 → 결과

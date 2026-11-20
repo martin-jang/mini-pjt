@@ -165,6 +165,8 @@ export interface DesignScreen {
   majorChange: boolean;
   changes: DesignChange[];
   state: ScreenReviewState;
+  /** 일반 변경 화면은 자동 승인된다 (대폭 변경 화면만 사용자 승인) */
+  autoApproved?: boolean;
   asis: LayoutSketch;
   tobe: LayoutSketch;
 }
@@ -176,7 +178,6 @@ export interface DesignReview {
 
 export type DesignDecision =
   | { action: 'approveScreen'; screenId: string }
-  | { action: 'approveRegular' }
   | { action: 'revise'; screenId: string; comment: string }
   | { action: 'rejectAll'; comment?: string };
 
@@ -215,6 +216,47 @@ export interface SiteSummary {
   status: RunStatus;
 }
 
+// ── 사이트맵 (T07c Map) ─────────────────────────────
+
+export interface SiteMapScreen {
+  screenId: string;
+  title: string;
+  url: string;
+  depth: number;
+  tables: number;
+  forms: number;
+  buttons: number;
+  /** 이 화면으로 들어오는 이동 수 */
+  inbound: number;
+}
+
+export interface SiteMapMenuItem {
+  label: string;
+  /** 이 메뉴로 수집한 화면 (못 갔으면 null) */
+  screenId?: string | null;
+  children: SiteMapMenuItem[];
+}
+
+export type SiteMapLinkStatus = 'blocked' | 'skipped' | 'limit' | 'failed';
+
+/** 따라가지 않은 링크와 이유 */
+export interface SiteMapLink {
+  label: string;
+  url?: string | null;
+  status: SiteMapLinkStatus;
+  reason: string;
+}
+
+export interface SiteMapView {
+  screens: SiteMapScreen[];
+  menu: SiteMapMenuItem[];
+  /** 이동 상태별 수: followed, duplicate, blocked, skipped, limit, failed */
+  edgeCounts: Partial<Record<string, number>>;
+  notFollowed: SiteMapLink[];
+  /** 화면 수 상한에 닿아 멈췄는지 */
+  truncated: boolean;
+}
+
 export interface RunDetail extends SiteSummary {
   kind: RunKind;
   stages: StageInfo[];
@@ -226,6 +268,8 @@ export interface RunDetail extends SiteSummary {
   auth?: AuthRequest | null;
   /** 저장된 로그인 세션 파일이 있는지 (G10: 실행이 끝나면 삭제를 권한다) */
   sessionSaved?: boolean;
+  /** 화면 수집 사이트맵 (Explorer Map 이후) */
+  sitemap?: SiteMapView | null;
   analysis?: AnalysisReview;
   /** 승인된 분석 결정 (승인 전에는 없음) */
   approvedAnalysis?: Omit<AnalysisDecision, 'action' | 'comment'>;
