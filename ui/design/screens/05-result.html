@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>결과 · intranet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Geist', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #fafafa; color: #171717; -webkit-font-smoothing: antialiased; }
+    .font-mono-code { font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+  </style>
+</head>
+<body class="min-h-screen flex bg-[#fafafa] text-[#171717]">
+  <aside class="w-[240px] flex-shrink-0 bg-[#fafafa] border-r border-[#ebebeb] flex flex-col justify-between h-screen sticky top-0 px-4 py-5 select-none">
+    <div>
+      <div class="px-1 mb-6 flex items-center gap-2">
+        <div class="w-[22px] h-[22px] bg-[#171717] rounded-[4px] flex items-center justify-center text-white text-[10px] font-semibold tracking-tight">L2N</div>
+        <span class="font-semibold text-[15px] tracking-[-0.02em] text-[#171717]">Legacy2Next</span>
+      </div>
+      <button class="w-full h-9 bg-[#171717] hover:bg-[#262626] text-white text-[13px] font-medium rounded-[6px] transition-colors flex items-center justify-center mb-6">+ 새 요청</button>
+      <div class="px-2 mb-2"><span class="text-[12px] font-medium text-[#8f8f8f]">사이트</span></div>
+      <nav class="space-y-[2px]">
+        <a href="#" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-[6px] text-[14px] text-[#4d4d4d] hover:bg-[#f2f2f2] transition-colors"><span>hr-portal</span><span class="flex items-center gap-1.5 text-[12px] text-[#8f8f8f]"><span class="w-1.5 h-1.5 rounded-full bg-[#0070f3]"></span><span>진행 중</span></span></a>
+        <a href="#" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-[6px] text-[14px] text-[#4d4d4d] hover:bg-[#f2f2f2] transition-colors"><span>bank-demo</span><span class="flex items-center gap-1.5 text-[12px] text-[#8f8f8f]"><span class="w-1.5 h-1.5 rounded-full bg-[#f5a623]"></span><span>승인 대기</span></span></a>
+        <a href="#" class="w-full flex items-center justify-between px-2.5 py-1.5 rounded-[6px] text-[14px] font-medium text-[#171717] bg-[#f2f2f2]"><span>intranet</span><span class="flex items-center gap-1.5 text-[12px] font-normal text-[#8f8f8f]"><span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span><span>완료</span></span></a>
+      </nav>
+    </div>
+    <div class="pt-3 border-t border-[#ebebeb]">
+      <a href="#" class="flex items-center gap-2 px-2.5 py-1.5 rounded-[6px] text-[14px] text-[#4d4d4d] hover:bg-[#f2f2f2] transition-colors">
+        <svg class="w-4 h-4 text-[#8f8f8f]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>질의</span>
+      </a>
+    </div>
+  </aside>
+  <div class="flex-1 flex flex-col min-w-0">
+    <header class="h-[56px] bg-white border-b border-[#ebebeb] flex items-center justify-between px-8 sticky top-0 z-10 flex-shrink-0">
+      <nav class="flex items-center gap-2 text-[13px] text-[#8f8f8f]"><span>사이트</span><span>/</span><span class="text-[#4d4d4d]">intranet</span><span>/</span><span class="text-[#171717] font-medium">결과</span></nav>
+      <div class="w-7 h-7 rounded-full bg-[#f2f2f2] border border-[#ebebeb] flex items-center justify-center text-[#4d4d4d]">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </div>
+    </header>
+    <main class="flex-1 px-8 pt-12 pb-16">
+      <div class="max-w-[1120px] mx-auto space-y-6">
+        <section class="flex items-start justify-between">
+          <div>
+            <div class="flex items-center gap-3">
+              <h1 class="text-[24px] font-semibold tracking-[-0.03em] text-[#171717]">intranet</h1>
+              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border border-[#ebebeb] bg-white text-[12px] text-[#4d4d4d]"><span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span>완료</span>
+            </div>
+            <div class="mt-1"><span class="font-mono-code text-[13px] text-[#8f8f8f]">http://localhost:8080/intranet</span></div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="h-9 px-3.5 bg-white hover:bg-[#fafafa] text-[#171717] border border-[#ebebeb] text-[13px] font-medium rounded-[6px] transition-colors">화면 추가 요청</button>
+            <button class="h-9 px-4 bg-[#171717] hover:bg-[#262626] text-white text-[13px] font-medium rounded-[6px] transition-colors">POC 실행</button>
+          </div>
+        </section>
+        <section class="bg-white border border-[#ebebeb] rounded-[8px] overflow-hidden flex flex-col md:flex-row">
+          <div class="p-6 md:w-1/2 flex flex-col justify-between border-b md:border-b-0 md:border-r border-[#ebebeb]">
+            <div class="flex items-center justify-between bg-[#171717] text-[#ededed] px-3.5 py-2.5 rounded-[6px]">
+              <code class="font-mono-code text-[13px] tracking-tight">npm run dev --prefix next-pjt/intranet</code>
+              <button class="text-[#8f8f8f] hover:text-white transition-colors p-1" title="복사"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg></button>
+            </div>
+            <div class="mt-4 pt-3 flex items-center gap-2 text-[13px] text-[#8f8f8f]"><span>결과물 위치</span><span class="font-mono-code text-[#4d4d4d]">next-pjt/intranet/</span></div>
+          </div>
+          <div class="md:w-1/2 grid grid-cols-2 divide-x divide-[#ebebeb] bg-white">
+            <div class="p-5 flex flex-col justify-center"><span class="text-[12px] text-[#8f8f8f] mb-1">생성 화면</span><span class="text-[20px] font-semibold tracking-tight text-[#171717]">5</span></div>
+            <div class="p-5 flex flex-col justify-center"><span class="text-[12px] text-[#8f8f8f] mb-1">공통 컴포넌트</span><span class="text-[20px] font-semibold tracking-tight text-[#171717]">9</span></div>
+            <div class="p-5 flex flex-col justify-center border-t border-[#ebebeb]"><span class="text-[12px] text-[#8f8f8f] mb-1">소요 시간</span><span class="text-[20px] font-semibold tracking-tight text-[#171717]">47분</span></div>
+            <div class="p-5 flex flex-col justify-center border-t border-[#ebebeb]"><span class="text-[12px] text-[#8f8f8f] mb-1">검증</span><span class="text-[20px] font-semibold tracking-tight text-[#171717]">5 / 5 통과</span></div>
+          </div>
+        </section>
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-8 bg-white border border-[#ebebeb] rounded-[8px]">
+            <div class="px-5 py-4 border-b border-[#ebebeb] flex items-center justify-between"><h2 class="text-[15px] font-semibold text-[#171717]">생성된 화면</h2><span class="text-[12px] text-[#8f8f8f]">5개 화면 완료</span></div>
+            <table class="w-full text-left border-collapse text-[13px]">
+              <thead><tr class="border-b border-[#ebebeb] bg-[#fafafa] text-[#8f8f8f] text-[12px]"><th class="py-2.5 px-5 font-normal">화면</th><th class="py-2.5 px-4 font-normal">경로</th><th class="py-2.5 px-4 font-normal">사용 컴포넌트</th><th class="py-2.5 px-5 font-normal text-right">상태</th></tr></thead>
+              <tbody class="divide-y divide-[#ebebeb]">
+                <tr><td class="py-3 px-5 font-medium text-[#171717]">로그인</td><td class="py-3 px-4 font-mono-code text-[12px] text-[#8f8f8f]">/login</td><td class="py-3 px-4"><div class="flex flex-wrap gap-1.5"><span class="inline-flex px-1.5 py-0.5 rounded-[4px] border border-[#ebebeb] text-[11px] font-mono-code text-[#4d4d4d]">Input</span><span class="inline-flex px-1.5 py-0.5 rounded-[4px] border border-[#ebebeb] text-[11px] font-mono-code text-[#4d4d4d]">Button</span></div></td><td class="py-3 px-5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 text-[12px] text-[#4d4d4d]"><span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span>통과</span></td></tr>
+                <tr><td class="py-3 px-5 font-medium text-[#171717]">결재 목록</td><td class="py-3 px-4 font-mono-code text-[12px] text-[#8f8f8f]">/approvals</td><td class="py-3 px-4"><div class="flex flex-wrap gap-1.5"><span class="inline-flex px-1.5 py-0.5 rounded-[4px] border border-[#ebebeb] text-[11px] font-mono-code text-[#4d4d4d]">DataTable</span><span class="inline-flex px-1.5 py-0.5 rounded-[4px] border border-[#ebebeb] text-[11px] font-mono-code text-[#4d4d4d]">SearchForm</span><span class="inline-flex px-1.5 py-0.5 rounded-[4px] border border-[#ebebeb] text-[11px] font-mono-code text-[#4d4d4d]">Badge</span></div></td><td class="py-3 px-5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 text-[12px] text-[#4d4d4d]"><span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span>통과</span></td></tr>
+                <tr><td class="py-3 px-5 font-medium text-[#171717]">결재 상세</td><td class="py-3 px-4 font-mono-code text-[12px] text-[#8f8f8f]">/approvals/:id</td><td class="py-3 px-4"><div class="flex flex-wrap gap-1.5"><span class="inline-flex px-1.5 py-0.5 rounded-[4px] border border-[#ebebeb] text-[11px] font-mono-code text-[#4d4d4d]">DetailList</span><span class="inline-flex px-1.5 py-0.5 rounded-[4px] border border-[#ebebeb] text-[11px] font-mono-code text-[#4d4d4d]">Button</span></div></td><td class="py-3 px-5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 text-[12px] text-[#4d4d4d]"><span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span>통과</span></td></tr>
+                <tr><td class="py-3 px-5 font-medium text-[#171717]">공지 목록</td><td class="py-3 px-4 font-mono-code text-[12px] text-[#8f8f8f]">/notices</td><td class="py-3 px-4"><div class="flex flex-wrap gap-1.5"><span class="inline-flex px-1.5 py-0.5 rounded-[4px] border border-[#ebebeb] text-[11px] font-mono-code text-[#4d4d4d]">DataTable</span><span class="inline-flex px-1.5 py-0.5 rounded-[4px] border border-[#ebebeb] text-[11px] font-mono-code text-[#4d4d4d]">Pagination</span></div></td><td class="py-3 px-5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 text-[12px] text-[#4d4d4d]"><span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span>통과</span></td></tr>
+                <tr><td class="py-3 px-5 font-medium text-[#171717]">공지 상세</td><td class="py-3 px-4 font-mono-code text-[12px] text-[#8f8f8f]">/notices/:id</td><td class="py-3 px-4"><div class="flex flex-wrap gap-1.5"><span class="inline-flex px-1.5 py-0.5 rounded-[4px] border border-[#ebebeb] text-[11px] font-mono-code text-[#4d4d4d]">DetailList</span></div></td><td class="py-3 px-5 text-right whitespace-nowrap"><span class="inline-flex items-center gap-1.5 text-[12px] text-[#4d4d4d]"><span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span>통과</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="lg:col-span-4 bg-white border border-[#ebebeb] rounded-[8px] p-5">
+            <div class="mb-4"><h2 class="text-[15px] font-semibold text-[#171717]">검증</h2></div>
+            <ul class="space-y-3.5 text-[13px]">
+              <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-[#16a34a] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5 13l4 4L19 7"/></svg><span class="text-[#171717]">빌드</span></li>
+              <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-[#16a34a] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5 13l4 4L19 7"/></svg><span class="text-[#171717]">Happy Path 흐름 테스트</span></li>
+              <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-[#16a34a] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5 13l4 4L19 7"/></svg><span class="text-[#171717]">기능 보존 (레거시 대비)</span></li>
+              <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-[#16a34a] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5 13l4 4L19 7"/></svg><span class="text-[#171717]">계정 원문 검색 (0건)</span></li>
+              <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-[#16a34a] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5 13l4 4L19 7"/></svg><span class="text-[#171717]">가드레일 위반 (0건)</span></li>
+            </ul>
+          </div>
+        </section>
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white border border-[#ebebeb] rounded-[8px] p-5 flex flex-col justify-between">
+            <div>
+              <div class="mb-3.5"><h2 class="text-[15px] font-semibold text-[#171717]">공통 컴포넌트</h2></div>
+              <div class="flex flex-wrap gap-2">
+                <span class="inline-flex px-2 py-1 rounded-[4px] border border-[#ebebeb] text-[12px] font-mono-code text-[#171717]">Button</span>
+                <span class="inline-flex px-2 py-1 rounded-[4px] border border-[#ebebeb] text-[12px] font-mono-code text-[#171717]">Input</span>
+                <span class="inline-flex px-2 py-1 rounded-[4px] border border-[#ebebeb] text-[12px] font-mono-code text-[#171717]">Select</span>
+                <span class="inline-flex px-2 py-1 rounded-[4px] border border-[#ebebeb] text-[12px] font-mono-code text-[#171717]">DataTable</span>
+                <span class="inline-flex px-2 py-1 rounded-[4px] border border-[#ebebeb] text-[12px] font-mono-code text-[#171717]">SearchForm</span>
+                <span class="inline-flex px-2 py-1 rounded-[4px] border border-[#ebebeb] text-[12px] font-mono-code text-[#171717]">Pagination</span>
+                <span class="inline-flex px-2 py-1 rounded-[4px] border border-[#ebebeb] text-[12px] font-mono-code text-[#171717]">Badge</span>
+                <span class="inline-flex px-2 py-1 rounded-[4px] border border-[#ebebeb] text-[12px] font-mono-code text-[#171717]">DetailList</span>
+                <span class="inline-flex px-2 py-1 rounded-[4px] border border-[#ebebeb] text-[12px] font-mono-code text-[#171717]">PageHeader</span>
+              </div>
+            </div>
+            <div class="mt-5 pt-3 border-t border-[#ebebeb]"><span class="text-[12px] text-[#8f8f8f]">변이 통일로 조회 테이블 3종 → DataTable 1개</span></div>
+          </div>
+          <div class="bg-white border border-[#ebebeb] rounded-[8px] p-5 flex flex-col justify-between">
+            <div>
+              <div class="mb-3.5"><h2 class="text-[15px] font-semibold text-[#171717]">승인된 결정</h2></div>
+              <div class="divide-y divide-[#ebebeb] text-[13px]">
+                <div class="py-2.5 flex items-center justify-between first:pt-0"><span class="text-[#8f8f8f]">데이터 연결</span><span class="font-medium text-[#171717]">목업 데이터</span></div>
+                <div class="py-2.5 flex items-center justify-between"><span class="text-[#8f8f8f]">Happy Path</span><span class="font-medium text-[#171717]">로그인 → 결재 목록 → 결재 상세</span></div>
+                <div class="py-2.5 flex items-center justify-between last:pb-0"><span class="text-[#8f8f8f]">디자인 개별 승인</span><span class="font-medium text-[#171717]">1개 화면</span></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

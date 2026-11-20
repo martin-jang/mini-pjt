@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>분석 리뷰 · bank-demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #171717; --on-primary: #ffffff; --ink: #171717; --body: #4d4d4d; --mute: #8f8f8f;
+      --hairline: #ebebeb; --hairline-strong: #d4d4d4; --canvas: #ffffff; --canvas-soft: #fafafa; --canvas-soft-2: #f2f2f2;
+      --link: #0070f3; --running: #0070f3; --running-soft: #e9f2fe; --success: #16a34a; --warning: #f5a623; --warning-soft: #fff4e0; --error: #e5484d;
+      --font-sans: Geist, "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    body { background-color: var(--canvas-soft); color: var(--ink); font-family: var(--font-sans); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; display: flex; min-height: 100vh; overflow-x: hidden; }
+    .sidebar { width: 240px; min-width: 240px; background-color: var(--canvas-soft); border-right: 1px solid var(--hairline); display: flex; flex-direction: column; height: 100vh; position: sticky; top: 0; padding: 20px 16px; user-select: none; }
+    .brand { display: flex; align-items: center; gap: 10px; padding: 0 4px 20px 4px; color: var(--ink); font-weight: 600; font-size: 15px; letter-spacing: -0.3px; }
+    .brand-mark { width: 22px; height: 22px; background: var(--ink); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 10px; font-weight: 700; letter-spacing: -0.5px; }
+    .btn-new-req { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; height: 36px; background: var(--primary); color: var(--on-primary); border: 1px solid var(--primary); border-radius: 6px; font-family: var(--font-sans); font-size: 13px; font-weight: 500; cursor: pointer; text-decoration: none; margin-bottom: 24px; transition: background 0.15s ease; }
+    .btn-new-req:hover { background: #2a2a2a; }
+    .nav-label { font-size: 12px; color: var(--mute); padding: 0 8px 8px 8px; font-weight: 500; }
+    .site-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+    .site-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 6px; color: var(--body); text-decoration: none; font-size: 14px; font-family: var(--font-sans); transition: background 0.15s ease, color 0.15s ease; }
+    .site-row:hover { background: #f0f0f0; color: var(--ink); }
+    .site-row.active { background: var(--canvas-soft-2); color: var(--ink); font-weight: 500; }
+    .site-info { display: flex; align-items: center; gap: 8px; }
+    .site-name { font-family: var(--font-sans); font-size: 14px; }
+    .status-group { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--mute); font-weight: 400; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .status-dot.blue { background-color: var(--running); }
+    .status-dot.amber { background-color: var(--warning); }
+    .status-dot.green { background-color: var(--success); }
+    .sidebar-footer { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--hairline); }
+    .inquiry-btn { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 6px; color: var(--body); text-decoration: none; font-size: 14px; font-family: var(--font-sans); transition: background 0.15s ease, color 0.15s ease; }
+    .inquiry-btn:hover { background: #f0f0f0; color: var(--ink); }
+    .main-wrap { flex: 1; display: flex; flex-direction: column; min-width: 0; background: var(--canvas-soft); }
+    .topbar { height: 56px; background: var(--canvas); border-bottom: 1px solid var(--hairline); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; position: sticky; top: 0; z-index: 10; }
+    .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--mute); }
+    .breadcrumb span.current { color: var(--ink); font-weight: 500; }
+    .avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--canvas-soft-2); border: 1px solid var(--hairline); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--body); font-weight: 500; }
+    .content-container { width: 100%; max-width: 880px; margin: 0 auto; padding: 48px 24px 80px 24px; }
+    .page-header { margin-bottom: 32px; }
+    .title-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .page-title { font-size: 24px; font-weight: 600; letter-spacing: -0.6px; color: var(--ink); }
+    .badge-amber { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border: 1px solid var(--hairline); border-radius: 9999px; background: var(--canvas); font-size: 12px; color: var(--body); font-weight: 400; }
+    .amber-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--warning); }
+    .notice-banner { background: var(--warning-soft); border-left: 2px solid var(--warning); padding: 12px 16px; font-size: 13px; color: #7a4b08; border-radius: 0 4px 4px 0; line-height: 1.5; }
+    .section-block { margin-bottom: 32px; }
+    .section-title { font-size: 16px; font-weight: 600; color: var(--ink); letter-spacing: -0.32px; margin-bottom: 12px; }
+    .card { background: var(--canvas); border: 1px solid var(--hairline); border-radius: 8px; padding: 24px; }
+    .card-header-action { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .card-header-action .card-title { font-size: 15px; font-weight: 600; color: var(--ink); }
+    .text-link { font-size: 13px; color: var(--link); text-decoration: none; cursor: pointer; }
+    .text-link:hover { text-decoration: underline; }
+    .kv-list { display: flex; flex-direction: column; }
+    .kv-row { display: flex; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid var(--hairline); font-size: 13px; }
+    .kv-row:first-child { padding-top: 0; }
+    .kv-label { width: 120px; min-width: 120px; color: var(--mute); }
+    .kv-value { color: var(--ink); font-weight: 400; flex: 1; }
+    .evidence-block { padding-top: 14px; }
+    .evidence-label { font-size: 12px; color: var(--mute); margin-bottom: 8px; }
+    .evidence-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .evidence-item { font-size: 13px; color: var(--body); display: flex; align-items: center; gap: 6px; }
+    .bullet { width: 3px; height: 3px; border-radius: 50%; background: var(--mute); }
+    .flow-steps { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .chip { padding: 6px 14px; border: 1px solid var(--hairline); border-radius: 6px; background: var(--canvas-soft); font-size: 13px; color: var(--ink); font-weight: 500; }
+    .flow-arrow { color: var(--mute); font-size: 12px; user-select: none; }
+    .checklist-caption { font-size: 12px; color: var(--mute); margin-bottom: 14px; }
+    .checklist-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px 16px; }
+    .check-label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink); cursor: pointer; user-select: none; }
+    .check-label input[type="checkbox"] { appearance: none; width: 15px; height: 15px; border: 1px solid var(--hairline-strong); border-radius: 3px; background: var(--canvas); outline: none; display: grid; place-content: center; cursor: pointer; margin: 0; transition: all 0.15s ease; }
+    .check-label input[type="checkbox"]:checked { background: var(--primary); border-color: var(--primary); }
+    .check-label input[type="checkbox"]:checked::before { content: ""; width: 7px; height: 4px; border-left: 1.5px solid #fff; border-bottom: 1.5px solid #fff; transform: rotate(-45deg) translate(0.5px, -0.5px); }
+    .check-label.dimmed { color: var(--body); }
+    .radio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .radio-card { border: 1px solid var(--hairline); border-radius: 6px; padding: 16px; cursor: pointer; transition: all 0.15s ease; background: var(--canvas); display: flex; flex-direction: column; gap: 6px; }
+    .radio-card.selected { border: 1px solid #171717; background: var(--canvas); }
+    .radio-card-header { display: flex; align-items: center; justify-content: space-between; }
+    .radio-title-group { display: flex; align-items: center; gap: 8px; }
+    .custom-radio { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--hairline-strong); display: flex; align-items: center; justify-content: center; background: #fff; }
+    .radio-card.selected .custom-radio { border-color: #171717; }
+    .custom-radio-dot { width: 6px; height: 6px; border-radius: 50%; background: #171717; display: none; }
+    .radio-card.selected .custom-radio-dot { display: block; }
+    .radio-title { font-size: 14px; font-weight: 500; color: var(--ink); }
+    .tag-recommend { font-size: 11px; color: var(--mute); }
+    .radio-desc { font-size: 13px; color: var(--body); line-height: 1.45; padding-left: 22px; }
+    .radio-card:not(.selected) .radio-desc { color: var(--mute); }
+    .table-container { width: 100%; border-collapse: collapse; text-align: left; }
+    .table-container th { font-size: 12px; font-weight: 400; color: var(--mute); padding: 8px 12px 12px 12px; border-bottom: 1px solid var(--hairline); }
+    .table-container td { font-size: 13px; color: var(--ink); padding: 14px 12px; border-bottom: 1px solid var(--hairline); vertical-align: middle; }
+    .table-container tr:last-child td { border-bottom: none; }
+    .mono-code { font-family: var(--font-mono); font-size: 12px; background: var(--canvas-soft-2); padding: 2px 5px; border-radius: 3px; color: var(--ink); margin-left: 4px; }
+    .bottom-bar { background: var(--canvas); border-top: 1px solid var(--hairline); border-radius: 8px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; margin-top: 32px; }
+    .bottom-caption { font-size: 12px; color: var(--mute); }
+    .action-buttons { display: flex; align-items: center; gap: 8px; }
+    .btn-secondary { height: 36px; padding: 0 14px; background: var(--canvas); border: 1px solid var(--hairline); border-radius: 6px; font-family: var(--font-sans); font-size: 13px; font-weight: 500; color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background 0.15s ease, border-color 0.15s ease; }
+    .btn-secondary:hover { background: var(--canvas-soft); border-color: var(--hairline-strong); }
+    .btn-secondary.reject { color: var(--error); }
+    .btn-primary { height: 36px; padding: 0 16px; background: var(--primary); border: 1px solid var(--primary); border-radius: 6px; font-family: var(--font-sans); font-size: 13px; font-weight: 500; color: var(--on-primary); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background 0.15s ease; }
+    .btn-primary:hover { background: #2a2a2a; }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">L2N</div><span>Legacy2Next</span></div>
+    <button class="btn-new-req">+ 새 요청</button>
+    <div class="nav-label">사이트</div>
+    <ul class="site-list">
+      <li><a href="#" class="site-row"><div class="site-info"><span class="site-name">hr-portal</span></div><div class="status-group"><span class="status-dot blue"></span><span>진행 중</span></div></a></li>
+      <li><a href="#" class="site-row active"><div class="site-info"><span class="site-name">bank-demo</span></div><div class="status-group"><span class="status-dot amber"></span><span>승인 대기</span></div></a></li>
+      <li><a href="#" class="site-row"><div class="site-info"><span class="site-name">intranet</span></div><div class="status-group"><span class="status-dot green"></span><span>완료</span></div></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <a href="#" class="inquiry-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--mute);"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span>질의</span>
+      </a>
+    </div>
+  </aside>
+  <div class="main-wrap">
+    <header class="topbar">
+      <nav class="breadcrumb"><span>사이트</span><span>/</span><span>bank-demo</span><span>/</span><span class="current">분석 리뷰</span></nav>
+      <div class="avatar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+    </header>
+    <main class="content-container">
+      <div class="page-header">
+        <div class="title-row">
+          <h1 class="page-title">분석 리뷰</h1>
+          <div class="badge-amber"><span class="amber-dot"></span><span>승인 대기</span></div>
+        </div>
+        <div class="notice-banner">분석 결과를 확인해 주세요. 승인하면 디자인 단계로 넘어갑니다.</div>
+      </div>
+      <section class="section-block">
+        <div class="card">
+          <div class="card-header-action"><h2 class="card-title">사이트 성격</h2><a href="#" class="text-link">수정</a></div>
+          <div class="kv-list">
+            <div class="kv-row"><span class="kv-label">업무 도메인</span><span class="kv-value">개인 인터넷 뱅킹</span></div>
+            <div class="kv-row"><span class="kv-label">주요 사용자</span><span class="kv-value">개인 고객</span></div>
+            <div class="kv-row"><span class="kv-label">핵심 업무</span><span class="kv-value">계좌 조회, 이체, 거래 내역 확인</span></div>
+          </div>
+          <div class="evidence-block">
+            <div class="evidence-label">근거</div>
+            <ul class="evidence-list">
+              <li class="evidence-item"><span class="bullet"></span><span>메뉴 구성이 계좌·이체·대출로 나뉨</span></li>
+              <li class="evidence-item"><span class="bullet"></span><span>로그인 후 첫 화면이 계좌 요약</span></li>
+              <li class="evidence-item"><span class="bullet"></span><span>이체 화면에 보안 입력 단계 존재</span></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      <section class="section-block">
+        <h2 class="section-title">Happy Path</h2>
+        <div class="card">
+          <div class="flow-steps">
+            <span class="chip">로그인</span><span class="flow-arrow">→</span><span class="chip">계좌 목록</span><span class="flow-arrow">→</span><span class="chip">계좌 상세</span><span class="flow-arrow">→</span><span class="chip">이체</span><span class="flow-arrow">→</span><span class="chip">이체 완료</span>
+          </div>
+          <div class="checklist-caption">수집한 화면 12개 중 5개 포함</div>
+          <div class="checklist-grid">
+            <label class="check-label"><input type="checkbox" checked disabled><span>로그인</span></label>
+            <label class="check-label"><input type="checkbox" checked disabled><span>계좌 목록</span></label>
+            <label class="check-label"><input type="checkbox" checked disabled><span>계좌 상세</span></label>
+            <label class="check-label"><input type="checkbox" checked disabled><span>이체</span></label>
+            <label class="check-label"><input type="checkbox" checked disabled><span>이체 완료</span></label>
+            <label class="check-label dimmed"><input type="checkbox" disabled><span>거래 내역</span></label>
+            <label class="check-label dimmed"><input type="checkbox" disabled><span>대출 조회</span></label>
+            <label class="check-label dimmed"><input type="checkbox" disabled><span>공지사항</span></label>
+            <label class="check-label dimmed"><input type="checkbox" disabled><span>고객센터</span></label>
+            <label class="check-label dimmed"><input type="checkbox" disabled><span>회원정보</span></label>
+            <label class="check-label dimmed"><input type="checkbox" disabled><span>비밀번호 변경</span></label>
+            <label class="check-label dimmed"><input type="checkbox" disabled><span>로그아웃</span></label>
+          </div>
+        </div>
+      </section>
+      <section class="section-block">
+        <h2 class="section-title">데이터 연결 방식</h2>
+        <div class="card">
+          <div class="radio-grid">
+            <div class="radio-card selected">
+              <div class="radio-card-header"><div class="radio-title-group"><div class="custom-radio"><span class="custom-radio-dot"></span></div><span class="radio-title">목업 데이터</span></div><span class="tag-recommend">추천</span></div>
+              <p class="radio-desc">레거시 API가 세션 쿠키에 묶여 있어 POC에서 직접 호출하기 어렵습니다.</p>
+            </div>
+            <div class="radio-card">
+              <div class="radio-card-header"><div class="radio-title-group"><div class="custom-radio"><span class="custom-radio-dot"></span></div><span class="radio-title">레거시 백엔드 호출</span></div></div>
+              <p class="radio-desc">실제 데이터로 동작하지만 CORS·세션 설정이 필요합니다.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section-block">
+        <h2 class="section-title">변이 통일</h2>
+        <div class="card" style="padding: 16px 20px;">
+          <table class="table-container">
+            <thead><tr><th style="width: 22%;">후보</th><th style="width: 32%;">발견 위치</th><th style="width: 26%;">판단</th><th style="width: 20%;">근거</th></tr></thead>
+            <tbody>
+              <tr><td>조회 테이블 3종</td><td style="color: var(--body);">계좌 목록, 거래 내역, 이체 내역</td><td>공통 컴포넌트 <span class="mono-code">DataTable</span></td><td style="color: var(--body);">열 구성만 다름</td></tr>
+              <tr><td>버튼 5종</td><td style="color: var(--body);">전체 화면</td><td>공통 컴포넌트 + variant</td><td style="color: var(--body);">색·크기 차이</td></tr>
+              <tr><td>검색 폼 2종</td><td style="color: var(--body);">거래 내역, 이체 내역</td><td>따로 유지</td><td style="color: var(--body);">입력 항목이 크게 다름</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <div class="bottom-bar">
+        <span class="bottom-caption">승인 후 변경하려면 처음부터 다시 실행해야 합니다.</span>
+        <div class="action-buttons">
+          <button class="btn-secondary reject">반려</button>
+          <button class="btn-secondary">수정 요청</button>
+          <button class="btn-primary">승인하고 디자인 시작</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>디자인 확인 · bank-demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Geist', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #fafafa; color: #171717; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+    .font-mono-code { font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .hairline-border { border: 1px solid #ebebeb; }
+    .hairline-b { border-bottom: 1px solid #ebebeb; }
+    .hairline-r { border-right: 1px solid #ebebeb; }
+    .hairline-t { border-top: 1px solid #ebebeb; }
+  </style>
+</head>
+<body class="min-h-screen flex text-[14px] leading-5 text-[#171717]">
+  <aside class="w-[240px] shrink-0 bg-[#fafafa] hairline-r min-h-screen flex flex-col justify-between py-5 px-4 fixed top-0 bottom-0 left-0 z-30">
+    <div class="flex flex-col">
+      <div class="flex items-center gap-2 mb-6 px-1">
+        <div class="w-[22px] h-[22px] bg-[#171717] rounded-[4px] flex items-center justify-center text-white text-[10px] font-semibold tracking-tight">L2N</div>
+        <span class="font-semibold text-[15px] tracking-tight text-[#171717]">Legacy2Next</span>
+      </div>
+      <button class="w-full bg-[#171717] hover:bg-[#262626] text-white text-[13px] font-medium h-9 rounded-[6px] flex items-center justify-center gap-1.5 transition-colors mb-6"><span>+ 새 요청</span></button>
+      <div class="mb-2 px-1"><span class="text-[12px] font-medium text-[#8f8f8f]">사이트</span></div>
+      <nav class="flex flex-col gap-1">
+        <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-[6px] text-[#4d4d4d] hover:bg-[#f2f2f2] transition-colors"><span class="text-[14px]">hr-portal</span><span class="inline-flex items-center gap-1.5 text-[12px] text-[#8f8f8f]"><span class="w-1.5 h-1.5 rounded-full bg-[#0070f3]"></span><span>진행 중</span></span></a>
+        <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-[6px] bg-[#f2f2f2] text-[#171717] font-medium transition-colors"><span class="text-[14px]">bank-demo</span><span class="inline-flex items-center gap-1.5 text-[12px] font-normal text-[#8f8f8f]"><span class="w-1.5 h-1.5 rounded-full bg-[#f5a623]"></span><span>승인 대기</span></span></a>
+        <a href="#" class="flex items-center justify-between px-2.5 py-1.5 rounded-[6px] text-[#4d4d4d] hover:bg-[#f2f2f2] transition-colors"><span class="text-[14px]">intranet</span><span class="inline-flex items-center gap-1.5 text-[12px] text-[#8f8f8f]"><span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span><span>완료</span></span></a>
+      </nav>
+    </div>
+    <div class="px-1 pt-4 hairline-t">
+      <a href="#" class="flex items-center gap-2 px-2 py-1.5 rounded-[6px] text-[#4d4d4d] hover:text-[#171717] hover:bg-[#f2f2f2] transition-colors text-[14px]">
+        <svg class="w-4 h-4 text-[#8f8f8f]" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
+        <span>질의</span>
+      </a>
+    </div>
+  </aside>
+  <div class="flex-1 ml-[240px] flex flex-col min-h-screen bg-[#fafafa]">
+    <header class="h-14 bg-white hairline-b px-8 flex items-center justify-between sticky top-0 z-20">
+      <div class="flex items-center gap-2 text-[13px] text-[#4d4d4d]">
+        <span class="hover:text-[#171717] cursor-pointer">사이트</span><span class="text-[#8f8f8f]">/</span><span class="hover:text-[#171717] cursor-pointer">bank-demo</span><span class="text-[#8f8f8f]">/</span><span class="text-[#171717] font-medium">디자인 확인</span>
+      </div>
+      <div class="w-7 h-7 rounded-full bg-[#f2f2f2] border border-[#ebebeb] text-[#4d4d4d] flex items-center justify-center">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </div>
+    </header>
+    <main class="w-full max-w-[1120px] mx-auto px-8 pt-12 pb-32 flex flex-col gap-8">
+      <section class="flex flex-col gap-2">
+        <div class="flex items-center gap-3">
+          <h1 class="text-[24px] font-semibold tracking-[-0.6px] text-[#171717] leading-8">디자인 확인</h1>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-normal bg-[#fff4e0] text-[#ab570a] border border-[#f5a623]/30"><span class="w-1.5 h-1.5 rounded-full bg-[#f5a623]"></span>승인 대기</span>
+        </div>
+        <p class="text-[14px] text-[#8f8f8f] leading-5">Happy Path 화면 5개의 새 디자인입니다. 레이아웃이 크게 바뀐 화면은 따로 승인해 주세요.</p>
+      </section>
+      <div class="flex items-center">
+        <div class="inline-flex p-0.5 bg-white hairline-border rounded-[6px]">
+          <button class="px-3 py-1.5 text-[13px] font-medium rounded-[4px] bg-[#f2f2f2] text-[#171717] transition-colors">전체 5</button>
+          <button class="px-3 py-1.5 text-[13px] font-normal rounded-[4px] text-[#4d4d4d] hover:text-[#171717] transition-colors">일괄 승인 4</button>
+          <button class="px-3 py-1.5 text-[13px] font-normal rounded-[4px] text-[#4d4d4d] hover:text-[#171717] transition-colors">개별 승인 필요 1</button>
+        </div>
+      </div>
+      <section class="grid grid-cols-3 gap-4">
+        <div class="bg-white hairline-border rounded-[8px] p-3 flex flex-col gap-3 hover:border-[#d4d4d4] transition-all cursor-pointer">
+          <div class="w-full aspect-[16/10] bg-[#fafafa] border border-[#ebebeb] rounded-[4px] p-3 flex flex-col justify-center items-center relative overflow-hidden">
+            <div class="w-44 bg-white border border-[#ebebeb] rounded-[4px] p-2.5 shadow-none flex flex-col gap-1.5">
+              <div class="h-2 w-12 bg-[#171717] rounded-[1px]"></div>
+              <div class="h-1.5 w-24 bg-[#ebebeb] rounded-[1px] mb-1"></div>
+              <div class="h-5 w-full bg-[#fafafa] border border-[#ebebeb] rounded-[2px] px-1.5 flex items-center text-[8px] text-[#8f8f8f]">아이디 입력</div>
+              <div class="h-5 w-full bg-[#fafafa] border border-[#ebebeb] rounded-[2px] px-1.5 flex items-center text-[8px] text-[#8f8f8f]">••••••••</div>
+              <div class="h-5 w-full bg-[#171717] rounded-[2px] flex items-center justify-center text-[8px] text-white font-medium mt-1">로그인</div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-0.5">
+            <div class="flex items-baseline gap-1.5"><span class="text-[13px] font-medium text-[#171717]">로그인</span><span class="text-[11px] font-mono-code text-[#8f8f8f]">/login</span></div>
+            <div class="flex items-center gap-1.5 text-[12px] text-[#8f8f8f]"><span class="w-1.5 h-1.5 rounded-full bg-[#c7c7c7]"></span><span>일괄 승인</span></div>
+          </div>
+        </div>
+        <div class="bg-white hairline-border rounded-[8px] p-3 flex flex-col gap-3 hover:border-[#d4d4d4] transition-all cursor-pointer">
+          <div class="w-full aspect-[16/10] bg-[#fafafa] border border-[#ebebeb] rounded-[4px] p-2.5 flex flex-col gap-1.5 justify-center relative overflow-hidden">
+            <div class="flex justify-between items-center px-1"><div class="h-2 w-16 bg-[#171717] rounded-[1px]"></div><div class="h-2 w-8 bg-[#ebebeb] rounded-[1px]"></div></div>
+            <div class="bg-white border border-[#ebebeb] rounded-[3px] p-2 flex justify-between items-center"><div><div class="h-1.5 w-14 bg-[#4d4d4d] rounded-[1px] mb-1"></div><div class="h-1 w-20 bg-[#ebebeb] rounded-[1px]"></div></div><div class="h-2 w-12 bg-[#171717] rounded-[1px]"></div></div>
+            <div class="bg-white border border-[#ebebeb] rounded-[3px] p-2 flex justify-between items-center"><div><div class="h-1.5 w-14 bg-[#4d4d4d] rounded-[1px] mb-1"></div><div class="h-1 w-20 bg-[#ebebeb] rounded-[1px]"></div></div><div class="h-2 w-10 bg-[#171717] rounded-[1px]"></div></div>
+          </div>
+          <div class="flex items-center justify-between pt-0.5">
+            <div class="flex items-baseline gap-1.5"><span class="text-[13px] font-medium text-[#171717]">계좌 목록</span><span class="text-[11px] font-mono-code text-[#8f8f8f]">/accounts</span></div>
+            <div class="flex items-center gap-1.5 text-[12px] text-[#8f8f8f]"><span class="w-1.5 h-1.5 rounded-full bg-[#c7c7c7]"></span><span>일괄 승인</span></div>
+          </div>
+        </div>
+        <div class="bg-white hairline-border rounded-[8px] p-3 flex flex-col gap-3 hover:border-[#d4d4d4] transition-all cursor-pointer">
+          <div class="w-full aspect-[16/10] bg-[#fafafa] border border-[#ebebeb] rounded-[4px] p-2.5 flex flex-col gap-2 justify-center relative overflow-hidden">
+            <div class="bg-white border border-[#ebebeb] rounded-[3px] p-2 flex flex-col gap-1"><div class="flex justify-between items-center"><div class="h-2 w-16 bg-[#171717] rounded-[1px]"></div><div class="h-2 w-14 bg-[#171717] rounded-[1px]"></div></div><div class="h-1 w-24 bg-[#ebebeb] rounded-[1px]"></div></div>
+            <div class="bg-white border border-[#ebebeb] rounded-[3px] p-1.5 flex flex-col gap-1">
+              <div class="flex justify-between items-center py-0.5 border-b border-[#ebebeb]"><div class="h-1 w-10 bg-[#8f8f8f] rounded-[1px]"></div><div class="h-1 w-12 bg-[#171717] rounded-[1px]"></div></div>
+              <div class="flex justify-between items-center py-0.5"><div class="h-1 w-12 bg-[#8f8f8f] rounded-[1px]"></div><div class="h-1 w-10 bg-[#171717] rounded-[1px]"></div></div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-0.5">
+            <div class="flex items-baseline gap-1.5"><span class="text-[13px] font-medium text-[#171717]">계좌 상세</span><span class="text-[11px] font-mono-code text-[#8f8f8f]">/accounts/:id</span></div>
+            <div class="flex items-center gap-1.5 text-[12px] text-[#8f8f8f]"><span class="w-1.5 h-1.5 rounded-full bg-[#c7c7c7]"></span><span>일괄 승인</span></div>
+          </div>
+        </div>
+        <div class="bg-white border border-[#171717] rounded-[8px] p-3 flex flex-col gap-3 relative cursor-pointer shadow-[0_0_0_1px_#171717]">
+          <div class="w-full aspect-[16/10] bg-[#fafafa] border border-[#ebebeb] rounded-[4px] p-2.5 flex flex-col gap-1.5 justify-center relative overflow-hidden">
+            <div class="flex gap-1 mb-0.5"><div class="h-1.5 w-8 bg-[#171717] rounded-[1px]"></div><div class="h-1.5 w-8 bg-[#ebebeb] rounded-[1px]"></div><div class="h-1.5 w-8 bg-[#ebebeb] rounded-[1px]"></div></div>
+            <div class="bg-white border border-[#ebebeb] rounded-[3px] p-1.5 flex flex-col gap-1">
+              <div class="h-1 w-12 bg-[#8f8f8f] rounded-[1px]"></div>
+              <div class="h-4 w-full bg-[#fafafa] border border-[#ebebeb] rounded-[2px] flex items-center px-1"><div class="h-1.5 w-16 bg-[#171717] rounded-[1px]"></div></div>
+              <div class="h-4 w-full bg-[#171717] rounded-[2px] flex items-center justify-center mt-0.5"><div class="h-1 w-8 bg-white rounded-[1px]"></div></div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between pt-0.5">
+            <div class="flex items-baseline gap-1.5"><span class="text-[13px] font-medium text-[#171717]">이체</span><span class="text-[11px] font-mono-code text-[#8f8f8f]">/transfer</span></div>
+            <div class="flex items-center gap-1.5 text-[12px] font-medium text-[#ab570a]"><span class="w-1.5 h-1.5 rounded-full bg-[#f5a623]"></span><span>개별 승인 필요</span></div>
+          </div>
+        </div>
+        <div class="bg-white hairline-border rounded-[8px] p-3 flex flex-col gap-3 hover:border-[#d4d4d4] transition-all cursor-pointer">
+          <div class="w-full aspect-[16/10] bg-[#fafafa] border border-[#ebebeb] rounded-[4px] p-2.5 flex flex-col items-center justify-center gap-1.5 relative overflow-hidden">
+            <div class="w-6 h-6 rounded-full border border-[#171717] flex items-center justify-center text-[10px] text-[#171717]">✓</div>
+            <div class="h-2 w-16 bg-[#171717] rounded-[1px]"></div>
+            <div class="h-1.5 w-24 bg-[#8f8f8f] rounded-[1px]"></div>
+            <div class="h-4 w-28 bg-[#fafafa] border border-[#ebebeb] rounded-[2px] mt-1 flex items-center justify-center"><div class="h-1 w-12 bg-[#171717] rounded-[1px]"></div></div>
+          </div>
+          <div class="flex items-center justify-between pt-0.5">
+            <div class="flex items-baseline gap-1.5"><span class="text-[13px] font-medium text-[#171717]">이체 완료</span><span class="text-[11px] font-mono-code text-[#8f8f8f]">/transfer/done</span></div>
+            <div class="flex items-center gap-1.5 text-[12px] text-[#8f8f8f]"><span class="w-1.5 h-1.5 rounded-full bg-[#c7c7c7]"></span><span>일괄 승인</span></div>
+          </div>
+        </div>
+      </section>
+      <section class="bg-white hairline-border rounded-[8px] p-6 flex flex-col gap-6">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <h2 class="text-[16px] font-semibold text-[#171717] tracking-[-0.32px]">이체 · 레이아웃 대폭 변경</h2>
+            <span class="text-[12px] px-2 py-0.5 rounded-[4px] bg-[#fff4e0] text-[#ab570a] border border-[#f5a623]/30 font-medium">개별 승인 대상</span>
+          </div>
+          <span class="text-[12px] font-mono-code text-[#8f8f8f]">/transfer</span>
+        </div>
+        <div class="grid grid-cols-2 gap-6">
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-between text-[12px] text-[#4d4d4d]"><span class="font-medium">기존 화면</span><span class="text-[#8f8f8f]">테이블 기반 레이아웃 · 복잡도 높음</span></div>
+            <div class="hairline-border rounded-[4px] bg-[#f2f2f2] p-3 flex flex-col gap-2 min-h-[360px] text-[11px] text-[#4d4d4d]">
+              <div class="bg-[#e4e4e7] p-2 rounded-[2px] flex items-center justify-between border-b border-[#d4d4d4]"><span class="font-medium text-[#27272a] text-[11px]">[인터넷뱅킹] 즉시 이체 서비스</span><span class="text-[10px] text-[#71717a]">보안모듈 정상동작</span></div>
+              <div class="flex gap-2 flex-1">
+                <div class="w-28 bg-[#e4e4e7] border border-[#d4d4d4] p-1.5 flex flex-col gap-1 text-[10px]">
+                  <div class="font-medium text-[#27272a] border-b border-[#d4d4d4] pb-1">이체/출금</div>
+                  <div class="bg-[#d4d4d4] text-[#18181b] px-1 py-0.5 rounded-[1px] font-medium">▶ 즉시이체</div>
+                  <div class="text-[#71717a] px-1 py-0.5">다계좌이체</div>
+                  <div class="text-[#71717a] px-1 py-0.5">예약이체</div>
+                  <div class="text-[#71717a] px-1 py-0.5">이체결과조회</div>
+                  <div class="text-[#71717a] px-1 py-0.5">자동이체관리</div>
+                </div>
+                <div class="flex-1 bg-white border border-[#d4d4d4] p-2 flex flex-col gap-2">
+                  <div class="text-[11px] font-medium text-[#27272a] pb-1 border-b border-[#e4e4e7]">■ 출금 정보 및 입금 계좌 입력</div>
+                  <table class="w-full border-collapse text-[10px] border border-[#d4d4d4]">
+                    <tbody>
+                      <tr class="border-b border-[#d4d4d4]"><td class="bg-[#f4f4f5] p-1.5 font-medium w-20 text-[#52525b] border-r border-[#d4d4d4]">출금계좌번호 *</td><td class="p-1.5"><div class="border border-[#a1a1aa] bg-[#fafafa] px-1.5 py-0.5 text-[10px] flex justify-between items-center"><span>1002-***-**1024 (보통예금)</span><span class="text-[8px]">▼</span></div></td></tr>
+                      <tr class="border-b border-[#d4d4d4]"><td class="bg-[#f4f4f5] p-1.5 font-medium text-[#52525b] border-r border-[#d4d4d4]">출금비밀번호 *</td><td class="p-1.5"><input type="password" value="0000" disabled class="border border-[#a1a1aa] bg-[#f4f4f5] px-1.5 py-0.5 w-24 text-[10px]"><span class="text-[9px] text-[#71717a] ml-1">가상키패드 보안</span></td></tr>
+                      <tr class="border-b border-[#d4d4d4]"><td class="bg-[#f4f4f5] p-1.5 font-medium text-[#52525b] border-r border-[#d4d4d4]">입금은행 / 계좌 *</td><td class="p-1.5"><div class="flex gap-1 mb-1"><span class="border border-[#a1a1aa] px-1 py-0.5 text-[9px] bg-[#fafafa]">은행선택 ▼</span><span class="border border-[#a1a1aa] px-1 py-0.5 text-[9px] bg-[#fafafa] flex-1">계좌번호 (-)없이 입력</span></div><span class="border border-[#a1a1aa] bg-[#f4f4f5] px-1.5 py-0.5 text-[9px] text-[#3f3f46]">예금주 확인 (팝업)</span></td></tr>
+                      <tr class="border-b border-[#d4d4d4]"><td class="bg-[#f4f4f5] p-1.5 font-medium text-[#52525b] border-r border-[#d4d4d4]">이체금액 *</td><td class="p-1.5"><div class="flex items-center gap-1"><input type="text" value="1,500,000" disabled class="border border-[#a1a1aa] px-1.5 py-0.5 w-28 text-[10px] text-right"><span>원</span></div><div class="text-[9px] text-[#71717a] mt-0.5">일일한도 5,000만원 / 1회 1,000만원</div></td></tr>
+                      <tr><td class="bg-[#f4f4f5] p-1.5 font-medium text-[#52525b] border-r border-[#d4d4d4]">보안매체인증 *</td><td class="p-1.5"><div class="text-[9px] text-[#71717a] mb-1">OTP 발생기 번호 6자리</div><div class="flex gap-1"><input type="text" placeholder="OTP 6자리" disabled class="border border-[#a1a1aa] px-1.5 py-0.5 w-24 text-[10px]"><span class="border border-[#a1a1aa] bg-[#f4f4f5] px-1 py-0.5 text-[9px]">인증</span></div></td></tr>
+                    </tbody>
+                  </table>
+                  <div class="flex justify-center gap-2 mt-auto pt-2"><span class="bg-[#d4d4d4] border border-[#a1a1aa] text-[#27272a] px-3 py-1 rounded-[1px] text-[10px] font-medium">취소</span><span class="bg-[#52525b] text-white px-4 py-1 rounded-[1px] text-[10px] font-medium">이체 확인 (팝업 호출)</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-between text-[12px] text-[#4d4d4d]"><span class="font-medium text-[#171717]">새 디자인</span><span class="text-[#8f8f8f]">3단계 선형 흐름</span></div>
+            <div class="hairline-border rounded-[4px] bg-white p-4 flex flex-col gap-4 min-h-[360px] text-[12px]">
+              <div class="flex items-center justify-between pb-3 hairline-b">
+                <div class="flex items-center gap-2"><span class="w-5 h-5 rounded-full bg-[#171717] text-white text-[11px] font-medium flex items-center justify-center">1</span><span class="text-[13px] font-medium text-[#171717]">출금 계좌</span></div>
+                <div class="h-[1px] flex-1 mx-2 bg-[#ebebeb]"></div>
+                <div class="flex items-center gap-2 text-[#8f8f8f]"><span class="w-5 h-5 rounded-full bg-[#f2f2f2] text-[#4d4d4d] text-[11px] font-medium flex items-center justify-center">2</span><span class="text-[13px]">받는 분</span></div>
+                <div class="h-[1px] flex-1 mx-2 bg-[#ebebeb]"></div>
+                <div class="flex items-center gap-2 text-[#8f8f8f]"><span class="w-5 h-5 rounded-full bg-[#f2f2f2] text-[#4d4d4d] text-[11px] font-medium flex items-center justify-center">3</span><span class="text-[13px]">금액 및 확인</span></div>
+              </div>
+              <div class="flex flex-col gap-3">
+                <div class="hairline-border rounded-[6px] p-3 bg-[#fafafa] flex flex-col gap-1.5">
+                  <div class="flex justify-between items-center"><span class="text-[11px] font-medium text-[#8f8f8f]">출금 계좌</span><span class="text-[11px] text-[#0070f3] hover:underline cursor-pointer">변경</span></div>
+                  <div class="flex justify-between items-baseline"><span class="text-[13px] font-medium text-[#171717]">보통예금</span><span class="text-[13px] font-semibold text-[#171717]">14,820,400원</span></div>
+                  <div class="text-[11px] font-mono-code text-[#8f8f8f]">1002-***-**1024</div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label class="text-[12px] font-medium text-[#4d4d4d]">받는 분</label>
+                  <div class="hairline-border rounded-[6px] px-3 py-2 bg-white flex justify-between items-center text-[13px]"><span class="text-[#171717]">받는 분 계좌 · 110-***-***201</span><span class="text-[11px] text-[#8f8f8f]">최근 이체</span></div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <div class="flex justify-between items-center"><label class="text-[12px] font-medium text-[#4d4d4d]">이체 금액</label><span class="text-[11px] text-[#8f8f8f]">수수료 무료</span></div>
+                  <div class="hairline-border rounded-[6px] px-3 py-2 bg-white flex items-baseline justify-between"><span class="text-[16px] font-semibold text-[#171717]">1,500,000</span><span class="text-[13px] text-[#4d4d4d]">원</span></div>
+                  <div class="flex gap-1.5 mt-0.5">
+                    <span class="px-2 py-0.5 rounded-[4px] bg-[#fafafa] hairline-border text-[11px] text-[#4d4d4d]">+10만</span>
+                    <span class="px-2 py-0.5 rounded-[4px] bg-[#fafafa] hairline-border text-[11px] text-[#4d4d4d]">+50만</span>
+                    <span class="px-2 py-0.5 rounded-[4px] bg-[#fafafa] hairline-border text-[11px] text-[#4d4d4d]">+100만</span>
+                    <span class="px-2 py-0.5 rounded-[4px] bg-[#fafafa] hairline-border text-[11px] text-[#4d4d4d]">전액</span>
+                  </div>
+                </div>
+                <div class="p-2.5 rounded-[6px] bg-[#fafafa] hairline-border flex items-center justify-between text-[11px]"><span class="text-[#4d4d4d]">이체 요약</span><span class="text-[#171717] font-medium">1,500,000원 · 수수료 0원</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hairline-t pt-5 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div class="flex flex-col gap-2 max-w-[620px]">
+            <span class="text-[13px] font-medium text-[#171717]">바뀐 점</span>
+            <ul class="flex flex-col gap-1 text-[13px] text-[#4d4d4d]">
+              <li class="flex items-start gap-2"><span class="text-[#8f8f8f] mt-0.5">•</span><span>입력 필드를 3단계(출금 계좌 → 받는 분 → 금액)로 재구성</span></li>
+              <li class="flex items-start gap-2"><span class="text-[#8f8f8f] mt-0.5">•</span><span>좌측 메뉴를 상단 탭으로 이동</span></li>
+              <li class="flex items-start gap-2"><span class="text-[#8f8f8f] mt-0.5">•</span><span>확인 팝업을 같은 화면 안 요약 영역으로 병합</span></li>
+            </ul>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button class="h-9 px-3.5 rounded-[6px] bg-white hairline-border text-[#e5484d] hover:bg-[#fdecec] text-[13px] font-medium transition-colors">반려</button>
+            <button class="h-9 px-3.5 rounded-[6px] bg-white hairline-border text-[#4d4d4d] hover:text-[#171717] hover:bg-[#fafafa] text-[13px] font-medium transition-colors">수정 요청</button>
+            <button class="h-9 px-3.5 rounded-[6px] bg-white hairline-border text-[#171717] hover:bg-[#fafafa] text-[13px] font-medium transition-colors">이 화면 승인</button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="fixed bottom-0 left-[240px] right-0 h-16 bg-white hairline-t px-8 flex items-center justify-between z-20 shadow-[0_-1px_3px_rgba(0,0,0,0.02)]">
+      <div class="flex items-center gap-2"><span class="text-[13px] text-[#8f8f8f]">개별 승인</span><span class="text-[13px] font-medium text-[#171717]">0 / 1 완료</span></div>
+      <div class="flex items-center gap-3"><button class="h-9 px-4 rounded-[6px] bg-[#171717] hover:bg-[#262626] text-white text-[13px] font-medium transition-colors">4개 화면 일괄 승인</button></div>
+    </footer>
+  </div>
+</body>
+</html>

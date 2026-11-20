@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>질의 · Legacy2Next</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Geist', '"Noto Sans KR"', 'sans-serif'],
+        mono: ['"Geist Mono"', 'monospace'],
+      },
+      colors: {
+        canvas: '#ffffff', 'canvas-soft': '#fafafa', 'canvas-soft-2': '#f2f2f2',
+        ink: '#171717', body: '#4d4d4d', mute: '#8f8f8f', hairline: '#ebebeb', 'hairline-strong': '#d4d4d4', primary: '#171717',
+        'status-running': '#0070f3', 'status-waiting': '#f5a623', 'status-success': '#16a34a',
+      }
+    }
+  }
+}
+</script>
+<style>
+body { font-family: Geist, 'Noto Sans KR', sans-serif; color: #171717; background-color: #ffffff; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+::placeholder { color: #8f8f8f; }
+</style>
+</head>
+<body class="flex h-screen w-screen overflow-hidden bg-white text-ink">
+  <aside class="w-[240px] flex-shrink-0 bg-canvas-soft border-r border-hairline flex flex-col justify-between h-full select-none">
+    <div class="p-4">
+      <div class="flex items-center gap-2 mb-6 px-1 pt-1">
+        <div class="w-[22px] h-[22px] bg-primary rounded-[4px] flex items-center justify-center text-white text-[10px] font-semibold tracking-tight">L2N</div>
+        <span class="text-[15px] font-semibold tracking-tight text-ink">Legacy2Next</span>
+      </div>
+      <button class="w-full h-9 bg-primary text-white text-[13px] font-medium rounded-[6px] flex items-center justify-center gap-1.5 transition-colors hover:bg-neutral-800">+ 새 요청</button>
+      <div class="mt-8">
+        <div class="px-2 mb-2 text-[12px] font-medium text-mute tracking-tight">사이트</div>
+        <nav class="space-y-0.5">
+          <a href="#" class="flex items-center justify-between px-2.5 py-2 rounded-[6px] text-[14px] text-body hover:bg-canvas-soft-2 transition-colors"><span>hr-portal</span><span class="flex items-center gap-1.5 text-[12px] text-mute font-normal"><span class="w-1.5 h-1.5 rounded-full bg-[#0070f3]"></span>진행 중</span></a>
+          <a href="#" class="flex items-center justify-between px-2.5 py-2 rounded-[6px] text-[14px] text-body hover:bg-canvas-soft-2 transition-colors"><span>bank-demo</span><span class="flex items-center gap-1.5 text-[12px] text-mute font-normal"><span class="w-1.5 h-1.5 rounded-full bg-[#f5a623]"></span>승인 대기</span></a>
+          <a href="#" class="flex items-center justify-between px-2.5 py-2 rounded-[6px] text-[14px] text-body hover:bg-canvas-soft-2 transition-colors"><span>intranet</span><span class="flex items-center gap-1.5 text-[12px] text-mute font-normal"><span class="w-1.5 h-1.5 rounded-full bg-[#16a34a]"></span>완료</span></a>
+        </nav>
+      </div>
+    </div>
+    <div class="p-3 border-t border-hairline">
+      <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-[6px] text-[14px] font-medium text-ink bg-canvas-soft-2">
+        <svg class="w-4 h-4 text-ink flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
+        <span>질의</span>
+      </a>
+    </div>
+  </aside>
+  <div class="flex-1 flex flex-col h-full overflow-hidden bg-white">
+    <header class="h-14 flex-shrink-0 border-b border-hairline px-8 flex items-center justify-between bg-white">
+      <div class="flex items-center gap-2 text-[14px]"><span class="text-ink font-medium">질의</span></div>
+      <div class="w-7 h-7 rounded-full bg-canvas-soft-2 border border-hairline flex items-center justify-center text-body select-none">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </div>
+    </header>
+    <div class="flex-1 flex flex-col items-center overflow-hidden">
+      <div class="w-full max-w-[760px] flex-1 flex flex-col h-full px-6 pt-5 pb-5 overflow-hidden">
+        <div class="flex-shrink-0 flex items-center gap-3 pb-3">
+          <div class="inline-flex items-center gap-2 px-2.5 py-1.5 bg-white border border-hairline rounded-[6px] text-[13px] text-ink cursor-pointer hover:border-hairline-strong transition-colors">
+            <span class="text-mute text-[12px]">대상 사이트:</span><span class="font-medium text-ink">intranet</span>
+            <svg class="w-3.5 h-3.5 text-mute ml-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+          </div>
+          <span class="text-[12px] text-mute">분석·생성 결과를 기준으로 답합니다.</span>
+        </div>
+        <div class="flex-shrink-0 flex flex-wrap gap-2 pb-5 border-b border-hairline">
+          <button class="px-3 py-1.5 bg-white border border-hairline hover:border-hairline-strong hover:bg-canvas-soft text-[13px] text-body rounded-[6px] transition-colors">Happy Path는 어떻게 정했어?</button>
+          <button class="px-3 py-1.5 bg-white border border-hairline hover:border-hairline-strong hover:bg-canvas-soft text-[13px] text-body rounded-[6px] transition-colors">결재 목록에 쓰인 컴포넌트는?</button>
+          <button class="px-3 py-1.5 bg-white border border-hairline hover:border-hairline-strong hover:bg-canvas-soft text-[13px] text-body rounded-[6px] transition-colors">목업 데이터를 고른 이유는?</button>
+        </div>
+        <div class="flex-1 overflow-y-auto py-5 space-y-6 pr-1">
+          <div class="flex justify-end"><div class="bg-canvas-soft-2 text-ink text-[14px] leading-[22px] px-3.5 py-2.5 rounded-[8px] max-w-[500px]">결재 목록 화면에 쓰인 공통 컴포넌트 알려줘</div></div>
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-[4px] bg-primary flex items-center justify-center text-white text-[10px] font-medium flex-shrink-0 mt-0.5">L2N</div>
+            <div class="flex-1 space-y-3 pt-0.5">
+              <p class="text-[14px] text-ink leading-[22px]">결재 목록(<span class="font-mono text-[13px]">/approvals</span>)은 공통 컴포넌트 3개로 구성됩니다.</p>
+              <div class="border border-hairline rounded-[6px] overflow-hidden bg-white">
+                <table class="w-full text-[13px] text-left border-collapse">
+                  <thead><tr class="bg-canvas-soft border-b border-hairline text-mute font-medium"><th class="py-2 px-3 font-normal">컴포넌트</th><th class="py-2 px-3 font-normal">역할</th><th class="py-2 px-3 font-normal">재사용 화면</th></tr></thead>
+                  <tbody class="divide-y divide-hairline text-body">
+                    <tr><td class="py-2 px-3 font-mono text-[12.5px] text-ink">DataTable</td><td class="py-2 px-3">결재 건 목록</td><td class="py-2 px-3 text-mute">공지 목록</td></tr>
+                    <tr><td class="py-2 px-3 font-mono text-[12.5px] text-ink">SearchForm</td><td class="py-2 px-3">기간·상태 검색</td><td class="py-2 px-3 text-mute">—</td></tr>
+                    <tr><td class="py-2 px-3 font-mono text-[12.5px] text-ink">Badge</td><td class="py-2 px-3">결재 상태 표시</td><td class="py-2 px-3 text-mute">결재 상세</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="text-[12px] text-mute flex items-center gap-1.5 pt-0.5"><span>근거:</span><span class="font-mono text-[11.5px] text-body">manifest.json</span><span>·</span><span>분석 리뷰 결정</span></div>
+            </div>
+          </div>
+          <div class="flex justify-end"><div class="bg-canvas-soft-2 text-ink text-[14px] leading-[22px] px-3.5 py-2.5 rounded-[8px] max-w-[500px]">오늘 점심 메뉴 추천해줘</div></div>
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-[4px] bg-primary flex items-center justify-center text-white text-[10px] font-medium flex-shrink-0 mt-0.5">L2N</div>
+            <div class="flex-1 pt-0.5"><div class="border-l-2 border-hairline-strong pl-3 py-0.5"><p class="text-[14px] text-body leading-[22px]">이 서비스는 분석한 사이트와 생성 결과에 대한 질문만 답할 수 있어요. 예: 화면 구성, 컴포넌트, 승인된 결정.</p></div></div>
+          </div>
+        </div>
+        <div class="flex-shrink-0 pt-3 border-t border-hairline">
+          <div class="relative flex items-center bg-white border border-hairline rounded-[8px] px-3.5 py-2 focus-within:border-hairline-strong transition-colors">
+            <input type="text" placeholder="intranet에 대해 질문하세요" class="w-full text-[14px] text-ink bg-transparent focus:outline-none placeholder-mute pr-10" />
+            <button class="absolute right-2.5 w-7 h-7 bg-primary text-white rounded-[6px] flex items-center justify-center hover:bg-neutral-800 transition-colors" aria-label="전송"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" /></svg></button>
+          </div>
+          <div class="mt-1.5 text-center text-[11px] text-mute">Enter 전송 · Shift+Enter 줄바꿈</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

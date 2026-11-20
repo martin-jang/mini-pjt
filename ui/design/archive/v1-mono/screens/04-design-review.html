@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Noto+Sans+KR:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={theme: {extend: {colors: {primary: "#3F3F46", "primary-hover": "#1d4ed8", "primary-container": "#dbeafe", "on-primary": "#ffffff", "on-primary-container": "#1e40af", surface: "#f8fafc", "surface-container-low": "#f1f5f9", "surface-container": "#e2e8f0", "surface-container-high": "#cbd5e1", "on-surface": "#0f172a", "on-surface-variant": "#475569", "outline-subtle": "#e2e8f0", status: {blue: "#2563eb", "blue-bg": "#eff6ff", amber: "#d97706", "amber-bg": "#fffbeb", green: "#16a34a", "green-bg": "#f0fdf4", gray: "#64748b", "gray-bg": "#f8fafc"}, "background-light": "#f7f7f7", "background-dark": "#18181a"}, fontFamily: {sans: ["Noto Sans KR", "sans-serif"], mono: ["JetBrains Mono", "monospace"], headline: ["Public Sans"], display: ["Public Sans"], body: ["Public Sans"], label: ["Public Sans"]}, borderRadius: {DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem"}, fontSize: {}}}}</script></head><body class="bg-surface font-sans text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-white border-r border-outline-subtle z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.02)]"><div class="flex flex-col"><div class="h-16 px-5 flex items-center gap-2.5 border-b border-outline-subtle"><div class="w-8 h-8 rounded-subtle bg-primary flex items-center justify-center text-on-primary shadow-sm"><span class="material-symbols-outlined text-[20px]">auto_mode</span></div><span class="font-mono font-bold text-base tracking-tight text-on-surface">Legacy2Next</span></div><div class="p-4"><button class="w-full flex items-center justify-center gap-2 h-10 px-4 bg-primary hover:bg-primary-hover text-on-primary font-medium text-sm rounded-subtle shadow-sm transition-all" type="button"><span class="material-symbols-outlined text-[18px]">add</span><span>새 요청</span></button></div><div class="h-px bg-outline-subtle mx-4 mb-3"></div><div class="px-4 py-1"><div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-2 mb-2">사이트</div><nav class="flex flex-col gap-1" data-active-classes="bg-primary-container text-on-primary-container font-semibold rounded-subtle"><a class="flex items-center justify-between px-3 py-2 rounded-subtle text-sm text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="hr-portal" href="#"><span class="font-mono text-xs truncate">hr-portal</span><span class="px-1.5 py-0.5 text-[10px] font-medium rounded bg-blue-50 text-blue-600 border border-blue-100">진행 중</span></a><a class="flex items-center justify-between px-3 py-2 rounded-subtle text-sm text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="bank-demo" href="#"><span class="font-mono text-xs truncate">bank-demo</span><span class="px-1.5 py-0.5 text-[10px] font-medium rounded bg-amber-50 text-amber-600 border border-amber-100">승인 대기</span></a><a class="flex items-center justify-between px-3 py-2 rounded-subtle text-sm text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="intranet" href="#"><span class="font-mono text-xs truncate">intranet</span><span class="px-1.5 py-0.5 text-[10px] font-medium rounded bg-emerald-50 text-emerald-600 border border-emerald-100">완료</span></a></nav></div></div><div class="p-4 border-t border-outline-subtle"><nav data-active-classes="bg-primary-container text-on-primary-container font-semibold rounded-subtle"><a class="flex items-center justify-between px-3 py-2 rounded-subtle text-sm text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="queries" href="#"><span class="font-medium">질의</span></a></nav></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-white/90 backdrop-blur-xl border-b border-outline-subtle z-40 flex items-center justify-between px-8"><div class="flex items-center gap-3"><div class="flex items-center gap-2 text-xs font-mono text-on-surface-variant bg-surface-container-low px-2.5 py-1 rounded border border-outline-subtle"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>Agent v1.4.2 Core Online</span></div></div><div class="flex items-center gap-4"><button class="w-8 h-8 rounded-subtle flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span></button><div class="h-4 w-px bg-outline-subtle"></div><div class="flex items-center gap-2.5"><div class="text-right hidden sm:block"><div class="text-xs font-medium text-on-surface">홍길동</div><div class="text-[11px] text-slate-400 font-mono">operations@legacy2next.ai</div></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="relative pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<!-- Top Command & Action Bar -->
+<div class="sticky top-16 z-30 bg-surface/95 backdrop-blur-md px-8 py-4 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+<div class="flex flex-col gap-1.5">
+<!-- Breadcrumb & Pipeline State -->
+<div class="flex items-center gap-2 text-xs font-mono text-on-surface-variant">
+<span>AGENT PIPELINE V1.4</span>
+<span class="text-surface-container-high">/</span>
+<span class="font-semibold text-on-surface">BANK-DEMO</span>
+<span class="text-surface-container-high">/</span>
+<span class="px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container font-medium tracking-wide">DESIGN_REVIEW</span>
+</div>
+<!-- Screen Title & Global Metric -->
+<div class="flex items-center gap-3">
+<h1 class="text-xl font-bold tracking-tight text-on-surface">디자인 확인 · bank-demo</h1>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/20">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+          검토 진행 중
+        </span>
+</div>
+</div>
+<!-- Actions & Progress Ring/Bar -->
+<div class="flex items-center gap-5">
+<!-- Progress Bar Card -->
+<div class="flex items-center gap-3 bg-white px-4 py-2 rounded-xl shadow-sm">
+<div class="flex flex-col items-end">
+<div class="flex items-center gap-1 text-xs">
+<span class="text-slate-400 font-medium">검토 진행률</span>
+<span class="font-mono font-bold text-primary">66%</span>
+</div>
+<span class="text-[11px] font-mono text-slate-500">승인 4 / 6 화면</span>
+</div>
+<div class="w-20 bg-surface-container-low h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full transition-all duration-500" style="width: 66.6%;"></div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-2">
+<button class="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-subtle bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium shadow-sm transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-slate-500">close</span>
+<span>전체 반려</span>
+</button>
+<button class="inline-flex items-center gap-1.5 h-9 px-4 rounded-subtle bg-primary hover:bg-primary-hover text-white text-xs font-medium shadow-sm transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]">done_all</span>
+<span>일반 화면 일괄 승인</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Main Split Canvas -->
+<div class="px-8 py-6 flex gap-6 items-start">
+<!-- Left Navigation: Screen Review Queue (w-80) -->
+<div class="w-80 shrink-0 flex flex-col gap-3">
+<div class="bg-white rounded-xl p-4 shadow-sm flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="font-bold text-sm text-on-surface">검토 대상 화면</span>
+<span class="px-2 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-surface-container-low text-slate-600">6</span>
+</div>
+<span class="text-[11px] text-slate-400 font-mono">Happy Path</span>
+</div>
+<!-- Filter/Quick Info -->
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2.5 top-2 text-[16px] text-slate-400">search</span>
+<input class="w-full pl-8 pr-3 py-1.5 text-xs bg-surface-container-low rounded-subtle text-on-surface placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-primary" placeholder="화면명, 라우트 검색..." type="text"/>
+</div>
+</div>
+<!-- Screen List Items -->
+<div class="flex flex-col gap-2">
+<!-- Screen 1: Done -->
+<div class="bg-white hover:bg-slate-50/80 rounded-xl p-3.5 shadow-sm transition-all cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-[12px] font-mono">1</span>
+<span class="text-xs font-semibold text-slate-700">로그인</span>
+</div>
+<span class="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700">
+<span class="material-symbols-outlined text-[12px]">check</span> 승인 완료
+            </span>
+</div>
+<span class="font-mono text-[11px] text-slate-400 pl-7">/auth/login</span>
+</div>
+<!-- Screen 2: Done -->
+<div class="bg-white hover:bg-slate-50/80 rounded-xl p-3.5 shadow-sm transition-all cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-[12px] font-mono">2</span>
+<span class="text-xs font-semibold text-slate-700">계좌 개요</span>
+</div>
+<span class="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700">
+<span class="material-symbols-outlined text-[12px]">check</span> 승인 완료
+            </span>
+</div>
+<span class="font-mono text-[11px] text-slate-400 pl-7">/account/summary</span>
+</div>
+<!-- Screen 3: Done -->
+<div class="bg-white hover:bg-slate-50/80 rounded-xl p-3.5 shadow-sm transition-all cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-[12px] font-mono">3</span>
+<span class="text-xs font-semibold text-slate-700">거래내역 조회</span>
+</div>
+<span class="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700">
+<span class="material-symbols-outlined text-[12px]">check</span> 승인 완료
+            </span>
+</div>
+<span class="font-mono text-[11px] text-slate-400 pl-7">/history/transactions</span>
+</div>
+<!-- Screen 4: Active Current Target (Attention Needed) -->
+<div class="bg-white rounded-xl p-3.5 shadow-md ring-2 ring-primary relative overflow-hidden transition-all">
+<div class="absolute top-0 right-0 w-16 h-16 pointer-events-none overflow-hidden">
+<div class="bg-amber-500 text-[9px] font-bold text-white uppercase text-center py-0.5 absolute w-24 right-[-32px] top-[14px] rotate-45 shadow-sm">
+              DIFF
+            </div>
+</div>
+<div class="flex items-center justify-between mb-1 pr-6">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[12px] font-mono font-bold">4</span>
+<span class="text-xs font-bold text-on-surface">이체</span>
+</div>
+<span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-700">
+              승인 대기
+            </span>
+</div>
+<div class="pl-7 flex flex-col gap-1.5 mt-0.5">
+<span class="font-mono text-[11px] text-primary font-medium">/transfer/direct</span>
+<!-- Layout Alert Chip -->
+<div class="inline-flex items-center gap-1 px-2 py-1 rounded bg-amber-50 text-amber-800 text-[10px] font-medium leading-tight">
+<span class="material-symbols-outlined text-[13px] text-amber-600 shrink-0">warning</span>
+<span>레이아웃 대폭 변경 · 개별 승인 필요</span>
+</div>
+</div>
+</div>
+<!-- Screen 5: Done -->
+<div class="bg-white hover:bg-slate-50/80 rounded-xl p-3.5 shadow-sm transition-all cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-[12px] font-mono">5</span>
+<span class="text-xs font-semibold text-slate-700">이체 확인</span>
+</div>
+<span class="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700">
+<span class="material-symbols-outlined text-[12px]">check</span> 승인 완료
+            </span>
+</div>
+<span class="font-mono text-[11px] text-slate-400 pl-7">/transfer/confirm</span>
+</div>
+<!-- Screen 6: Pending Standard -->
+<div class="bg-white hover:bg-slate-50/80 rounded-xl p-3.5 shadow-sm transition-all cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-[12px] font-mono">6</span>
+<span class="text-xs font-semibold text-slate-700">오류/보안 안내</span>
+</div>
+<span class="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-600">
+              승인 대기
+            </span>
+</div>
+<span class="font-mono text-[11px] text-slate-400 pl-7">/notice/security</span>
+</div>
+</div>
+<!-- Quick Helper Note -->
+<div class="bg-surface-container-low rounded-xl p-3.5 text-xs text-slate-500 flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[18px] text-slate-400 shrink-0 mt-0.5">info</span>
+<p class="leading-relaxed text-[11px]">
+          모든 필수 화면의 디자인 승인이 완료되면 <strong class="text-slate-700 font-semibold">POC 데모 빌드 &amp; API 바인딩</strong> 단계로 자동 진입합니다.
+        </p>
+</div>
+</div>
+<!-- Right Detailed Canvas: Side-by-Side Comparison -->
+<div class="flex-1 min-w-0 flex flex-col gap-6">
+<!-- Critical Attention Banner -->
+<div class="bg-gradient-to-r from-amber-50 via-amber-50/80 to-white rounded-xl p-4 shadow-sm flex items-start justify-between gap-4">
+<div class="flex items-start gap-3.5">
+<div class="w-9 h-9 rounded-lg bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[20px]">change_circle</span>
+</div>
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-2">
+<span class="text-sm font-bold text-amber-950">레이아웃 대폭 개편 대상 화면 (Diff Variance 68%)</span>
+<span class="px-2 py-0.2 rounded text-[10px] font-mono font-semibold bg-amber-200/70 text-amber-900">MANUAL REVIEW REQUIRED</span>
+</div>
+<p class="text-xs text-amber-900/80 leading-relaxed">
+              레거시 대비 레이아웃이 크게 바뀐 화면입니다. 이 화면은 <span class="font-semibold underline decoration-amber-400">‘일괄 승인’에 포함되지 않으며</span> 세부 동선 및 요소 배치를 확인하신 후 개별 검토를 완료해야 합니다.
+            </p>
+</div>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<button class="text-xs font-semibold text-amber-800 bg-amber-100/70 hover:bg-amber-200/80 px-3 py-1.5 rounded-subtle transition-colors" type="button">
+            AI 변경 보고서 전문
+          </button>
+</div>
+</div>
+<!-- Side-by-Side Preview Layout (2 Columns) -->
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-5 items-stretch">
+<!-- Left: ASIS Legacy Panel -->
+<div class="bg-white rounded-xl p-5 shadow-sm flex flex-col">
+<div class="flex items-center justify-between pb-3 mb-3 bg-surface-container-low -mx-5 -mt-5 p-4 rounded-t-xl">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+<span class="text-xs font-bold text-slate-800 font-mono uppercase tracking-wider">ASIS 레거시 화면</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200/70 text-slate-700">
+<span class="material-symbols-outlined text-[12px] text-slate-500">lock</span> 개인정보 마스킹됨
+              </span>
+<span class="text-[11px] font-mono text-slate-400">2011 JSP · 1024×768</span>
+</div>
+</div>
+<!-- Realistic Legacy Visual Representation -->
+<div class="bg-slate-100 rounded-lg p-3 font-mono text-xs overflow-hidden select-none">
+<!-- Legacy Browser Header Bar -->
+<div class="bg-[#1b4e8c] text-white p-2 flex items-center justify-between text-[11px] font-sans">
+<div class="flex items-center gap-2">
+<span class="font-bold tracking-tight">K-BANK 기업/개인 인터넷뱅킹 v3.2</span>
+</div>
+<span class="text-[10px] text-blue-200">인증서 로그인 상태 [보안접속중]</span>
+</div>
+<!-- Legacy Layout Body: Sidebar + Main Content -->
+<div class="bg-[#f0f2f5] p-2 flex gap-2 min-h-[380px] text-[11px]">
+<!-- Legacy Left Menus -->
+<div class="w-32 shrink-0 bg-[#e4e8ee] p-2 text-slate-600 flex flex-col gap-1 text-[10px] font-sans">
+<div class="bg-[#3864a6] text-white p-1 font-bold">인터넷뱅킹 메뉴</div>
+<div class="p-1 pl-2 hover:bg-slate-200 cursor-pointer">▶ 계좌조회</div>
+<div class="p-1 pl-2 bg-blue-100 font-bold text-blue-900 border-l-2 border-blue-600">▶ 즉시이체</div>
+<div class="p-1 pl-2 hover:bg-slate-200 cursor-pointer">▶ 다계좌이체</div>
+<div class="p-1 pl-2 hover:bg-slate-200 cursor-pointer">▶ 예약이체</div>
+<div class="p-1 pl-2 hover:bg-slate-200 cursor-pointer">▶ 이체결과조회</div>
+<div class="p-1 pl-2 hover:bg-slate-200 cursor-pointer">▶ 보안센터 (ActiveX)</div>
+</div>
+<!-- Legacy Content Area -->
+<div class="flex-1 bg-white p-2.5 flex flex-col gap-2 font-sans text-slate-700">
+<div class="text-xs font-bold pb-1 text-[#1b4e8c] flex items-center justify-between">
+<span>■ 즉시 이체 서비스</span>
+<span class="text-[10px] text-red-500 font-normal">* 표시는 필수입력 항목입니다.</span>
+</div>
+<!-- Legacy Form Table -->
+<table class="w-full border-collapse text-[10px] bg-slate-50">
+<tbody>
+<tr class="border-b border-slate-200">
+<td class="bg-slate-100 p-1.5 font-bold w-24 text-slate-600">출금계좌번호 *</td>
+<td class="p-1.5 bg-white">
+<select class="text-[10px] p-0.5 bg-white text-slate-700">
+<option>1002-****-4902 [급여통장]</option>
+</select>
+</td>
+</tr>
+<tr class="border-b border-slate-200">
+<td class="bg-slate-100 p-1.5 font-bold text-slate-600">출금계좌비밀번호 *</td>
+<td class="p-1.5 bg-white">
+<input class="w-16 p-0.5 bg-slate-100 text-slate-400 text-[10px]" disabled="" type="password" value="••••"/>
+<span class="text-[9px] text-slate-400 ml-1">(가상키패드 보안)</span>
+</td>
+</tr>
+<tr class="border-b border-slate-200">
+<td class="bg-slate-100 p-1.5 font-bold text-slate-600">입금은행 / 계좌 *</td>
+<td class="p-1.5 bg-white flex flex-col gap-1">
+<div class="flex gap-1">
+<select class="text-[10px] p-0.5 bg-white text-slate-700">
+<option>선택하세요</option>
+<option selected="">신한은행</option>
+</select>
+<input class="p-0.5 bg-slate-100 text-slate-600 text-[10px] w-28" disabled="" type="text" value="110-382-******"/>
+</div>
+<span class="text-[9px] text-blue-600">예금주: 홍*동 (조회완료)</span>
+</td>
+</tr>
+<tr class="border-b border-slate-200">
+<td class="bg-slate-100 p-1.5 font-bold text-slate-600">이체금액 *</td>
+<td class="p-1.5 bg-white">
+<div class="flex items-center gap-1">
+<input class="p-0.5 text-right w-24 bg-white text-slate-800 font-mono text-[10px]" type="text" value="1,500,000"/>
+<span>원 (일백오십만 원)</span>
+</div>
+</td>
+</tr>
+<tr class="border-b border-slate-200">
+<td class="bg-slate-100 p-1.5 font-bold text-slate-600">보안매체인증 *</td>
+<td class="p-1.5 bg-white">
+<div class="text-[9px] text-slate-500 bg-amber-50 p-1 rounded">
+                          [OTP 인증] 6자리 숫자를 입력하십시오.
+                        </div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Legacy Notice Banner -->
+<div class="bg-slate-50 p-1.5 text-[9px] text-slate-500 leading-normal">
+                  • 1일 이체한도: 50,000,000원 / 1회 이체한도: 10,000,000원<br/>
+                  • 수수료 면제 대상 여부는 다음 단계에서 확인 가능합니다.
+                </div>
+<!-- Legacy Bottom Button -->
+<div class="mt-auto pt-2 flex justify-center gap-2">
+<button class="px-3 py-1 bg-slate-300 text-slate-800 text-[10px]" type="button">취소</button>
+<button class="px-4 py-1 bg-[#1b4e8c] text-white font-bold text-[10px]" type="button">다음단계 (이체실행)</button>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-3 flex items-center justify-between text-xs text-slate-500 font-mono">
+<span>복잡도: 컴포넌트 14개</span>
+<span>중첩 테이블 3단계 / 인라인 스타일 다수</span>
+</div>
+</div>
+<!-- Right: TOBE Modern Next.js Panel -->
+<div class="bg-white rounded-xl p-5 shadow-sm flex flex-col ring-1 ring-primary/20">
+<div class="flex items-center justify-between pb-3 mb-3 bg-primary-container/40 -mx-5 -mt-5 p-4 rounded-t-xl">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-bold text-primary font-mono uppercase tracking-wider">TOBE 신규 디자인 (Next.js POC)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded bg-white text-primary font-semibold shadow-xs">
+                Tailwind + React 19
+              </span>
+<span class="text-[11px] font-mono text-slate-500">반응형 위저드 폼</span>
+</div>
+</div>
+<!-- Realistic Modern Visual Representation -->
+<div class="bg-surface-container-low rounded-lg p-4 font-sans text-xs flex flex-col gap-3 min-h-[380px]">
+<!-- Modern Stepper Header -->
+<div class="bg-white rounded-lg p-3 shadow-xs flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center text-[10px] font-bold">1</span>
+<span class="font-bold text-on-surface text-xs">계좌 및 금액 선택</span>
+</div>
+<div class="w-12 h-0.5 bg-slate-200"></div>
+<div class="flex items-center gap-2 text-slate-400">
+<span class="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold">2</span>
+<span class="text-xs">인증 및 완료</span>
+</div>
+</div>
+<!-- Modern Form Body -->
+<div class="bg-white rounded-lg p-3.5 shadow-xs flex flex-col gap-3">
+<!-- Source Account Selector (Card style) -->
+<div class="flex flex-col gap-1">
+<span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">출금 계좌</span>
+<div class="flex items-center justify-between p-2.5 bg-surface-container-low rounded-subtle hover:bg-slate-100 transition-colors cursor-pointer">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-[11px]">
+                      KB
+                    </div>
+<div>
+<div class="font-semibold text-xs text-on-surface">급여 주거래통장</div>
+<div class="font-mono text-[11px] text-slate-500">1002-****-4902</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-mono font-bold text-xs text-on-surface">14,820,400원</div>
+<span class="text-[10px] text-emerald-600 font-medium">출금가능</span>
+</div>
+</div>
+</div>
+<!-- Destination & Amount Form with Quick Chips -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">받는 사람 / 계좌</span>
+<span class="text-[10px] text-primary font-medium hover:underline cursor-pointer">최근 이체 목록</span>
+</div>
+<!-- Quick Chips -->
+<div class="flex gap-1.5 overflow-x-auto pb-0.5">
+<button class="shrink-0 px-2 py-1 rounded-full text-[10px] bg-primary-container text-on-primary-container font-medium" type="button">홍길동 (신한 110-382)</button>
+<button class="shrink-0 px-2 py-1 rounded-full text-[10px] bg-surface-container-low text-slate-600 hover:bg-slate-200" type="button">김철수 (우리)</button>
+<button class="shrink-0 px-2 py-1 rounded-full text-[10px] bg-surface-container-low text-slate-600 hover:bg-slate-200" type="button">+ 직접 입력</button>
+</div>
+<!-- Modern Big Input for Amount -->
+<div class="mt-1 bg-surface-container-low p-2.5 rounded-subtle flex flex-col gap-1">
+<span class="text-[10px] text-slate-400">보낼 금액</span>
+<div class="flex items-baseline justify-between">
+<div class="text-base font-bold font-mono text-on-surface tracking-tight">1,500,000 <span class="text-xs font-normal">원</span></div>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700">수수료 면제</span>
+</div>
+</div>
+</div>
+<!-- Smart Floating Confirmation Action -->
+<div class="pt-1 flex items-center justify-between">
+<div class="flex items-center gap-1 text-[11px] text-slate-500">
+<span class="material-symbols-outlined text-[15px] text-primary">verified_user</span>
+<span>FaceID / 인라인 인증 지원</span>
+</div>
+<button class="px-4 py-2 bg-primary hover:bg-primary-hover text-white text-xs font-bold rounded-subtle shadow-sm flex items-center gap-1" type="button">
+<span>다음</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<div class="mt-3 flex items-center justify-between text-xs text-slate-500 font-mono">
+<span>컴포넌트 6개로 57% 경량화</span>
+<span>입력 인터랙션 스텝 분리로 직관성 극대화</span>
+</div>
+</div>
+</div>
+<!-- AI Change Insights & Rationale Card -->
+<div class="bg-white rounded-xl p-5 shadow-sm flex flex-col gap-3">
+<div class="flex items-center gap-2 text-on-surface">
+<span class="material-symbols-outlined text-primary text-[20px]">psychology</span>
+<h2 class="text-sm font-bold">AI 설계 변경 요약 및 타당성 (Diff Insights &amp; Rationale)</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-1">
+<div class="p-3 rounded-lg bg-surface-container-low flex items-start gap-2.5">
+<span class="material-symbols-outlined text-primary text-[18px] mt-0.5 shrink-0">navigation</span>
+<div class="flex flex-col gap-0.5">
+<span class="text-xs font-bold text-slate-800">좌측 고정 메뉴 제거 및 상단 내비게이션 통합</span>
+<p class="text-[11px] text-slate-600 leading-normal">
+                좌측 120px을 상시 차지하던 레거시 트리메뉴를 상단 컨텍스트 헤더로 이관하여 핵심 입력 영역의 수평 폭을 확보하고 시선 분산을 줄였습니다.
+              </p>
+</div>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low flex items-start gap-2.5">
+<span class="material-symbols-outlined text-primary text-[18px] mt-0.5 shrink-0">linear_scale</span>
+<div class="flex flex-col gap-0.5">
+<span class="text-xs font-bold text-slate-800">입력 필드 6개 → 2단계 위저드형 분할 (피로도 40% 감소)</span>
+<p class="text-[11px] text-slate-600 leading-normal">
+                출금/입금 계좌 선택 후 금액을 입력하도록 분리하여, 사용자가 한 번에 인지해야 하는 입력 필드 수를 줄이고 오류율을 방지했습니다.
+              </p>
+</div>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low flex items-start gap-2.5">
+<span class="material-symbols-outlined text-primary text-[18px] mt-0.5 shrink-0">ads_click</span>
+<div class="flex flex-col gap-0.5">
+<span class="text-xs font-bold text-slate-800">동선 최적화: 우하단 플로팅 액션 배치</span>
+<p class="text-[11px] text-slate-600 leading-normal">
+                레거시 하단 좌측 구석에 모여 있던 '취소/다음' 버튼을 F-패턴 시선 이동 흐름의 종착점인 우측 하단 고정 영역으로 재배치했습니다.
+              </p>
+</div>
+</div>
+<div class="p-3 rounded-lg bg-surface-container-low flex items-start gap-2.5">
+<span class="material-symbols-outlined text-primary text-[18px] mt-0.5 shrink-0">security</span>
+<div class="flex flex-col gap-0.5">
+<span class="text-xs font-bold text-slate-800">ActiveX/보안카드 팝업 → 인라인 모달 다이얼로그 표준화</span>
+<p class="text-[11px] text-slate-600 leading-normal">
+                별도 브라우저 팝업으로 차단 위험이 컸던 구형 보안카드 입력을 다음 스텝 인라인 모달 뷰로 일원화해 크로스 브라우징을 보장합니다.
+              </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Interactive Approval & Feedback Bar -->
+<div class="sticky bottom-6 bg-white/95 backdrop-blur-md rounded-xl p-4 shadow-xl ring-1 ring-slate-900/5 flex flex-col md:flex-row items-center justify-between gap-4">
+<!-- Feedback Input with Icon -->
+<div class="relative flex-1 w-full">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-slate-400">comment</span>
+<input class="w-full pl-9 pr-4 py-2 text-xs bg-surface-container-low rounded-subtle text-on-surface placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all" placeholder="수정 또는 보완이 필요한 의견을 입력하세요 (예: 계좌 별칭 폰트 크기 확대, 최근 입금칩 5개 노출 요청 등)..." type="text"/>
+</div>
+<!-- Decision Buttons -->
+<div class="flex items-center gap-2 shrink-0 w-full md:w-auto justify-end">
+<button class="inline-flex items-center justify-center gap-1.5 h-10 px-4 rounded-subtle bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-slate-500">rate_review</span>
+<span>수정 요청</span>
+</button>
+<button class="inline-flex items-center justify-center gap-2 h-10 px-5 rounded-subtle bg-primary hover:bg-primary-hover text-white text-xs font-bold shadow-md transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span>이 화면 승인 (다음 화면으로 이동)</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div></main></div></body></html>

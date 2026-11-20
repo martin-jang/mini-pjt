@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500&amp;family=Noto+Sans+KR:wght@400;500;600&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "tertiary-fixed-dim": "#cac6c4",
+          "surface": "#fdf8f8",
+          "warning-deep": "#ab570a",
+          "primary-fixed-dim": "#c8c6c5",
+          "on-secondary-fixed": "#1b1c1c",
+          "canvas-soft-2": "#f2f2f2",
+          "error-soft": "#fdecec",
+          "background": "#fdf8f8",
+          "error": "#e5484d",
+          "inverse-on-surface": "#f4f0ef",
+          "on-secondary": "#ffffff",
+          "inverse-surface": "#313030",
+          "warning-soft": "#fff4e0",
+          "pending": "#c7c7c7",
+          "outline": "#747878",
+          "secondary-fixed": "#e4e2e2",
+          "hairline-strong": "#d4d4d4",
+          "surface-variant": "#e5e2e1",
+          "on-tertiary-fixed": "#1c1b1a",
+          "on-secondary-fixed-variant": "#474747",
+          "surface-tint": "#5f5e5e",
+          "on-secondary-container": "#646464",
+          "tertiary-fixed": "#e6e2df",
+          "on-background": "#1c1b1b",
+          "primary-fixed": "#e5e2e1",
+          "link": "#0070f3",
+          "success-soft": "#eaf7ee",
+          "hairline": "#ebebeb",
+          "surface-container": "#f1edec",
+          "secondary-fixed-dim": "#c8c6c6",
+          "tertiary-container": "#1c1b1a",
+          "on-tertiary-fixed-variant": "#484645",
+          "secondary": "#5e5e5e",
+          "surface-container-lowest": "#ffffff",
+          "surface-bright": "#fdf8f8",
+          "body": "#4d4d4d",
+          "ink": "#171717",
+          "on-primary": "#ffffff",
+          "warning": "#f5a623",
+          "on-primary-fixed": "#1c1b1b",
+          "on-tertiary-container": "#868382",
+          "canvas-soft": "#fafafa",
+          "on-primary-fixed-variant": "#474746",
+          "error-container": "#ffdad6",
+          "primary": "#000000",
+          "on-surface-variant": "#444748",
+          "tertiary": "#000000",
+          "outline-variant": "#c4c7c7",
+          "on-error": "#ffffff",
+          "on-error-container": "#93000a",
+          "on-tertiary": "#ffffff",
+          "on-primary-container": "#858383",
+          "surface-container-low": "#f7f3f2",
+          "surface-dim": "#ddd9d8",
+          "primary-container": "#1c1b1b",
+          "canvas": "#ffffff",
+          "running-soft": "#e9f2fe",
+          "surface-container-highest": "#e5e2e1",
+          "surface-container-high": "#ebe7e6",
+          "secondary-container": "#e4e2e2",
+          "inverse-primary": "#c8c6c5",
+          "on-surface": "#1c1b1b",
+          "success": "#16a34a",
+          "running": "#0070f3",
+          "mute": "#8f8f8f"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "spacing": {
+          "space-2xl": "48px",
+          "space-xxs": "4px",
+          "space-3xl": "64px",
+          "gutter": "16px",
+          "space-md": "16px",
+          "margin": "32px",
+          "space-sm": "12px",
+          "space-xl": "32px",
+          "space-lg": "24px",
+          "space-xs": "8px"
+        },
+        "fontFamily": {
+          "section-title": [
+            "Geist", "Noto Sans KR", "sans-serif"
+          ],
+          "page-title": [
+            "Geist", "Noto Sans KR", "sans-serif"
+          ],
+          "code": [
+            "Geist Mono", "monospace"
+          ],
+          "body-strong": [
+            "Geist", "Noto Sans KR", "sans-serif"
+          ],
+          "caption": [
+            "Geist", "Noto Sans KR", "sans-serif"
+          ],
+          "body": [
+            "Geist", "Noto Sans KR", "sans-serif"
+          ]
+        },
+        "fontSize": {
+          "section-title": [
+            "16px",
+            {
+              "lineHeight": "24px",
+              "letterSpacing": "-0.32px",
+              "fontWeight": "600"
+            }
+          ],
+          "page-title": [
+            "24px",
+            {
+              "lineHeight": "32px",
+              "letterSpacing": "-0.6px",
+              "fontWeight": "600"
+            }
+          ],
+          "code": [
+            "13px",
+            {
+              "lineHeight": "20px",
+              "fontWeight": "400"
+            }
+          ],
+          "body-strong": [
+            "14px",
+            {
+              "lineHeight": "20px",
+              "fontWeight": "500"
+            }
+          ],
+          "caption": [
+            "12px",
+            {
+              "lineHeight": "16px",
+              "fontWeight": "400"
+            }
+          ],
+          "body": [
+            "14px",
+            {
+              "lineHeight": "20px",
+              "fontWeight": "400"
+            }
+          ]
+        }
+      },
+    },
+  }</script></head><body class="bg-canvas-soft font-body text-ink antialiased selection:bg-canvas-soft-2"><aside class="fixed left-0 top-0 h-screen w-[240px] bg-canvas-soft border-r border-hairline z-50 flex flex-col justify-between p-space-md select-none"><div class="flex flex-col"><div class="flex items-center gap-space-xs mb-space-lg"><div class="w-6 h-6 bg-ink flex items-center justify-center rounded-[4px]"><span class="text-[11px] font-semibold text-on-primary font-code tracking-tighter">L2N</span></div><span class="text-[15px] font-semibold tracking-[-0.3px] text-ink">Legacy2Next</span></div><a class="w-full h-9 bg-ink hover:bg-body text-on-primary font-body-strong text-body-strong flex items-center justify-center rounded-[6px] transition-colors mb-space-lg shadow-sm" data-path="new-request" href="#">+ 새 요청</a><div class="text-[12px] font-medium text-mute tracking-tight mb-space-xs px-1">사이트</div><nav class="flex flex-col gap-0.5" data-active-classes="bg-canvas-soft-2 text-ink font-medium"><a class="flex items-center justify-between px-2 py-1.5 rounded-[6px] text-ink hover:bg-canvas-soft-2 transition-colors" data-path="hr-portal" href="#"><span class="font-body text-body font-medium text-ink">hr-portal</span><div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-running"></span><span class="font-caption text-caption text-mute">진행 중</span></div></a><a class="flex items-center justify-between px-2 py-1.5 rounded-[6px] text-ink hover:bg-canvas-soft-2 transition-colors" data-path="bank-demo" href="#"><span class="font-body text-body font-medium text-ink">bank-demo</span><div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-warning"></span><span class="font-caption text-caption text-mute">승인 대기</span></div></a><a class="flex items-center justify-between px-2 py-1.5 rounded-[6px] text-ink hover:bg-canvas-soft-2 transition-colors" data-path="intranet" href="#"><span class="font-body text-body font-medium text-ink">intranet</span><div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-success"></span><span class="font-caption text-caption text-mute">완료</span></div></a></nav></div><div class="pt-space-xs border-t border-hairline"><nav data-active-classes="bg-canvas-soft-2 text-ink font-medium"><a class="flex items-center gap-space-xs px-2 py-2 rounded-[6px] text-mute hover:text-ink hover:bg-canvas-soft-2 transition-colors" data-path="inquiry" href="#"><span class="material-symbols-outlined text-[18px] text-mute">chat_bubble_outline</span><span class="font-body text-body text-ink">질의</span></a></nav></div></aside><div class="pl-[240px]"><header class="fixed top-0 left-[240px] right-0 h-14 bg-canvas border-b border-hairline z-40 flex items-center justify-between px-space-lg"><nav class="flex items-center font-body text-body text-mute" data-active-classes="text-ink font-body-strong"><span class="text-mute">사이트</span><span class="mx-2 text-hairline-strong">/</span><a aria-current="page" class="text-ink font-body-strong" data-path="new-request" href="#">새 요청</a></nav><div class="flex items-center"><div class="w-7 h-7 rounded-full bg-canvas-soft-2 border border-hairline flex items-center justify-center"><span class="material-symbols-outlined text-ink text-[16px]">person</span></div></div></header><main class="relative pt-14 bg-canvas-soft min-h-screen"><div class="flex flex-col w-full">
+<div class="w-full max-w-[720px] mx-auto pt-space-2xl pb-[80px] px-space-md">
+<!-- Header -->
+<div class="mb-space-lg">
+<h1 class="font-page-title text-page-title text-ink">새 요청</h1>
+<p class="font-body text-body text-mute mt-[6px]">레거시 시스템 URL을 입력하면 화면 수집부터 React POC 생성까지 자동으로 진행합니다.</p>
+</div>
+<!-- Main Form Card -->
+<div class="bg-canvas border border-hairline rounded-[8px] p-space-xl shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+<form class="flex flex-col gap-space-lg" id="requestForm" onsubmit="event.preventDefault();">
+<!-- Field 1: Legacy URL -->
+<div class="flex flex-col">
+<label class="font-body-strong text-body-strong text-ink mb-space-xs" for="legacyUrl">레거시 URL</label>
+<input class="h-10 w-full bg-canvas text-ink font-code text-body border border-hairline rounded-[6px] px-3 focus:outline-none focus:border-ink transition-colors" id="legacyUrl" name="legacyUrl" placeholder="https://legacy.example.com" required="" type="url"/>
+<span class="font-caption text-caption text-mute mt-[6px]">로그인 없이 접근 가능한 첫 화면 주소를 입력하세요.</span>
+</div>
+<!-- Field 2: Site Alias -->
+<div class="flex flex-col">
+<label class="font-body-strong text-body-strong text-ink mb-space-xs" for="siteAlias">사이트 별칭</label>
+<input class="h-10 w-full bg-canvas text-ink font-body text-body border border-hairline rounded-[6px] px-3 focus:outline-none focus:border-ink transition-colors" id="siteAlias" name="siteAlias" placeholder="예: hr-portal" required="" type="text"/>
+<span class="font-caption text-caption text-mute mt-[6px]">결과물은 <span class="font-code text-[12px] text-body bg-canvas-soft-2 px-1 py-[2px] rounded">next-pjt/hr-portal/</span> 에 생성됩니다.</span>
+</div>
+<!-- Field 3: Request Type -->
+<div class="flex flex-col">
+<label class="font-body-strong text-body-strong text-ink mb-space-xs">요청 유형</label>
+<div aria-label="요청 유형 선택" class="grid grid-cols-2 gap-space-sm" role="radiogroup">
+<!-- Selected Card: New Creation -->
+<div aria-checked="true" class="border border-ink bg-canvas rounded-[6px] p-4 cursor-pointer select-none transition-all flex flex-col justify-start" id="typeOptionNew" role="radio" tabindex="0">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded-full border border-ink flex items-center justify-center shrink-0">
+<span class="w-1.5 h-1.5 rounded-full bg-ink"></span>
+</span>
+<span class="font-body-strong text-body-strong text-ink">신규 생성</span>
+</div>
+<p class="font-body text-[13px] leading-[18px] text-body mt-1 pl-[22px]">사이트 전체를 분석해 새 POC를 만듭니다.</p>
+</div>
+<!-- Unselected Card: Extend Existing -->
+<div aria-checked="false" class="border border-hairline bg-canvas rounded-[6px] p-4 cursor-pointer select-none transition-all flex flex-col justify-start" id="typeOptionExtend" role="radio" tabindex="0">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded-full border border-hairline-strong flex items-center justify-center shrink-0">
+<span class="w-1.5 h-1.5 rounded-full bg-transparent"></span>
+</span>
+<span class="font-body-strong text-body-strong text-ink">기존 결과물 확장</span>
+</div>
+<p class="font-body text-[13px] leading-[18px] text-mute mt-1 pl-[22px]">이미 만든 POC에 화면을 추가합니다.</p>
+</div>
+</div>
+</div>
+<!-- Quiet inline note -->
+<div class="flex items-center gap-1.5 mt-2">
+<svg class="w-[15px] h-[15px] text-mute shrink-0 stroke-current" fill="none" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<line x1="12" x2="12" y1="16" y2="12"></line>
+<line x1="12" x2="12.01" y1="8" y2="8"></line>
+</svg>
+<span class="font-body text-[13px] leading-[18px] text-mute">
+            로그인이 필요한 사이트는 <span class="font-code text-[12px] text-body">.env</span>에 계정을 먼저 등록하세요.
+          </span>
+<a class="font-body text-[13px] leading-[18px] text-link hover:underline transition-all ml-0.5" href="#">설정 방법</a>
+</div>
+<!-- Hairline divider -->
+<div class="w-full border-t border-hairline"></div>
+<!-- Action buttons -->
+<div class="flex items-center justify-end gap-[10px]">
+<button class="h-9 px-4 bg-canvas border border-hairline rounded-[6px] font-body-strong text-body-strong text-ink hover:bg-canvas-soft-2 transition-colors" type="button">
+            취소
+          </button>
+<button class="h-9 px-5 bg-ink text-on-primary rounded-[6px] font-body-strong text-body-strong hover:bg-body transition-colors" type="submit">
+            분석 시작
+          </button>
+</div>
+</form>
+</div>
+<!-- Below Card: Minimal Progress Steps Section -->
+<div class="mt-space-xl">
+<h2 class="font-section-title text-section-title text-ink mb-5">진행 순서</h2>
+<div class="w-full py-2">
+<div class="flex items-start justify-between relative">
+<!-- Step 1 -->
+<div class="flex flex-col items-center text-center relative z-10 w-24">
+<span class="w-5 h-5 rounded-full border border-hairline-strong text-body font-body text-[11px] font-medium flex items-center justify-center bg-canvas">1</span>
+<span class="font-body-strong text-[13px] leading-[18px] text-ink mt-2">화면 수집</span>
+</div>
+<!-- Connecting Line 1-2 -->
+<div class="flex-1 h-px bg-hairline mt-2.5 -mx-4 z-0"></div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center text-center relative z-10 w-24">
+<span class="w-5 h-5 rounded-full border border-hairline-strong text-body font-body text-[11px] font-medium flex items-center justify-center bg-canvas">2</span>
+<span class="font-body-strong text-[13px] leading-[18px] text-ink mt-2">분석</span>
+<div class="flex items-center gap-1 mt-1">
+<span class="w-[5px] h-[5px] rounded-full bg-warning shrink-0"></span>
+<span class="font-caption text-[11px] font-medium leading-none text-warning-deep">승인 필요</span>
+</div>
+</div>
+<!-- Connecting Line 2-3 -->
+<div class="flex-1 h-px bg-hairline mt-2.5 -mx-4 z-0"></div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center text-center relative z-10 w-24">
+<span class="w-5 h-5 rounded-full border border-hairline-strong text-body font-body text-[11px] font-medium flex items-center justify-center bg-canvas">3</span>
+<span class="font-body-strong text-[13px] leading-[18px] text-ink mt-2">디자인</span>
+<div class="flex items-center gap-1 mt-1">
+<span class="w-[5px] h-[5px] rounded-full bg-warning shrink-0"></span>
+<span class="font-caption text-[11px] font-medium leading-none text-warning-deep">승인 필요</span>
+</div>
+</div>
+<!-- Connecting Line 3-4 -->
+<div class="flex-1 h-px bg-hairline mt-2.5 -mx-4 z-0"></div>
+<!-- Step 4 -->
+<div class="flex flex-col items-center text-center relative z-10 w-24">
+<span class="w-5 h-5 rounded-full border border-hairline-strong text-body font-body text-[11px] font-medium flex items-center justify-center bg-canvas">4</span>
+<span class="font-body-strong text-[13px] leading-[18px] text-ink mt-2">코드 생성</span>
+</div>
+<!-- Connecting Line 4-5 -->
+<div class="flex-1 h-px bg-hairline mt-2.5 -mx-4 z-0"></div>
+<!-- Step 5 -->
+<div class="flex flex-col items-center text-center relative z-10 w-24">
+<span class="w-5 h-5 rounded-full border border-hairline-strong text-body font-body text-[11px] font-medium flex items-center justify-center bg-canvas">5</span>
+<span class="font-body-strong text-[13px] leading-[18px] text-ink mt-2">검증</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function initRequestForm() {
+    const optNew = document.getElementById('typeOptionNew');
+    const optExtend = document.getElementById('typeOptionExtend');
+    const siteInput = document.getElementById('siteAlias');
+    const urlInput = document.getElementById('legacyUrl');
+
+    function selectCard(selected, unselected) {
+      // Set active styles on selected
+      selected.setAttribute('aria-checked', 'true');
+      selected.className = 'border border-ink bg-canvas rounded-[6px] p-4 cursor-pointer select-none transition-all flex flex-col justify-start';
+      const selDotWrap = selected.querySelector('span > span');
+      const selDotBorder = selected.querySelector('span');
+      const selTitle = selected.querySelector('.font-body-strong');
+      const selDesc = selected.querySelector('p');
+      if (selDotWrap) selDotWrap.className = 'w-1.5 h-1.5 rounded-full bg-ink';
+      if (selDotBorder) selDotBorder.className = 'w-3.5 h-3.5 rounded-full border border-ink flex items-center justify-center shrink-0';
+      if (selTitle) selTitle.className = 'font-body-strong text-body-strong text-ink';
+      if (selDesc) selDesc.className = 'font-body text-[13px] leading-[18px] text-body mt-1 pl-[22px]';
+
+      // Set inactive styles on unselected
+      unselected.setAttribute('aria-checked', 'false');
+      unselected.className = 'border border-hairline bg-canvas rounded-[6px] p-4 cursor-pointer select-none transition-all flex flex-col justify-start';
+      const unselDotWrap = unselected.querySelector('span > span');
+      const unselDotBorder = unselected.querySelector('span');
+      const unselTitle = unselected.querySelector('.font-body-strong, .text-body-strong');
+      const unselDesc = unselected.querySelector('p');
+      if (unselDotWrap) unselDotWrap.className = 'w-1.5 h-1.5 rounded-full bg-transparent';
+      if (unselDotBorder) unselDotBorder.className = 'w-3.5 h-3.5 rounded-full border border-hairline-strong flex items-center justify-center shrink-0';
+      if (unselTitle) unselTitle.className = 'font-body text-body-strong text-ink';
+      if (unselDesc) unselDesc.className = 'font-body text-[13px] leading-[18px] text-mute mt-1 pl-[22px]';
+    }
+
+    if (optNew && optExtend) {
+      optNew.addEventListener('click', () => selectCard(optNew, optExtend));
+      optExtend.addEventListener('click', () => selectCard(optExtend, optNew));
+
+      optNew.addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          selectCard(optNew, optExtend);
+        }
+      });
+      optExtend.addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          selectCard(optExtend, optNew);
+        }
+      });
+    }
+
+    // Auto-suggest site alias from URL hostname
+    if (urlInput && siteInput) {
+      urlInput.addEventListener('blur', () => {
+        if (urlInput.value && !siteInput.value) {
+          try {
+            const url = new URL(urlInput.value.startsWith('http') ? urlInput.value : 'http://' + urlInput.value);
+            const hostParts = url.hostname.split('.');
+            if (hostParts.length > 0) {
+              const baseName = hostParts[0] === 'www' && hostParts.length > 1 ? hostParts[1] : hostParts[0];
+              siteInput.value = baseName.toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+            }
+          } catch (_) {}
+        }
+      });
+    }
+  })();
+</script></main></div></body></html>
