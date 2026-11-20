@@ -15,7 +15,7 @@
 
 | ID | 작업 | 완료 기준 | 상태 |
 |---|---|---|---|
-| T03 | 에이전트 골격: `agent/` FastAPI 앱, `config/settings.yaml` 로더(사이트 별칭·허용 origin·한도 값), `.env.example`, `requirements.txt`, ruff·pytest, 공통 래퍼(Bedrock 호출 수 집계 G8, 로그 마스킹 G3, 실행 이벤트 로그) | 서버 기동, `pytest` 통과 | ⬜ |
+| T03 | 에이전트 골격: `agent/` FastAPI 앱, `config/settings.yaml` 로더(사이트 별칭·허용 origin·한도 값), `.env.example`, `requirements.txt`, ruff·pytest, 공통 래퍼(Bedrock 호출 수 집계 G8, 로그 마스킹 G3, 실행 이벤트 로그) | 서버 기동, `pytest` 통과 | ✅ |
 | T04 | LangGraph 뼈대: Router → ①~⑤ 노드 스텁, SqliteSaver, 승인 2곳 `interrupt()`, `/query` + SSE. 콘솔을 가짜 API에서 **실제 API로 전환** | 스텁 그래프가 콘솔에서 처음부터 끝까지 돌고, 승인 → 재개가 콘솔에서 된다 | ⬜ |
 | T05 | Router: 의도 분류(신규 생성 / 확장 / 질의 / 범위 밖), 범위 밖 거절(G4) | RTR 평가 샘플 통과, 거절 메시지가 콘솔에 보인다 | ⬜ |
 

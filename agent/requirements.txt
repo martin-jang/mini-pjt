@@ -1,0 +1,22 @@
+# 에이전트 런타임
+fastapi==0.163.2
+uvicorn==0.54.0
+sse-starlette==3.7.0
+pydantic==2.14.3
+pydantic-settings==2.16.3
+python-dotenv==1.2.4
+PyYAML==6.0.3
+
+# LangGraph · LLM (Bedrock: Claude는 Anthropic SDK Mantle 클라이언트, 임베딩은 langchain-aws)
+langgraph==1.2.22
+langgraph-checkpoint-sqlite==3.1.3
+langchain-core==1.8.2
+langchain-aws==1.9.3
+boto3==1.44.5
+anthropic[bedrock]==2.11.0
+
+# 개발 도구
+ruff==0.17.6
+pytest==9.2.0
+pytest-asyncio==1.5.0
+httpx==0.28.1

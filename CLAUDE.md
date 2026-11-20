@@ -9,7 +9,7 @@
 
 - **런타임**: Python 3.14 (`agent/.venv`), Node v26
 - **에이전트**: LangGraph 고정 그래프 (Router + 단계별 노드, `interrupt()`로 사용자 승인), 체크포인트 SqliteSaver
-- **LLM / 임베딩**: AWS Bedrock Claude Sonnet 4.5 / Titan Embeddings v2
+- **LLM / 임베딩**: AWS Bedrock Claude Sonnet 5.5 (`anthropic.claude-sonnet-5-5`, Anthropic SDK `AsyncAnthropicBedrockMantle`, 거절 시 Sonnet 5로 대체) / Titan Embeddings v2
 - **RAG**: Chroma
 - **화면 수집**: Playwright MCP (`microsoft/playwright-mcp`)
 - **개인정보 마스킹**: Presidio (`presidio-analyzer`, `presidio-anonymizer`, `presidio-image-redactor` + Tesseract OCR `kor`)
@@ -24,7 +24,14 @@
 
 ### `agent/` — 에이전트 구동 코드
 - `.venv/` — Python 가상환경 (git 제외)
-- 하위 구조는 기획(SERVICE.md)을 확정한 뒤 정하고, 정해지면 여기에 추가한다
+- `config/settings.yaml` — 한도 값(G8), 콘솔 CORS, 로그 위치, 사이트별 추가 허용 origin(G2). 비밀값은 넣지 않는다
+- `legacy2next/` — 에이전트 패키지
+  - `config.py` — 설정·`.env` 로더, origin 계산, 사이트 계정(`SITE_<별칭>_USERNAME/PASSWORD`)
+  - `masking.py` — 비밀값 마스킹 레지스트리와 로그 필터 (G3)
+  - `events.py` — 실행 이벤트 로그 (`logs/runs/<실행 ID>.jsonl`, SSE 구독)
+  - `llm.py` — LLM 게이트웨이(Anthropic SDK Bedrock Mantle): 호출 수 한도(G8), 입력 마스킹, 호출 기록, 거절 처리. 노드는 이것으로만 LLM을 부른다
+  - `api.py`, `__main__.py` — FastAPI 앱과 서버 실행
+- `tests/` — pytest (실제 Bedrock 호출 없이 가짜 모델로 검증)
 
 ### `next-pjt/<별칭>/` — 사이트별 생성 결과물 (git 제외)
 - 요청한 웹 사이트마다 별칭 폴더 하나 (예: `next-pjt/parabank/`)
@@ -50,8 +57,9 @@ PowerShell 기준. 명령이 생기거나 바뀌면 여기에 추가한다.
 
 ### 에이전트 (`agent/`)
 - 의존성 설치: `agent\.venv\Scripts\python -m pip install -r agent/requirements.txt`
-- 서버 실행: (구현 후 추가)
+- 서버 실행: `cd agent; .venv\Scripts\python -m legacy2next --port 8000` (상태 확인: `GET /health`)
 - 테스트: `agent\.venv\Scripts\python -m pytest agent`
+- 린트·포맷: `agent\.venv\Scripts\python -m ruff check agent`, `agent\.venv\Scripts\python -m ruff format agent`
 
 ### 콘솔 UI (`ui/`)
 - 설치: `npm install --prefix ui`
@@ -88,6 +96,8 @@ PowerShell 기준. 명령이 생기거나 바뀌면 여기에 추가한다.
 - **기획 먼저**: 요구사항 인터뷰 → `docs/SERVICE.md` 작성 → 스킬·문서 세팅 → 구현 순서로 진행한다. 기획 없이 바로 코딩하지 않는다
 - **작업 단위**: 구현은 작업 목록(T01, T02 …)으로 쪼개고, 작업 하나가 끝날 때마다 결과를 보고한 뒤 멈추고 확인을 받는다
 - **완료 기준**: 테스트·빌드가 통과해야 완료로 보고한다. 실패하거나 건너뛴 단계는 그대로 보고한다
+- **콘솔에서 확인하는 방법**: 작업 완료 보고에 "콘솔 UI(`ui/`)에서 확인하는 방법"을 함께 적는다. 띄울 서버와 명령, 열 주소, 누를 순서, 그때 보여야 하는 결과를 번호 목록으로 쓴다. 콘솔에서 아직 보이지 않는 작업이면 그렇다고 밝히고, 대신 확인할 방법(브라우저 주소, 명령)을 적는다
+- **서버 실행은 물어보고**: 확인에 서버가 필요하면 명령만 알려 주고 끝내지 않는다. "서버를 띄울까요?"라고 묻고, 사용자가 띄우라고 하면 직접 백그라운드로 띄운 뒤 접속 주소와 응답 확인 결과를 알린다
 - **UI 작업 순서**: Stitch로 디자인 생성 → 사용자 확인 → `design/`에 저장 → 디자인 기준으로 구현
 - **문서 갱신**: 구조·명령어·스택이 바뀌면 CLAUDE.md의 해당 절도 같이 고친다
 - **언어**: 보고·안내·질문은 모두 한국어로 한다

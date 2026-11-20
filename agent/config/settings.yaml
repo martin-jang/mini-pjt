@@ -1,0 +1,20 @@
+# Legacy2Next 에이전트 설정. 비밀값(계정·키)은 여기 두지 않고 .env에만 둔다
+
+# 한 번 실행당 한도 (G8)
+limits:
+  llm_calls_per_run: 200
+  verifier_retries: 3
+
+# 콘솔 UI 개발 서버 (CORS 허용)
+cors_origins:
+  - http://localhost:5173
+
+# 실행 로그 저장 위치 (저장소 루트 기준, git 제외)
+log_dir: logs
+
+# 사이트별 설정. 키는 사이트 별칭이다. 설정이 없는 사이트는 요청 URL의 origin만 허용한다
+sites: {}
+#  hr-portal:
+#    # 요청 URL origin 밖이지만 꼭 필요한 origin (예: 다른 도메인의 SSO 로그인). G2
+#    extra_origins:
+#      - https://sso.example.com
