@@ -123,7 +123,7 @@ def env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
         output_root=tmp_path / "next-pjt",
         session_dir=tmp_path / "sessions",
         stub_step_ms=0,
-        explorer={"mode": "mcp", "headless": True, "auth_headless": True},
+        explorer={"mode": "mcp", "headless": True, "auth_headless": True, "walk_enabled": False},
     )
     monkeypatch.setenv("SITE_IDPW_OK_USERNAME", FIXTURE_USERNAME)
     monkeypatch.setenv("SITE_IDPW_OK_PASSWORD", FIXTURE_PASSWORD)

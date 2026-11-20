@@ -16,6 +16,7 @@ import { Icon } from '../components/Icon';
 import { PageHeader } from '../components/PageHeader';
 import { RunLoader } from '../components/RunLoader';
 import { SiteMapCard } from '../components/SiteMapCard';
+import { WalkCard } from '../components/WalkCard';
 import { Badge, StatusBadge, type Tone } from '../components/StatusBadge';
 import { useNow } from '../hooks/useNow';
 import { formatClock, formatDuration, isActive, runDurations, STAGE_LABEL } from '../lib/format';
@@ -292,6 +293,7 @@ function ProgressView({ run }: { run: RunDetail }) {
       </div>
 
       {run.sitemap && <SiteMapCard sitemap={run.sitemap} />}
+      {run.walk && <WalkCard walk={run.walk} />}
 
       <Card
         title="가드레일 이벤트"

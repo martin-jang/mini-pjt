@@ -11,6 +11,7 @@ from __future__ import annotations
 import asyncio
 import shutil
 from collections import Counter
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
 from typing import Any, Literal, TypedDict
 
@@ -20,10 +21,17 @@ from langgraph.graph.state import CompiledStateGraph
 from langgraph.types import Command, interrupt
 
 from . import stubs
-from .browser import BrowserActionError, GuardedBrowser, McpBrowser
+from .browser import BrowserActionError, GuardedBrowser, McpBrowser, ToolResult
 from .capture import capture_screen
 from .config import AgentConfig, load_site_credentials
-from .crawl import CrawlStore, ScreenCapture, SiteGraph
+from .crawl import (
+    CrawlStore,
+    FlowStep,
+    ScreenCapture,
+    SiteGraph,
+    UseCaseCandidate,
+    screen_id_for,
+)
 from .events import EventLog, EventType, RunEvent
 from .explorer import (
     ExplorerError,
@@ -55,6 +63,7 @@ from .schemas import (
     StageId,
     StageState,
 )
+from .walker import WalkDecider, WalkDecision, WalkLimits, hypothesize, run_walk
 
 STUB = "(스텁) "
 
@@ -299,6 +308,42 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
             )
         return Command(goto="login", update={"auth": None})
 
+    def site_browser(state: GraphState) -> McpBrowser:
+        """수집용 브라우저: 저장된 로그인 세션(있으면)과 사이트 설정(extension)으로 연다."""
+        cfg = deps.config
+        alias = state["alias"]
+        session = cfg.session_path(alias)
+        return McpBrowser(
+            cfg.allowed_origins(alias, state["url"]),
+            cfg.site_dir(alias) / "crawl" / "_mcp",
+            headless=cfg.explorer.headless,
+            storage_state=session if session.exists() else None,
+            extension=cfg.site(alias).browser == "extension",
+        )
+
+    def screen_saver(
+        browser: GuardedBrowser, store: CrawlStore, em: Emitter, captures: list[ScreenCapture]
+    ) -> Callable[[str, str], Awaitable[ScreenResult | None]]:
+        async def save_screen(url: str, title: str) -> ScreenResult | None:
+            """화면 원본을 저장하고 파생 파일을 만든다. 실패해도 수집은 계속한다."""
+            try:
+                raw = await capture_screen(browser, url, title, secrets.mask)
+                store.save_raw(raw)
+                layout, components, _ = store.derive(raw.capture.screen_id)
+            except (BrowserActionError, OSError, ValueError) as e:
+                em.log("explorer", f"화면 저장 실패: {url} ({e})", "warn")
+                return None
+            captures.append(raw.capture)
+            em.log(
+                "explorer",
+                f"화면 저장: {raw.capture.screen_id} "
+                f"(영역 {len(layout.regions)}·표 {len(components.tables)}·"
+                f"폼 {len(components.forms)}·버튼 {len(components.buttons)})",
+            )
+            return ScreenResult(raw.capture, raw.dom_html, layout, components)
+
+        return save_screen
+
     async def explorer(state: GraphState) -> Command[str]:
         em = deps.emitter(state)
         em.stage("explorer", "running")
@@ -315,38 +360,14 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
         session = cfg.session_path(alias)
         has_session = session.exists()
         extension = cfg.site(alias).browser == "extension"
-        output_dir = cfg.site_dir(alias) / "crawl" / "_mcp"
-        async with McpBrowser(
-            origins,
-            output_dir,
-            headless=cfg.explorer.headless,
-            storage_state=session if has_session else None,
-            extension=extension,
-        ) as mcp:
+        async with site_browser(state) as mcp:
             em.log(
                 "explorer", "화면 수집 시작" + (" (저장된 로그인 세션 사용)" if has_session else "")
             )
             browser = GuardedBrowser(mcp, origins, guard_emit(em))
             store = CrawlStore(cfg.site_dir(alias) / "crawl")
             captures: list[ScreenCapture] = []
-
-            async def save_screen(url: str, title: str) -> ScreenResult | None:
-                """화면 원본을 저장하고 파생 파일을 만든다. 실패해도 수집은 계속한다."""
-                try:
-                    raw = await capture_screen(browser, url, title, secrets.mask)
-                    store.save_raw(raw)
-                    layout, components, _ = store.derive(raw.capture.screen_id)
-                except (BrowserActionError, OSError, ValueError) as e:
-                    em.log("explorer", f"화면 저장 실패: {url} ({e})", "warn")
-                    return None
-                captures.append(raw.capture)
-                em.log(
-                    "explorer",
-                    f"화면 저장: {raw.capture.screen_id} "
-                    f"(영역 {len(layout.regions)}·표 {len(components.tables)}·"
-                    f"폼 {len(components.forms)}·버튼 {len(components.buttons)})",
-                )
-                return ScreenResult(raw.capture, raw.dom_html, layout, components)
+            save_screen = screen_saver(browser, store, em, captures)
 
             def progress(graph: SiteGraph) -> None:
                 # 콘솔이 사이트맵을 바로 다시 읽도록 화면이 늘 때마다 저장하고 지표를 보낸다
@@ -386,7 +407,82 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
             + (" (화면 수 상한에 닿음)" if graph.truncated else "")
             + f" — next-pjt/{alias}/crawl/graph.json",
         )
-        em.stage("explorer", "done", f"{len(graph.nodes)}개 화면")
+        return Command(goto="walker")
+
+    async def walker(state: GraphState) -> Command[str]:
+        """Hypothesize · Walk: 유스케이스 후보를 세우고 점수 높은 것부터 실제로 걸어 본다."""
+        em = deps.emitter(state)
+        cfg = deps.config
+        alias = state["alias"]
+        store = CrawlStore(cfg.site_dir(alias) / "crawl")
+        graph = store.load_graph()
+        if not cfg.explorer.walk_enabled or deps.llm is None or graph is None or not graph.nodes:
+            em.stage("explorer", "done", "흐름 걷기 생략")
+            return Command(goto="analyst")
+
+        em.log("explorer", "유스케이스 후보 만들기 (사이트맵 요약을 LLM에 1회 전달)")
+        try:
+            hypotheses = await hypothesize(deps.llm, state["run_id"], graph, store)
+        except ValueError as e:
+            em.log("explorer", f"유스케이스 후보를 만들지 못했습니다: {e}", "warn")
+            em.stage("explorer", "done", f"{len(graph.nodes)}개 화면 · 후보 없음")
+            return Command(goto="analyst")
+        store.save_hypotheses(hypotheses)
+        em.metrics(screens_collected=len(graph.nodes))
+        em.log(
+            "explorer",
+            f"사이트 성격(1차): {hypotheses.site.domain} · 후보 {len(hypotheses.candidates)}개: "
+            + ", ".join(f"{c.name}({c.total})" for c in hypotheses.candidates),
+        )
+
+        origins = cfg.allowed_origins(alias, state["url"])
+        known = {n.screen_id for n in graph.nodes}
+        captures: list[ScreenCapture] = []
+        limits = WalkLimits(
+            max_steps=cfg.explorer.walk_max_steps,
+            max_candidates=cfg.explorer.walk_max_candidates,
+            target_completed=cfg.explorer.walk_target,
+        )
+        decider = WalkDecider(deps.llm)
+        async with site_browser(state) as mcp:
+            browser = GuardedBrowser(mcp, origins, guard_emit(em))
+            save_screen = screen_saver(browser, store, em, captures)
+
+            async def capture_new(url: str, title: str) -> None:
+                """걷다가 처음 닿은 화면도 원본·파생을 저장한다."""
+                if screen_id_for(url) not in known:
+                    known.add(screen_id_for(url))
+                    await save_screen(url, title)
+
+            async def decide(
+                candidate: UseCaseCandidate, steps: list[FlowStep], page: ToolResult
+            ) -> WalkDecision:
+                return await decider.decide(state["run_id"], candidate, steps, page)
+
+            report = await run_walk(
+                browser,
+                hypotheses,
+                decide,
+                capture_new,
+                store,
+                limits,
+                lambda m: em.log("explorer", m),
+                # 흐름 하나가 끝날 때마다 콘솔이 걷기 결과를 다시 읽게 한다
+                on_flow=lambda _t: em.metrics(screens_collected=len(graph.nodes) + len(captures)),
+            )
+            if cfg.site(alias).browser != "extension":
+                await browser.call("browser_close", {})
+        store.update_manifest(alias, captures)
+        total = len(graph.nodes) + len(captures)
+        em.metrics(screens_collected=total)
+        done = len(report.completed)
+        em.log(
+            "explorer",
+            f"흐름 걷기: 완주 {done}개 / 시도 {len(report.traces)}개 "
+            f"(목표 {limits.target_completed}개) — next-pjt/{alias}/crawl/flows/",
+            "info" if done >= 2 else "warn",
+        )
+        em.stage("explorer", "done", f"{total}개 화면 · 완주 {done}개")
         return Command(goto="analyst")
 
     async def analyst(state: GraphState) -> dict[str, Any]:
@@ -549,7 +645,8 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
     graph.add_node("login", login)
     graph.add_node("auth_gate", auth_gate)
     graph.add_node("auth_wait", auth_wait, destinations=("login", END))
-    graph.add_node("explorer", explorer, destinations=("analyst", "login"))
+    graph.add_node("explorer", explorer, destinations=("walker", "analyst", "login"))
+    graph.add_node("walker", walker, destinations=("analyst",))
     graph.add_node("analyst", analyst)
     graph.add_node("analysis_gate", analysis_gate)
     graph.add_node(

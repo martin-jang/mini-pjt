@@ -244,6 +244,110 @@ class SiteGraph(Versioned):
     truncated: bool = False
 
 
+# ── 유스케이스 후보·흐름 (T07d) ─────────────────────────────
+
+
+class SiteGuess(BaseModel):
+    """사이트맵만 보고 한 사이트 성격 1차 추론 (Analyst가 T10에서 다시 본다)."""
+
+    domain: str
+    users: str
+    core_tasks: list[str] = Field(default_factory=list)
+
+
+class CandidateScore(BaseModel):
+    """0~5점: 메뉴에서 눈에 띄는 정도, 업무 완결성, 도메인 상식, 화면 재사용도."""
+
+    menu: int = Field(ge=0, le=5)
+    completeness: int = Field(ge=0, le=5)
+    domain: int = Field(ge=0, le=5)
+    reuse: int = Field(ge=0, le=5)
+
+    @property
+    def total(self) -> int:
+        return self.menu + self.completeness + self.domain + self.reuse
+
+
+class UseCaseCandidate(BaseModel):
+    id: str
+    name: str
+    goal: str
+    # view: 조회→상세, search: 검색→결과, input: 입력→확인→완료
+    kind: Literal["view", "search", "input", "other"]
+    start_screen_id: str
+    start_url: str
+    expected_steps: list[str] = Field(default_factory=list)
+    score: CandidateScore
+    total: int = 0
+    reason: str
+
+
+class Hypotheses(Versioned):
+    """crawl/hypotheses.json: 사이트 성격 1차 추론과 유스케이스 후보 (점수 높은 순)."""
+
+    generated_at: str
+    site: SiteGuess
+    candidates: list[UseCaseCandidate] = Field(default_factory=list)
+
+
+class FlowTarget(BaseModel):
+    """재실행 기준 요소: 접근성 역할 + 이름 (Playwright getByRole과 같은 기준)."""
+
+    role: str
+    name: str
+
+
+FlowAction = Literal["navigate", "click", "type", "select", "press_enter"]
+# 끝나지 못한 이유: 데이터 없음, 인증 필요, 쓰기 동작 미승인, 화면·요소 못 찾음, 단계 상한, 그 외
+FailKind = Literal["no_data", "needs_auth", "write_action", "not_found", "step_limit", "other"]
+
+
+class FlowStep(BaseModel):
+    index: int
+    action: FlowAction
+    target: FlowTarget | None = None
+    # 입력 종류(검색어·날짜·숫자 등)와 넣은 값 (합성 값만, 계정 값은 넣지 않는다)
+    input_kind: str | None = None
+    value: str | None = None
+    from_url: str
+    from_screen_id: str
+    to_url: str
+    to_screen_id: str
+    to_title: str
+    network: list[NetworkRequest] = Field(default_factory=list)
+    # Playwright MCP가 알려 준 실행 코드 (사람이 읽는 재실행 참고용)
+    code: str = ""
+    reason: str = ""
+
+
+class ReplayResult(BaseModel):
+    """재실행 스크립트로 LLM 없이 다시 걸은 결과."""
+
+    ok: bool
+    steps_done: int
+    message: str
+    llm_calls: int = 0
+    at: str
+
+
+class FlowTrace(Versioned):
+    """crawl/flows/<flow_id>.json: 유스케이스 하나를 걸은 기록 (Flow Trace + 재실행 스크립트)."""
+
+    flow_id: str
+    name: str
+    goal: str
+    kind: str
+    start_url: str
+    status: Literal["completed", "failed"]
+    fail_kind: FailKind | None = None
+    reason: str
+    steps: list[FlowStep] = Field(default_factory=list)
+    llm_calls: int = 0
+    started_at: str
+    finished_at: str
+    replay: ReplayResult | None = None
+
+
 # ── manifest ─────────────────────────────
 
 
@@ -341,6 +445,35 @@ class CrawlStore:
             return None
         return SiteGraph.model_validate_json(path.read_text("utf-8"))
 
+    def save_hypotheses(self, hypotheses: Hypotheses) -> None:
+        self.root.mkdir(parents=True, exist_ok=True)
+        path = self._inside(self.root / "hypotheses.json")
+        path.write_text(hypotheses.model_dump_json(indent=2), "utf-8")
+
+    def load_hypotheses(self) -> Hypotheses | None:
+        path = self.root / "hypotheses.json"
+        if not path.exists():
+            return None
+        return Hypotheses.model_validate_json(path.read_text("utf-8"))
+
+    def save_flow(self, trace: FlowTrace) -> Path:
+        if not SCREEN_ID.match(trace.flow_id):
+            raise ValueError(f"흐름 ID 형식이 아닙니다: {trace.flow_id!r}")
+        folder = self._inside(self.root / "flows")
+        folder.mkdir(parents=True, exist_ok=True)
+        path = folder / f"{trace.flow_id}.json"
+        path.write_text(trace.model_dump_json(indent=2), "utf-8")
+        return path
+
+    def load_flows(self) -> list[FlowTrace]:
+        folder = self.root / "flows"
+        if not folder.exists():
+            return []
+        return [
+            FlowTrace.model_validate_json(f.read_text("utf-8"))
+            for f in sorted(folder.glob("*.json"))
+        ]
+
     def load_manifest(self) -> CrawlManifest | None:
         path = self.root / "manifest.json"
         if not path.exists():
@@ -359,6 +492,8 @@ class CrawlStore:
                 screen_id=c.screen_id, url=c.url, title=c.title, captured_at=c.captured_at
             )
         manifest.screens = list(by_id.values())
+        flows = {f.flow_id for f in self.load_flows()}
+        manifest.flows = sorted(flows | set(manifest.flows))
         manifest.updated_at = now
         self.root.mkdir(parents=True, exist_ok=True)
         (self.root / "manifest.json").write_text(manifest.model_dump_json(indent=2), "utf-8")

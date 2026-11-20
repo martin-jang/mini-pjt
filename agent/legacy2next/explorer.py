@@ -160,7 +160,7 @@ async def map_site(
             record(visit, _Outcome("failed", "메뉴를 화면에서 찾지 못함"))
             return None
         page = await browser.call("browser_click", {"target": ref, "element": visit.label})
-        landed = page.page_url or (await browser.call("browser_snapshot", {})).page_url or ""
+        landed = (await browser.settled_page(visit.source_url)).page_url or page.page_url or ""
         if landed == visit.source_url:
             record(visit, _Outcome("skipped", "클릭해도 주소가 바뀌지 않음 (하위 메뉴 펼침 등)"))
             return None

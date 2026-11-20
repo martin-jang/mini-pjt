@@ -2,7 +2,8 @@
 
 - `/`: G2 검증. 내부 링크, 다른 origin 링크, 다른 origin으로 가는 리다이렉트, 로그아웃 링크
 - `/board.html`: 수집 데이터 구조 검증 (T07b). 머리글·왼쪽 메뉴·검색 폼·표·탭·페이징·바닥글과
-  브랜드 색이 있는 전형적인 레거시 목록 화면
+  브랜드 색이 있는 전형적인 레거시 목록 화면. 제목을 누르면 `/board/view.html?id=N` 상세,
+  검색어로 제목을 거른다 (T07d 흐름 걷기, 결과가 없으면 빈 결과 행)
 - `/idpw/`: ID/PW 로그인이 필요한 영역 (T07a). 로그인하지 않으면 `/idpw/login`으로 보낸다
 - `/cert/`: 간편인증(사람이 해야 하는 인증)이 필요한 영역 (T07a). 로그인 화면은 인증 승인을
   기다리며 `/cert/status`를 확인하고, 승인되면 세션 쿠키를 받는다.
@@ -45,8 +46,7 @@ LOGIN_FORM = _page(
     ),
 )
 
-BOARD = (
-    """<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>공지사항 목록</title>
+BOARD = """<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>공지사항 목록</title>
 <style>
 body { margin: 0; font-family: "Malgun Gothic", sans-serif; font-size: 13px; color: #333333; }
 #header { background: #1f4e8c; color: #ffffff; height: 60px; padding: 0 20px; }
@@ -83,9 +83,7 @@ td { padding: 8px; border-bottom: 1px solid #dddddd; }
 </form>
 <table><thead><tr><th>번호</th><th>제목</th><th>작성자</th><th>등록일</th></tr></thead>
 <tbody>
-<tr><td>3</td><td>시스템 점검 안내</td><td>관리자</td><td>2026-11-01</td></tr>
-<tr><td>2</td><td>개인정보 처리방침 변경</td><td>관리자</td><td>2026-10-15</td></tr>
-<tr><td>1</td><td>홈페이지 개설</td><td>관리자</td><td>2026-09-01</td></tr>
+@ROWS@
 </tbody></table>
 <div class="paging"><a href="#">처음</a><strong>1</strong>
 <a href="#">2</a><a href="#">3</a><a href="#">다음</a></div>
@@ -94,7 +92,44 @@ td { padding: 8px; border-bottom: 1px solid #dddddd; }
 <div id="footer">Copyright 시험 기관. All rights reserved.</div>
 <script>console.log("board loaded")</script>
 </body></html>"""
-).encode()
+
+# 게시글 (번호, 제목, 작성자, 등록일, 내용) — T07d 흐름 걷기: 목록 → 상세, 검색 → 결과
+POSTS = [
+    (3, "시스템 점검 안내", "관리자", "2026-11-01", "11월 8일 02시부터 시스템을 점검합니다."),
+    (2, "개인정보 처리방침 변경", "관리자", "2026-10-15", "처리방침이 일부 바뀌었습니다."),
+    (1, "홈페이지 개설", "관리자", "2026-09-01", "업무시스템 홈페이지를 열었습니다."),
+]
+
+
+def board_page(query: str) -> bytes:
+    """검색어(searchWrd)가 있으면 제목으로 거른다. 결과가 없으면 빈 결과 행을 보인다."""
+    params = parse_qs(query)
+    word = params.get("searchWrd", [""])[0].strip()
+    posts = [p for p in POSTS if word in p[1]] if word else POSTS
+    rows = (
+        "\n".join(
+            f'<tr><td>{no}</td><td><a href="/board/view.html?id={no}">{title}</a></td>'
+            f"<td>{writer}</td><td>{date}</td></tr>"
+            for no, title, writer, date, _ in posts
+        )
+        or '<tr><td colspan="4">검색 결과가 없습니다.</td></tr>'
+    )
+    return BOARD.replace("@ROWS@", rows).encode()
+
+
+def post_page(query: str) -> bytes | None:
+    no = parse_qs(query).get("id", [""])[0]
+    post = next((p for p in POSTS if str(p[0]) == no), None)
+    if post is None:
+        return None
+    _, title, writer, date, body = post
+    return _page(
+        "공지사항 상세",
+        f"<table><tr><th>제목</th><td>{title}</td></tr><tr><th>작성자</th><td>{writer}</td></tr>"
+        f"<tr><th>등록일</th><td>{date}</td></tr></table><p>{body}</p>"
+        '<a href="/board.html">목록</a>',
+    )
+
 
 CERT_LOGIN = _page(
     "인증 로그인",
@@ -177,7 +212,10 @@ class Handler(BaseHTTPRequestHandler):
                 ),
             )
         elif path == "/board.html":
-            self._send(200, BOARD)
+            self._send(200, board_page(self.path.partition("?")[2]))
+        elif path == "/board/view.html":
+            page = post_page(self.path.partition("?")[2])
+            self._send(200 if page else 404, page or _page("없음", ""))
         elif path == "/page2.html":
             self._send(200, _page("공지 목록", '<a href="/">홈</a>'))
         elif path == "/go-out":

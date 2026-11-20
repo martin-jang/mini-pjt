@@ -19,6 +19,7 @@ ignore = ["ANN401"]
 # LLM 프롬프트 문장은 줄 길이 예외
 "legacy2next/router.py" = ["E501"]
 "legacy2next/login.py" = ["E501"]
+"legacy2next/walker.py" = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

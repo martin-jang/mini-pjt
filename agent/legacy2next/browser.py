@@ -36,6 +36,7 @@ ALLOWED_TOOLS: frozenset[str] = frozenset(
         "browser_take_screenshot",
         "browser_click",
         "browser_type",
+        "browser_select_option",
         "browser_press_key",
         "browser_wait_for",
         "browser_network_requests",
@@ -57,6 +58,7 @@ PAGE_CHANGING = frozenset(
         "browser_navigate_back",
         "browser_click",
         "browser_type",
+        "browser_select_option",
         "browser_press_key",
     }
 )
@@ -267,6 +269,15 @@ class GuardedBrowser:
                 self.current_url = url
                 self._last_allowed_url = url
         return result
+
+    async def settled_page(self, before_url: str | None) -> ToolResult:
+        """동작 뒤 지금 화면을 다시 본다. 클릭 응답은 이동이 끝나기 전 화면일 수 있어서,
+        주소가 그대로면 1초 기다렸다가 한 번 더 본다."""
+        page = await self.call("browser_snapshot", {})
+        if before_url and page.page_url == before_url:
+            await self.call("browser_wait_for", {"time": 1})
+            page = await self.call("browser_snapshot", {})
+        return page
 
     async def run_fixed_script(self, name: str) -> Any:
         """고정 추출 스크립트를 실행해 결과(JSON 값)를 돌려준다 (G1 예외, 읽기 전용).

@@ -44,6 +44,9 @@ from .schemas import (
     SiteMapView,
     SiteSummary,
     StageInfo,
+    WalkCandidateView,
+    WalkStepView,
+    WalkView,
 )
 
 logger = logging.getLogger(__name__)
@@ -332,10 +335,61 @@ class RunService:
             sitemap = self._sitemap(alias)
             if sitemap:
                 update["sitemap"] = sitemap
+            walk = self._walk(alias)
+            if walk:
+                update["walk"] = walk
             return detail.model_validate({**detail.model_dump(), **update})
         except ValidationError:
             logger.exception("그래프 상태를 읽지 못했습니다: %s", alias)
             return detail
+
+    def _walk(self, alias: str) -> WalkView | None:
+        """유스케이스 후보와 흐름 걷기 결과를 콘솔용으로 합친다. 후보가 없으면 None."""
+        store = CrawlStore(self._config.site_dir(alias) / "crawl")
+        try:
+            hypotheses = store.load_hypotheses()
+            flows = {f.flow_id: f for f in store.load_flows()}
+        except OSError, ValidationError:
+            logger.exception("흐름 걷기 결과를 읽지 못했습니다: %s", alias)
+            return None
+        if hypotheses is None:
+            return None
+        candidates = []
+        for c in hypotheses.candidates:
+            flow = flows.get(c.id)
+            candidates.append(
+                WalkCandidateView(
+                    id=c.id,
+                    name=c.name,
+                    kind=c.kind,
+                    goal=c.goal,
+                    total=c.total,
+                    score=c.score.model_dump(),
+                    reason=c.reason,
+                    status=flow.status if flow else "untried",
+                    fail_kind=flow.fail_kind if flow else None,
+                    result=flow.reason if flow else "",
+                    steps=[
+                        WalkStepView(
+                            index=s.index,
+                            action=s.action,
+                            target=s.target.name if s.target else None,
+                            value=s.value,
+                            to_title=s.to_title,
+                            to_url=s.to_url,
+                        )
+                        for s in (flow.steps if flow else [])
+                    ],
+                    replay_ok=flow.replay.ok if flow and flow.replay else None,
+                    replay_message=flow.replay.message if flow and flow.replay else "",
+                )
+            )
+        return WalkView(
+            domain=hypotheses.site.domain,
+            users=hypotheses.site.users,
+            core_tasks=hypotheses.site.core_tasks,
+            candidates=candidates,
+        )
 
     def _sitemap(self, alias: str) -> SiteMapView | None:
         """crawl/graph.json을 콘솔용 요약으로 바꾼다. 없거나 읽지 못하면 None."""

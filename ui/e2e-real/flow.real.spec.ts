@@ -29,6 +29,11 @@ test('실제 서버: 새 요청 → 승인 2곳 → 결과', async ({ page }) =>
   await expect(page.getByTestId('sitemap-summary')).toContainText('차단 2');
   await sitemap.getByText(/따라가지 않은 링크/).click();
   await expect(page.getByTestId('sitemap-not-followed')).toContainText('로그아웃');
+  // T07d: 유스케이스 후보와 흐름 걷기 결과(완주·재실행 확인)가 보인다
+  const walk = page.getByTestId('walk');
+  await expect(walk.locator('[data-status="completed"]').nth(1)).toBeVisible({ timeout: 40_000 });
+  await walk.locator('[data-status="completed"] button').first().click();
+  await expect(walk.getByTestId(/walk-replay-/).first()).toContainText('재현됨');
 
   // 승인 1
   await page.getByTestId('go-analysis-review').click({ timeout: 40_000 });

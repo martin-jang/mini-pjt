@@ -257,6 +257,47 @@ export interface SiteMapView {
   truncated: boolean;
 }
 
+// ── 유스케이스·흐름 걷기 (T07d Hypothesize · Walk) ─────────────────────────────
+
+export interface WalkStepView {
+  index: number;
+  action: string;
+  target?: string | null;
+  value?: string | null;
+  toTitle: string;
+  toUrl: string;
+}
+
+export type WalkStatus = 'completed' | 'failed' | 'untried';
+
+export interface WalkCandidateView {
+  id: string;
+  name: string;
+  /** view·search·input·other */
+  kind: string;
+  goal: string;
+  /** 점수 합계 (20점 만점) */
+  total: number;
+  score: Record<string, number>;
+  reason: string;
+  status: WalkStatus;
+  /** 완주 못 한 이유 종류: no_data·needs_auth·write_action·not_found·step_limit·other */
+  failKind?: string | null;
+  /** 완주했으면 도착 설명, 아니면 실패 이유 */
+  result: string;
+  steps: WalkStepView[];
+  /** 재실행 스크립트로 LLM 없이 다시 걸었을 때 재현됐는지 */
+  replayOk?: boolean | null;
+  replayMessage: string;
+}
+
+export interface WalkView {
+  domain: string;
+  users: string;
+  coreTasks: string[];
+  candidates: WalkCandidateView[];
+}
+
 export interface RunDetail extends SiteSummary {
   kind: RunKind;
   stages: StageInfo[];
@@ -270,6 +311,8 @@ export interface RunDetail extends SiteSummary {
   sessionSaved?: boolean;
   /** 화면 수집 사이트맵 (Explorer Map 이후) */
   sitemap?: SiteMapView | null;
+  /** 유스케이스 후보와 흐름 걷기 결과 */
+  walk?: WalkView | null;
   analysis?: AnalysisReview;
   /** 승인된 분석 결정 (승인 전에는 없음) */
   approvedAnalysis?: Omit<AnalysisDecision, 'action' | 'comment'>;

@@ -63,6 +63,11 @@ class ExplorerConfig(BaseModel):
     max_screens: int = Field(default=40, ge=1)
     max_depth: int = Field(default=3, ge=0)
     max_per_pattern: int = Field(default=5, ge=1)
+    # Walk(흐름 걷기): 완주 목표 수, 시도할 후보 수, 흐름 하나의 단계 상한
+    walk_enabled: bool = True
+    walk_target: int = Field(default=3, ge=1)
+    walk_max_candidates: int = Field(default=6, ge=1)
+    walk_max_steps: int = Field(default=8, ge=1)
     # 사용자 인증용 브라우저를 화면에 띄우지 않음 (테스트용. 실제로는 사용자가 창에서 인증한다)
     auth_headless: bool = False
     # 한 실행에서 로그인·인증을 다시 시도하는 횟수 상한 (세션 만료 재요청 포함)

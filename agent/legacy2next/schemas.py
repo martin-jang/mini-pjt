@@ -274,6 +274,42 @@ class SiteMapView(ApiModel):
     truncated: bool = False
 
 
+class WalkStepView(ApiModel):
+    index: int
+    action: str
+    target: str | None = None
+    value: str | None = None
+    to_title: str
+    to_url: str
+
+
+class WalkCandidateView(ApiModel):
+    """유스케이스 후보 하나와 걸은 결과 (status: completed·failed·untried)."""
+
+    id: str
+    name: str
+    kind: str
+    goal: str
+    total: int
+    score: dict[str, int]
+    reason: str
+    status: Literal["completed", "failed", "untried"]
+    fail_kind: str | None = None
+    result: str = ""
+    steps: list[WalkStepView] = Field(default_factory=list)
+    replay_ok: bool | None = None
+    replay_message: str = ""
+
+
+class WalkView(ApiModel):
+    """콘솔용 Hypothesize · Walk 요약 (crawl/hypotheses.json + flows/)."""
+
+    domain: str
+    users: str
+    core_tasks: list[str] = Field(default_factory=list)
+    candidates: list[WalkCandidateView] = Field(default_factory=list)
+
+
 class RunDetail(SiteSummary):
     kind: RunKind
     stages: list[StageInfo]
@@ -285,6 +321,7 @@ class RunDetail(SiteSummary):
     # 저장된 로그인 세션 파일이 있는지 (G10: 실행이 끝나면 삭제 여부를 묻는다)
     session_saved: bool = False
     sitemap: SiteMapView | None = None
+    walk: WalkView | None = None
     analysis: AnalysisReview | None = None
     approved_analysis: ApprovedAnalysis | None = None
     design: DesignReview | None = None

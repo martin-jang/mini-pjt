@@ -34,6 +34,11 @@ explorer:
   max_screens: 40
   max_depth: 3
   max_per_pattern: 5
+  # 흐름 걷기(Walk): 완주 목표 수(2~3개 모이면 멈춤), 시도할 후보 수, 흐름 하나의 단계 상한
+  walk_enabled: true
+  walk_target: 3
+  walk_max_candidates: 6
+  walk_max_steps: 8
   # 사용자 인증 브라우저 창을 띄우지 않음 (테스트용). 실제로는 false로 두고 사용자가 창에서 인증한다
   auth_headless: false
   # 한 실행에서 로그인·인증을 다시 시도하는 횟수 상한 (세션 만료 재요청 포함)
