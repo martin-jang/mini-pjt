@@ -1,0 +1,56 @@
+@import 'tailwindcss';
+
+/* ui/design/DESIGN.md (v2) 토큰. 기본 팔레트를 지우고 이 토큰만 쓴다 */
+@theme {
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-canvas: #ffffff;
+  --color-canvas-soft: #fafafa;
+  --color-canvas-soft-2: #f2f2f2;
+  --color-hairline: #ebebeb;
+  --color-hairline-strong: #d4d4d4;
+  --color-ink: #171717;
+  --color-body: #4d4d4d;
+  --color-mute: #8f8f8f;
+  --color-link: #0070f3;
+  --color-running: #0070f3;
+  --color-running-soft: #e9f2fe;
+  --color-success: #16a34a;
+  --color-warning: #f5a623;
+  --color-warning-soft: #fff4e0;
+  --color-error: #e5484d;
+  --color-error-soft: #fdecec;
+  --color-pending: #c7c7c7;
+  /* 로그 뷰어(ink 배경) 글자 */
+  --color-log: #ededed;
+
+  --font-sans: 'Geist', 'Noto Sans KR', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', 'Noto Sans KR', ui-monospace, monospace;
+
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  --shadow-select: 0 0 0 1px #00000014, 0 1px 2px #0000000a;
+
+  --animate-spin-slow: spin 1.4s linear infinite;
+}
+
+@layer base {
+  body {
+    @apply bg-canvas-soft font-sans text-sm text-ink antialiased;
+  }
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'opsz' 20;
+}

@@ -1,0 +1,31 @@
+import { createMockAgentApi } from './mock/mockAgentApi';
+import type {
+  AnalysisDecision,
+  DesignDecision,
+  NewRunInput,
+  QueryAnswer,
+  RunDetail,
+  RunEvent,
+  SiteSummary,
+} from './types';
+
+/** 콘솔이 에이전트와 주고받는 기능 전체. T04에서 같은 인터페이스로 실제 API 구현을 붙인다 */
+export interface AgentApi {
+  listSites(): Promise<SiteSummary[]>;
+  /** 사이트 목록이 바뀔 때마다 알림. 해제 함수를 돌려준다 */
+  watchSites(onChange: () => void): () => void;
+  getRun(alias: string): Promise<RunDetail>;
+  createRun(input: NewRunInput): Promise<RunDetail>;
+  /** 실행 이벤트 스트림 (실제 API는 SSE). 해제 함수를 돌려준다 */
+  streamRun(alias: string, onEvent: (event: RunEvent) => void): () => void;
+  submitAnalysis(alias: string, decision: AnalysisDecision): Promise<void>;
+  submitDesign(alias: string, decision: DesignDecision): Promise<void>;
+  stopRun(alias: string): Promise<void>;
+  ask(alias: string, question: string): Promise<QueryAnswer>;
+}
+
+export { ApiError } from './errors';
+
+export const agentApi: AgentApi = createMockAgentApi({
+  tickMs: Number(import.meta.env.VITE_MOCK_TICK_MS ?? 600),
+});

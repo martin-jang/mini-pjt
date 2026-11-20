@@ -57,6 +57,9 @@ PowerShell 기준. 명령이 생기거나 바뀌면 여기에 추가한다.
 - 설치: `npm install --prefix ui`
 - 개발 서버: `npm run dev --prefix ui`
 - 빌드: `npm run build --prefix ui`
+- 린트·포맷 검사: `npm run lint --prefix ui`, `npm run format:check --prefix ui`
+- E2E 테스트: `npm run test:e2e --prefix ui` (목업 API로 전체 흐름 검증, 포트 5179 사용)
+- 목업 진행 속도: 환경 변수 `VITE_MOCK_TICK_MS` (기본 600ms). 목업 상태는 메모리에만 있어 새로고침하면 처음 상태로 돌아간다
 
 ### 생성 결과물 (`next-pjt/<별칭>/`)
 - 실행: `npm run dev --prefix next-pjt/<별칭>`
