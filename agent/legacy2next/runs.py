@@ -382,6 +382,10 @@ class RunService:
                     ],
                     replay_ok=flow.replay.ok if flow and flow.replay else None,
                     replay_message=flow.replay.message if flow and flow.replay else "",
+                    data_recovery=(
+                        flow.data_recovery.result if flow and flow.data_recovery else None
+                    ),
+                    fixture=flow.data_recovery.fixture if flow and flow.data_recovery else None,
                 )
             )
         return WalkView(
@@ -391,10 +395,19 @@ class RunService:
             candidates=candidates,
         )
 
+    @staticmethod
+    def _data_source(store: CrawlStore, screen_id: str) -> str:
+        try:
+            schema = store.load_data_schema(screen_id)
+        except OSError, ValidationError, ValueError:
+            return "observed"
+        return schema.source if schema else "observed"
+
     def _sitemap(self, alias: str) -> SiteMapView | None:
         """crawl/graph.json을 콘솔용 요약으로 바꾼다. 없거나 읽지 못하면 None."""
+        store = CrawlStore(self._config.site_dir(alias) / "crawl")
         try:
-            graph = CrawlStore(self._config.site_dir(alias) / "crawl").load_graph()
+            graph = store.load_graph()
         except OSError, ValidationError:
             logger.exception("사이트맵을 읽지 못했습니다: %s", alias)
             return None
@@ -429,6 +442,7 @@ class RunService:
                     forms=n.forms,
                     buttons=n.buttons,
                     inbound=inbound[n.screen_id],
+                    data_source=self._data_source(store, n.screen_id),
                 )
                 for n in graph.nodes
             ],

@@ -63,6 +63,7 @@ from .schemas import (
     StageId,
     StageState,
 )
+from .testdata import fill_empty_screens
 from .walker import WalkDecider, WalkDecision, WalkLimits, hypothesize, run_walk
 
 STUB = "(스텁) "
@@ -455,9 +456,12 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
                     await save_screen(url, title)
 
             async def decide(
-                candidate: UseCaseCandidate, steps: list[FlowStep], page: ToolResult
+                candidate: UseCaseCandidate,
+                steps: list[FlowStep],
+                page: ToolResult,
+                notice: str | None,
             ) -> WalkDecision:
-                return await decider.decide(state["run_id"], candidate, steps, page)
+                return await decider.decide(state["run_id"], candidate, steps, page, notice)
 
             report = await run_walk(
                 browser,
@@ -472,6 +476,14 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
             )
             if cfg.site(alias).browser != "extension":
                 await browser.call("browser_close", {})
+        # 구조만 보고 데이터가 없던 화면(inferred)은 합성 데이터로 보완한다 (G11 synthetic)
+        filled = fill_empty_screens(store, store.screen_ids())
+        if filled:
+            em.log(
+                "explorer",
+                f"빈 화면 {len(filled)}개에 합성 데이터 생성 (fixtures/, synthetic): "
+                + ", ".join(f.screen_id for f in filled),
+            )
         store.update_manifest(alias, captures)
         total = len(graph.nodes) + len(captures)
         em.metrics(screens_collected=total)

@@ -40,12 +40,13 @@
   - `explorer.py` — Map(T07c): 너비 우선으로 화면을 돌며 `crawl/graph.json`(화면 노드·이동 엣지·메뉴 트리) 생성. 조회만, LLM 호출 없음. 주소 링크는 따라가고, 스크립트 메뉴는 메뉴 영역(nav·header·aside)에서만 클릭, 위험 이름·파일·본문 스크립트 링크는 이유와 함께 건너뜀. 상한 `explorer.max_screens·max_depth·max_per_pattern`. 로그인 화면으로 되돌아가면 세션 만료. 흐름 걷기는 T07d
   - `login.py` — 로그인 유형 판별(LLM은 입력란 ref만 고름), ID/PW 값은 코드가 `--secrets` 키 이름으로 입력(G3), 그 외 인증은 사용자에게 넘김(인증 브라우저 `AuthHandoffs`), 세션 저장·마스킹 등록(G10)
   - `walker.py` — Hypothesize·Walk(T07d): 사이트맵 요약으로 LLM이 사이트 성격 1차 추론과 유스케이스 후보 5~7개(점수)를 내고(`crawl/hypotheses.json`), 점수 높은 후보부터 LLM이 화면을 보며 동작을 하나씩 고르면 코드가 검사 후 실행(쓰기 동작은 T08 전까지 실행하지 않고 멈춤, 계정 값 입력 거부). 완주 목표(기본 3)에 닿으면 멈추고, 흐름마다 Flow Trace(`crawl/flows/<id>.json`)와 역할+이름 기준 재실행 스크립트를 남겨 LLM 없이 다시 걸어 재현을 확인한다
+  - `testdata.py` — 테스트 데이터 없음 대응(T07e): 구조만 본(`inferred`) 화면에 LLM 없이 형식만 맞춘 합성 데이터를 만들어 `crawl/fixtures/<화면ID>.json`에 저장(레코드마다 `source: synthetic` 필수, 실제 값 복사 금지, G11). Walk는 빈 조회 결과를 만나면 조건을 넓혀 다시 조회하고, 그래도 비면 부분 완주로 남긴다
   - `crawl.py` — 수집 데이터 구조(`next-pjt/<별칭>/crawl/`): 원본·파생·manifest Pydantic 모델(schema_version), 저장소(`CrawlStore`, crawl 폴더 밖 쓰기 금지), 파생 다시 만들기 CLI
   - `capture.py` — 화면 하나의 원본 수집(스크린샷·접근성 스냅샷·줄인 DOM·네트워크·콘솔). 저장 전 마스킹
-  - `derive.py` — 원본 `dom.min.html`만으로 `layout.json`·`components.json`·`tokens.json`을 만든다 (브라우저·LLM 없음)
+  - `derive.py` — 원본 `dom.min.html`만으로 `layout.json`·`components.json`·`tokens.json`·`data_schema.json`(데이터 구조·타입·출처 observed/inferred/synthetic)을 만든다 (브라우저·LLM 없음)
   - `scripts/` — 고정 읽기 전용 추출 스크립트(G1 예외). `GuardedBrowser.run_fixed_script(이름)`으로만 실행한다. `capture_dom.js`는 요소마다 위치(`data-l2n-box`)·적용 스타일(`data-l2n-style`)을 붙이고 입력값은 남기지 않는다
   - `api.py`, `__main__.py` — FastAPI 앱(`/query`, `/runs`, 승인·인증 완료·세션 삭제·중단, SSE)과 서버 실행
-- `tests/` — pytest (실제 Bedrock 호출 없이 가짜 모델로 검증). `tests/fixtures/site_server.py`: 시험 사이트 — `/`(외부 링크·외부 리다이렉트, G2), `/board.html`(머리글·왼쪽 메뉴·검색 폼·표·탭·페이징이 있는 목록 화면, T07b. 제목 → `/board/view.html?id=N` 상세, 검색어로 제목 거르기, T07d 흐름 걷기용), `/idpw/`(ID/PW 로그인, 계정 `tester`/`fixture-pass-1234`), `/cert/`(간편인증, `POST /_test/approve`로 승인 흉내), `POST /_test/expire`(세션 만료 흉내)
+- `tests/` — pytest (실제 Bedrock 호출 없이 가짜 모델로 검증). `tests/fixtures/site_server.py`: 시험 사이트 — `/`(외부 링크·외부 리다이렉트, G2), `/board.html`(머리글·왼쪽 메뉴·검색 폼·표·탭·페이징이 있는 목록 화면, T07b. 제목 → `/board/view.html?id=N` 상세, 검색어로 제목 거르기, T07d 흐름 걷기용), `/archive.html`(데이터가 하나도 없는 자료실, T07e), `/idpw/`(ID/PW 로그인, 계정 `tester`/`fixture-pass-1234`), `/cert/`(간편인증, `POST /_test/approve`로 승인 흉내), `POST /_test/expire`(세션 만료 흉내)
 - `mcp/` — 에이전트가 띄우는 MCP 서버 npm 패키지 (버전 고정, `node_modules`는 git 제외)
 
 ### `next-pjt/<별칭>/` — 사이트별 생성 결과물 (git 제외)
@@ -138,6 +139,7 @@ PowerShell 기준. 명령이 생기거나 바뀌면 여기에 추가한다.
 
 ## 참고 문서
 
+- `docs/HANDOFF.md` — 지금 진행 상태, 다음 작업, 새 PC 준비·서버 띄우기·열린 문제. 다른 PC나 새 세션에서 이어서 작업할 때 가장 먼저 읽는다
 - `docs/SERVICE.md` — 서비스 기획 (요구사항, 범위, 에이전트 구성). 구현 전에 먼저 읽는다
 - `docs/TASKS.md` — 작업 목록(T01~)과 진행 상태
 - `docs/GUARDRAILS.md` — 에이전트 가드레일 상세 (대상 사이트 접근 규칙, 입력·출력 검증)

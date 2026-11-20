@@ -34,7 +34,7 @@ RAW_FILES = (
     "network.json",
     "console.log",
 )
-DERIVED_FILES = ("layout.json", "components.json", "tokens.json")
+DERIVED_FILES = ("layout.json", "components.json", "tokens.json", "data_schema.json")
 SCREEN_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,80}$")
 
 
@@ -179,6 +179,57 @@ class Tokens(Versioned):
     font_weights: list[TokenCount] = Field(default_factory=list)
     spacing: list[TokenCount] = Field(default_factory=list)
     radius: list[TokenCount] = Field(default_factory=list)
+
+
+# ── 데이터 구조·합성 데이터 (T07e, G11) ─────────────────────────────
+
+# observed: 화면에서 실제 데이터를 봤다, inferred: 구조만 봤다(빈 목록 등), synthetic: 합성 데이터를 붙였다
+DataSource = Literal["observed", "inferred", "synthetic"]
+FieldType = Literal["number", "date", "money", "phone", "email", "name", "text", "code"]
+
+
+class DataField(BaseModel):
+    name: str
+    label: str
+    type: FieldType
+    required: bool = False
+
+
+class DataEntity(BaseModel):
+    """화면의 데이터 묶음: 목록(표), 상세(항목·값 쌍), 입력 폼."""
+
+    name: str
+    kind: Literal["list", "detail", "form"]
+    fields: list[DataField] = Field(default_factory=list)
+    observed_rows: int = 0
+
+
+class DataSchema(Versioned):
+    """derived/data_schema.json: 화면 데이터 구조와 출처."""
+
+    source: DataSource
+    entities: list[DataEntity] = Field(default_factory=list)
+    note: str = ""
+    # 합성 데이터 파일 (crawl 폴더 기준 경로, synthetic일 때만)
+    fixture: str | None = None
+
+
+class FixtureRecord(BaseModel):
+    """합성 레코드. 출처는 반드시 synthetic이다 (G11)."""
+
+    source: Literal["synthetic"]
+    values: dict[str, str | int]
+
+
+class FixtureSet(Versioned):
+    """crawl/fixtures/<screen_id>.json: 빈 화면용 합성 데이터 (LLM 없이 규칙으로, 실제 값 복사 금지)."""
+
+    screen_id: str
+    entity: str
+    source: Literal["synthetic"]
+    generated_at: str
+    fields: list[DataField] = Field(default_factory=list)
+    records: list[FixtureRecord] = Field(default_factory=list)
 
 
 # ── 사이트맵 (T07c) ─────────────────────────────
@@ -330,6 +381,16 @@ class ReplayResult(BaseModel):
     at: str
 
 
+class DataRecovery(BaseModel):
+    """흐름 중 빈 조회 결과를 만났을 때 한 일 (조건 넓혀 다시 조회 → 합성 데이터)."""
+
+    empty_at_step: int
+    empty_screen_id: str
+    widened_steps: list[int] = Field(default_factory=list)
+    result: Literal["found", "still_empty"]
+    fixture: str | None = None
+
+
 class FlowTrace(Versioned):
     """crawl/flows/<flow_id>.json: 유스케이스 하나를 걸은 기록 (Flow Trace + 재실행 스크립트)."""
 
@@ -338,7 +399,8 @@ class FlowTrace(Versioned):
     goal: str
     kind: str
     start_url: str
-    status: Literal["completed", "failed"]
+    # partial: 빈 데이터 때문에 끝까지 못 갔고 합성 데이터로 보완
+    status: Literal["completed", "partial", "failed"]
     fail_kind: FailKind | None = None
     reason: str
     steps: list[FlowStep] = Field(default_factory=list)
@@ -346,6 +408,7 @@ class FlowTrace(Versioned):
     started_at: str
     finished_at: str
     replay: ReplayResult | None = None
+    data_recovery: DataRecovery | None = None
 
 
 # ── manifest ─────────────────────────────
@@ -410,17 +473,41 @@ class CrawlStore:
 
     def derive(self, screen_id: str) -> tuple[Layout, Components, Tokens]:
         """원본 dom.min.html만 읽어 파생 파일을 (다시) 만든다."""
-        from .derive import derive_all
+        from .derive import derive_all, derive_data_schema
 
         screen = self.screen_dir(screen_id)
         html = (screen / "raw" / "dom.min.html").read_text("utf-8")
         layout, components, tokens = derive_all(html)
+        fixture = self.fixture_path(screen_id)
+        schema = derive_data_schema(
+            html, fixture.relative_to(self.root).as_posix() if fixture.exists() else None
+        )
         out = screen / "derived"
         out.mkdir(parents=True, exist_ok=True)
         (out / "layout.json").write_text(layout.model_dump_json(indent=2), "utf-8")
         (out / "components.json").write_text(components.model_dump_json(indent=2), "utf-8")
         (out / "tokens.json").write_text(tokens.model_dump_json(indent=2), "utf-8")
+        (out / "data_schema.json").write_text(schema.model_dump_json(indent=2), "utf-8")
         return layout, components, tokens
+
+    def load_data_schema(self, screen_id: str) -> DataSchema | None:
+        path = self.screen_dir(screen_id) / "derived" / "data_schema.json"
+        if not path.exists():
+            return None
+        return DataSchema.model_validate_json(path.read_text("utf-8"))
+
+    def fixture_path(self, screen_id: str) -> Path:
+        self.screen_dir(screen_id)  # 화면 ID 형식 검사
+        return self._inside(self.root / "fixtures" / f"{screen_id}.json")
+
+    def save_fixture(self, fixture: FixtureSet) -> Path:
+        """합성 데이터는 fixtures/에만 저장하고, 그 화면의 data_schema 출처를 synthetic으로 다시 만든다."""
+        FixtureSet.model_validate(fixture.model_dump())  # 출처 없는 레코드는 여기서 거부 (G11)
+        path = self.fixture_path(fixture.screen_id)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(fixture.model_dump_json(indent=2), "utf-8")
+        self.derive(fixture.screen_id)
+        return path
 
     def screen_ids(self) -> list[str]:
         folder = self.root / "screens"

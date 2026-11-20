@@ -17,6 +17,9 @@ from typing import Literal
 from .crawl import (
     Box,
     Components,
+    DataEntity,
+    DataField,
+    DataSchema,
     Density,
     Form,
     FormField,
@@ -527,3 +530,126 @@ def extract_menu(root: Node) -> list[MenuItem]:
                 seen.add(key)
                 menu.append(item)
     return menu
+
+
+# ── 데이터 구조 (T07e) ─────────────────────────────
+
+# 빈 조회 결과 문구 (화면 글자·접근성 스냅샷 공통)
+EMPTY_RESULT = re.compile(
+    r"(결과가\s*없|데이터가\s*없|자료가\s*없|내역이\s*없|게시물이\s*없|게시글이\s*없|"
+    r"조회된\s*\S*\s*없|등록된\s*\S*\s*없|no\s+(data|results?|records?)|nothing\s+found)",
+    re.I,
+)
+TYPE_RULES: list[tuple[str, re.Pattern[str]]] = [
+    ("number", re.compile(r"(번호|순번|no\.?$|^no$|건수|수량|개수|count)", re.I)),
+    ("date", re.compile(r"(일자|일시|날짜|등록일|작성일|수정일|기간|시작일|종료일|date)", re.I)),
+    ("money", re.compile(r"(금액|가격|요금|비용|잔액|원\)|amount|price)", re.I)),
+    ("phone", re.compile(r"(전화|연락처|휴대폰|핸드폰|phone|tel)", re.I)),
+    ("email", re.compile(r"(이메일|메일|e-?mail)", re.I)),
+    ("name", re.compile(r"(이름|성명|작성자|담당자|신청자|등록자|name)", re.I)),
+    ("code", re.compile(r"(코드|아이디|id$|번호$|code)", re.I)),
+]
+DATE_VALUE = re.compile(r"^\d{4}[-./]\d{1,2}[-./]\d{1,2}")
+NUMBER_VALUE = re.compile(r"^[\d,]+$")
+
+
+def looks_empty(text: str) -> bool:
+    return bool(EMPTY_RESULT.search(text))
+
+
+def guess_type(label: str, samples: list[str] | None = None) -> str:
+    """라벨 단어로 타입을 고르고, 관찰한 값이 있으면 값 모양으로 한 번 더 맞춘다."""
+    for kind, pattern in TYPE_RULES:
+        if pattern.search(label.strip()):
+            return kind
+    values = [v for v in (samples or []) if v]
+    if values and all(DATE_VALUE.match(v) for v in values):
+        return "date"
+    if values and all(NUMBER_VALUE.match(v) for v in values):
+        return "number"
+    return "text"
+
+
+def _field_name(label: str, index: int) -> str:
+    """라벨을 필드 이름으로 (영문·숫자만 남기고, 없으면 field_N)."""
+    ascii_name = re.sub(r"[^a-z0-9]+", "_", label.lower()).strip("_")
+    return ascii_name or f"field_{index}"
+
+
+def _list_entity(table: Node, index: int) -> DataEntity | None:
+    rows = [r for r in table.iter() if r.tag == "tr"]
+    header = next((r for r in rows if any(c.tag == "th" for c in r.children)), None)
+    if header is None or any(c.tag == "td" for c in header.children):
+        return None  # 머리글 행이 없거나 항목·값 표(상세)다
+    labels = [c.all_text() for c in header.children if c.tag == "th"]
+    body = [r for r in rows if r is not header]
+    data_rows = [
+        r
+        for r in body
+        if not looks_empty(r.all_text()) and sum(c.tag == "td" for c in r.children) > 1
+    ]
+    columns: list[list[str]] = [[] for _ in labels]
+    for r in data_rows[:20]:
+        cells = [c.all_text() for c in r.children if c.tag == "td"]
+        for i, value in enumerate(cells[: len(labels)]):
+            columns[i].append(value)
+    fields = [
+        DataField(name=_field_name(label, i + 1), label=label, type=guess_type(label, columns[i]))  # type: ignore[arg-type]
+        for i, label in enumerate(labels)
+    ]
+    return DataEntity(
+        name=f"list_{index}", kind="list", fields=fields, observed_rows=len(data_rows)
+    )
+
+
+def _detail_entity(table: Node, index: int) -> DataEntity | None:
+    pairs = []
+    for row in (r for r in table.iter() if r.tag == "tr"):
+        cells = [c for c in row.children if c.tag in ("th", "td")]
+        if len(cells) == 2 and cells[0].tag == "th" and cells[1].tag == "td":
+            pairs.append((cells[0].all_text(), cells[1].all_text()))
+    if not pairs:
+        return None
+    fields = [
+        DataField(name=_field_name(label, i + 1), label=label, type=guess_type(label, [value]))  # type: ignore[arg-type]
+        for i, (label, value) in enumerate(pairs)
+    ]
+    observed = 1 if any(value for _, value in pairs) else 0
+    return DataEntity(name=f"detail_{index}", kind="detail", fields=fields, observed_rows=observed)
+
+
+def derive_data_schema(html: str, fixture: str | None = None) -> DataSchema:
+    """저장된 DOM으로 화면 데이터 구조와 출처를 정한다. fixture가 있으면 출처는 synthetic."""
+    root = parse_dom(html)
+    entities: list[DataEntity] = []
+    for i, table in enumerate((n for n in root.iter() if n.tag == "table"), start=1):
+        entity = _list_entity(table, i) or _detail_entity(table, i)
+        if entity:
+            entities.append(entity)
+    for i, form in enumerate(derive_components(root).forms, start=1):
+        if form.fields and form.method != "none":
+            entities.append(
+                DataEntity(
+                    name=f"form_{i}",
+                    kind="form",
+                    fields=[
+                        DataField(
+                            name=f.name or _field_name(f.label, j + 1),
+                            label=f.label,
+                            type=guess_type(f.label),  # type: ignore[arg-type]
+                            required=f.required,
+                        )
+                        for j, f in enumerate(form.fields)
+                    ],
+                )
+            )
+    data = [e for e in entities if e.kind in ("list", "detail")]
+    if fixture:
+        source, note = "synthetic", "빈 화면이라 합성 데이터를 붙였습니다"
+    elif not data:
+        source, note = "observed", "목록·상세 데이터 영역이 없는 화면"
+    elif any(e.observed_rows for e in data):
+        source, note = "observed", "화면에서 실제 데이터 행을 봤습니다"
+    else:
+        source, note = "inferred", "데이터 행이 없어 머리글·항목 이름으로 구조만 추론했습니다"
+    return DataSchema(source=source, entities=entities, note=note, fixture=fixture)  # type: ignore[arg-type]

@@ -4,6 +4,7 @@
 - `/board.html`: 수집 데이터 구조 검증 (T07b). 머리글·왼쪽 메뉴·검색 폼·표·탭·페이징·바닥글과
   브랜드 색이 있는 전형적인 레거시 목록 화면. 제목을 누르면 `/board/view.html?id=N` 상세,
   검색어로 제목을 거른다 (T07d 흐름 걷기, 결과가 없으면 빈 결과 행)
+- `/archive.html`: 자료실. 데이터가 하나도 없는 목록 (T07e 빈 조회 결과 대응)
 - `/idpw/`: ID/PW 로그인이 필요한 영역 (T07a). 로그인하지 않으면 `/idpw/login`으로 보낸다
 - `/cert/`: 간편인증(사람이 해야 하는 인증)이 필요한 영역 (T07a). 로그인 화면은 인증 승인을
   기다리며 `/cert/status`를 확인하고, 승인되면 세션 쿠키를 받는다.
@@ -69,7 +70,7 @@ td { padding: 8px; border-bottom: 1px solid #dddddd; }
 <div class="gnb"><a href="/board.html">게시판</a><a href="/page2.html">공지</a></div></div>
 <div id="wrap">
 <div id="lnb"><ul><li><a href="/board.html">공지사항</a></li>
-<li><a href="/page2.html">자료실</a></li></ul></div>
+<li><a href="/archive.html">자료실</a></li></ul></div>
 <div id="contents">
 <h2>공지사항</h2>
 <ul class="tab"><li>전체</li><li>일반</li><li>긴급</li></ul>
@@ -99,6 +100,21 @@ POSTS = [
     (2, "개인정보 처리방침 변경", "관리자", "2026-10-15", "처리방침이 일부 바뀌었습니다."),
     (1, "홈페이지 개설", "관리자", "2026-09-01", "업무시스템 홈페이지를 열었습니다."),
 ]
+
+
+ARCHIVE = _page(
+    "자료실",
+    (
+        '<form method="get" action="/archive.html">'
+        '<label for="kw">검색어</label><input id="kw" name="kw" type="text"> '
+        '<label for="from">등록일 시작</label><input id="from" name="from" type="date"> '
+        '<input type="submit" value="조회"></form>'
+        "<table><thead><tr><th>번호</th><th>자료명</th><th>등록자</th><th>등록일</th>"
+        "<th>파일 크기</th></tr></thead>"
+        '<tbody><tr><td colspan="5">조회된 자료가 없습니다.</td></tr></tbody></table>'
+        '<a href="/board.html">공지사항</a>'
+    ),
+)
 
 
 def board_page(query: str) -> bytes:
@@ -213,6 +229,8 @@ class Handler(BaseHTTPRequestHandler):
             )
         elif path == "/board.html":
             self._send(200, board_page(self.path.partition("?")[2]))
+        elif path == "/archive.html":
+            self._send(200, ARCHIVE)  # 테스트 데이터가 없는 목록 (조건을 넓혀도 비어 있다)
         elif path == "/board/view.html":
             page = post_page(self.path.partition("?")[2])
             self._send(200 if page else 404, page or _page("없음", ""))

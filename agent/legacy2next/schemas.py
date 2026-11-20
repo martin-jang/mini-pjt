@@ -247,6 +247,8 @@ class SiteMapScreen(ApiModel):
     buttons: int
     # 이 화면으로 들어오는 이동 수 (메뉴·링크)
     inbound: int
+    # 화면 데이터 출처: observed·inferred·synthetic (T07e)
+    data_source: str = "observed"
 
 
 class SiteMapMenuItem(ApiModel):
@@ -293,12 +295,15 @@ class WalkCandidateView(ApiModel):
     total: int
     score: dict[str, int]
     reason: str
-    status: Literal["completed", "failed", "untried"]
+    status: Literal["completed", "partial", "failed", "untried"]
     fail_kind: str | None = None
     result: str = ""
     steps: list[WalkStepView] = Field(default_factory=list)
     replay_ok: bool | None = None
     replay_message: str = ""
+    # 빈 조회 결과 대응: found(넓혀서 찾음)·still_empty(합성 데이터로 보완)와 합성 데이터 파일
+    data_recovery: str | None = None
+    fixture: str | None = None
 
 
 class WalkView(ApiModel):

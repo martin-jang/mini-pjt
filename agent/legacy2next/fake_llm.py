@@ -201,27 +201,38 @@ def walk_step(user_message: str) -> dict[str, Any]:
             return _walk_answer("done", "상세 화면 도착")
         return _walk_answer("give_up", "표 링크 없음", fail_kind="no_data")
     if kind == "search":
+        box = next(
+            (e for e in elements if e["role"] == "textbox" and "검색어" in e["name"]),
+            next((e for e in elements if e["role"] == "textbox"), None),
+        )
+        button = next(
+            (e for e in elements if e["role"] == "button" and e["name"] in ("조회", "검색")), None
+        )
+        lines = [
+            ln for ln in _between(user_message, "steps_so_far").splitlines() if ln[:1].isdigit()
+        ]
+        last = lines[-1] if lines else ""
+        cleared = any(" type " in ln and "값=" not in ln for ln in lines)
+        if box is None:
+            return _walk_answer("give_up", "검색어 입력란 없음", fail_kind="not_found")
+        if "<empty_result>" in user_message:
+            # 빈 결과: 검색어를 지워(조건 넓혀) 다시 조회, 그래도 비면 포기
+            if not cleared:
+                return _walk_answer(
+                    "type", "검색어 지우기", target_ref=box["ref"], text="", input_kind="검색어"
+                )
+            if " type " in last and button:
+                return _walk_answer("click", "넓혀서 다시 조회", target_ref=button["ref"])
+            return _walk_answer("give_up", "조건을 넓혀도 결과 없음", fail_kind="no_data")
         if done == 0:
-            box = next(
-                (e for e in elements if e["role"] == "textbox" and "검색어" in e["name"]),
-                next((e for e in elements if e["role"] == "textbox"), None),
-            )
-            if box is None:
-                return _walk_answer("give_up", "검색어 입력란 없음", fail_kind="not_found")
             word = table_links[0]["name"][:2] if table_links else "안내"
             return _walk_answer(
                 "type", "검색어 입력", target_ref=box["ref"], text=word, input_kind="검색어"
             )
-        if done == 1:
-            button = next(
-                (e for e in elements if e["role"] == "button" and e["name"] in ("조회", "검색")),
-                None,
-            )
+        if " type " in last:
             if button is None:
                 return _walk_answer("press_enter", "조회 버튼 없음")
             return _walk_answer("click", "조회", target_ref=button["ref"])
-        if "결과가 없습니다" in page:
-            return _walk_answer("give_up", "검색 결과 없음", fail_kind="no_data")
         return _walk_answer("done", "검색 결과 도착")
     return _walk_answer("give_up", "걸을 단계가 정해지지 않음", fail_kind="not_found")
 

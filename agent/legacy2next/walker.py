@@ -25,6 +25,7 @@ from .crawl import (
     CandidateScore,
     Components,
     CrawlStore,
+    DataRecovery,
     FailKind,
     FlowStep,
     FlowTarget,
@@ -38,9 +39,11 @@ from .crawl import (
     now_iso,
     screen_id_for,
 )
+from .derive import looks_empty
 from .llm import LlmGateway
 from .login import parse_elements
 from .masking import secrets
+from .testdata import fill_empty_screens
 
 MAX_SNAPSHOT_CHARS = 15_000
 MAX_BRIEF_CHARS = 14_000
@@ -281,6 +284,7 @@ action:
 - 조회만 한다. 등록·저장·수정·삭제·제출·신청·승인 같은 쓰기 버튼은 누르지 않는다. 목표에 그 단계가 꼭 필요하면 give_up(write_action)
 - 로그아웃하지 않는다
 - 입력값은 화면에 보이는 단어 일부 같은 그럴듯한 시험 값만 쓴다. 실제 개인정보나 계정 값은 넣지 않는다
+- <empty_result>가 있으면 조회 결과가 빈 상태다. 검색어를 지우거나(type에 빈 text) 기간·조건을 넓혀 다시 조회한다. 그래도 비면 give_up(no_data)
 - 조회 결과가 비어 더 갈 수 없으면 give_up(no_data), 로그인·인증을 요구하면 give_up(needs_auth), 필요한 메뉴·요소가 없으면 give_up(not_found)
 - reason에 왜 이 동작인지 한국어 한 문장으로 쓴다
 """
@@ -338,7 +342,12 @@ class WalkDecider:
         self._gateway = gateway
 
     async def decide(
-        self, run_id: str, candidate: UseCaseCandidate, steps: list[FlowStep], page: ToolResult
+        self,
+        run_id: str,
+        candidate: UseCaseCandidate,
+        steps: list[FlowStep],
+        page: ToolResult,
+        notice: str | None = None,
     ) -> WalkDecision:
         goal = (
             f"name: {candidate.name}\nkind: {candidate.kind}\ngoal: {candidate.goal}\n"
@@ -347,7 +356,8 @@ class WalkDecider:
         content = (
             f"<flow_goal>\n{goal}\n</flow_goal>\n"
             f"<steps_so_far>\n{_steps_text(steps)}\n</steps_so_far>\n"
-            f"<page_content>\nURL: {page.page_url}\n제목: {page.page_title}\n"
+            + (f"<empty_result>\n{notice}\n</empty_result>\n" if notice else "")
+            + f"<page_content>\nURL: {page.page_url}\n제목: {page.page_title}\n"
             f"{page.text[:MAX_SNAPSHOT_CHARS]}\n</page_content>"
         )
         response = await self._gateway.ainvoke(
@@ -368,7 +378,16 @@ class WalkDecider:
             return WalkDecision(action="give_up", fail_kind="other", reason="동작 응답 형식 오류")
 
 
-Decide = Callable[[UseCaseCandidate, list[FlowStep], ToolResult], Awaitable[WalkDecision]]
+Decide = Callable[
+    [UseCaseCandidate, list[FlowStep], ToolResult, str | None], Awaitable[WalkDecision]
+]
+# 빈 조회 결과를 만난 뒤 조건을 넓혀 다시 조회해 볼 단계 수 상한
+MAX_WIDEN_STEPS = 6
+WIDEN_NOTICE = (
+    "지금 화면의 조회 결과가 비었습니다. 검색어를 지우거나 기간·조건을 넓힌 뒤 "
+    "반드시 조회(검색) 버튼을 눌러 다시 조회하세요. 조건만 바꾸고 조회하지 않으면 결과가 바뀌지 않습니다. "
+    "한 번 넓혀 조회해도 비어 있으면 give_up(no_data)."
+)
 CaptureFn = Callable[[str, str], Awaitable[Any]]
 
 
@@ -423,8 +442,10 @@ def _check(
         raise _StopFlow("write_action", f'쓰기 동작 미승인: {role} "{name}" (T08에서 승인 요청)')
     if decision.action in ("type", "select"):
         value = decision.text or ""
-        if not value or secrets.mask(value) != value:
-            raise _StopFlow("other", "입력값이 비었거나 계정·세션 값이라 넣지 않았습니다 (G3)")
+        if decision.action == "select" and not value:
+            raise _StopFlow("other", "선택할 값이 없습니다")
+        if value and secrets.mask(value) != value:
+            raise _StopFlow("other", "계정·세션 값이라 넣지 않았습니다 (G3)")
     return decision.target_ref, FlowTarget(role=role, name=name)
 
 
@@ -446,6 +467,7 @@ async def walk_flow(
     started = now_iso()
     steps: list[FlowStep] = []
     llm_calls = 0
+    recovery: DataRecovery | None = None
 
     def finish(status: str, reason: str, kind: FailKind | None = None) -> FlowTrace:
         return FlowTrace(
@@ -461,14 +483,49 @@ async def walk_flow(
             llm_calls=llm_calls,
             started_at=started,
             finished_at=now_iso(),
+            data_recovery=recovery,
         )
 
+    def partial(reason: str) -> FlowTrace:
+        nonlocal recovery
+        if recovery is None:
+            recovery = DataRecovery(
+                empty_at_step=len(steps),
+                empty_screen_id=screen_id_for(current_url),
+                result="still_empty",
+            )
+        recovery.result = "still_empty"
+        return finish(
+            "partial",
+            f"빈 조회 결과: {reason} (조건을 넓혀도 비어 합성 데이터로 보완)",
+            "no_data",
+        )
+
+    current_url = candidate.start_url
     try:
         await browser.call("browser_navigate", {"url": candidate.start_url})
         for index in range(1, max_steps + 1):
             page = await _snapshot(browser)
-            decision = await decide(candidate, steps, page)
+            current_url = page.page_url or current_url
+            empty = looks_empty(page.text)
+            if empty and recovery is None:
+                recovery = DataRecovery(
+                    empty_at_step=len(steps),
+                    empty_screen_id=screen_id_for(current_url),
+                    result="still_empty",
+                )
+            elif not empty and recovery is not None and recovery.widened_steps:
+                recovery.result = "found"  # 조건을 넓혀 다시 조회해 데이터를 찾았다
+            widening = recovery is not None and recovery.result == "still_empty" and empty
+            if widening and recovery and len(recovery.widened_steps) >= MAX_WIDEN_STEPS:
+                return partial("넓혀 다시 조회해도 결과가 없습니다")
+            decision = await decide(candidate, steps, page, WIDEN_NOTICE if widening else None)
             llm_calls += 1
+            if decision.action == "give_up" and decision.fail_kind == "no_data":
+                return partial(decision.reason)
+            if decision.action == "done" and empty:
+                # 빈 화면은 목표 도착으로 인정하지 않는다
+                return partial(f"빈 결과 화면에서 끝내려 함: {decision.reason}")
             if decision.action == "done":
                 if not steps:
                     return finish("failed", f"한 단계도 걷지 않고 끝냄: {decision.reason}", "other")
@@ -494,6 +551,8 @@ async def walk_flow(
             ]
             if screen_id_for(to_url) != screen_id_for(from_url):
                 await capture(to_url, to_title)
+            if widening and recovery:
+                recovery.widened_steps.append(index)
             steps.append(
                 FlowStep(
                     index=index,
@@ -593,10 +652,32 @@ async def run_walk(
             break
         log(f"흐름 걷기 시작: {candidate.name} (점수 {candidate.total}/20)")
         trace = await walk_flow(browser, candidate, decide, capture, limits.max_steps)
-        if trace.status == "completed":
+        if trace.status == "partial" and trace.data_recovery:
+            screen = trace.data_recovery.empty_screen_id
+            made = fill_empty_screens(store, [screen])
+            if made or store.fixture_path(screen).exists():
+                trace.data_recovery.fixture = f"fixtures/{screen}.json"
+                log(
+                    f"부분 완주: {candidate.name} — 빈 조회 결과, 조건을 넓혀도 비어 합성 데이터로 보완 "
+                    f"({trace.data_recovery.fixture})"
+                )
+            else:
+                # 목록·상세 데이터 구조가 없는 화면이면 합성할 수 없으므로 부분 완주가 아니다
+                trace.status = "failed"
+                trace.reason = (
+                    trace.reason.replace(" (조건을 넓혀도 비어 합성 데이터로 보완)", "")
+                    + " (데이터 구조가 없는 화면이라 합성 데이터로 보완하지 못함)"
+                )
+                log(f"완주 못 함: {candidate.name} — 데이터 없음: {trace.reason}")
+        elif trace.status == "completed":
             trace.replay = await replay_flow(browser, trace)
             replay = "재실행 확인" if trace.replay.ok else f"재실행 실패: {trace.replay.message}"
-            log(f"완주: {candidate.name} ({len(trace.steps)}단계, {replay})")
+            found = (
+                ", 빈 결과를 조건 넓혀 다시 조회해 찾음"
+                if trace.data_recovery and trace.data_recovery.result == "found"
+                else ""
+            )
+            log(f"완주: {candidate.name} ({len(trace.steps)}단계, {replay}{found})")
         else:
             label = KIND_LABEL.get(trace.fail_kind or "other", "기타")
             log(f"완주 못 함: {candidate.name} — {label}: {trace.reason}")

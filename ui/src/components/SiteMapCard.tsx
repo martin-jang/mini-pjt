@@ -1,4 +1,4 @@
-import type { SiteMapLinkStatus, SiteMapMenuItem, SiteMapView } from '../api/types';
+import type { DataSource, SiteMapLinkStatus, SiteMapMenuItem, SiteMapView } from '../api/types';
 import { Card } from './Card';
 import { Badge, Dot, type Tone } from './StatusBadge';
 
@@ -7,6 +7,12 @@ const LINK_STATUS: Record<SiteMapLinkStatus, { label: string; tone: Tone }> = {
   skipped: { label: '건너뜀', tone: 'waiting' },
   limit: { label: '상한', tone: 'pending' },
   failed: { label: '실패', tone: 'error' },
+};
+
+const DATA_SOURCE: Record<DataSource, { label: string; tone: Tone }> = {
+  observed: { label: '관찰', tone: 'success' },
+  inferred: { label: '구조만', tone: 'waiting' },
+  synthetic: { label: '합성', tone: 'running' },
 };
 
 function pathOf(url: string): string {
@@ -78,7 +84,8 @@ export function SiteMapCard({ sitemap }: { sitemap: SiteMapView }) {
               <th className="px-3 py-2.5 font-normal">경로</th>
               <th className="px-3 py-2.5 text-right font-normal">깊이</th>
               <th className="px-3 py-2.5 font-normal">구성</th>
-              <th className="px-5 py-2.5 text-right font-normal">들어오는 이동</th>
+              <th className="px-3 py-2.5 text-right font-normal">들어오는 이동</th>
+              <th className="px-5 py-2.5 font-normal">데이터 출처</th>
             </tr>
           </thead>
           <tbody>
@@ -92,7 +99,12 @@ export function SiteMapCard({ sitemap }: { sitemap: SiteMapView }) {
                 <td className="px-3 py-2.5 text-xs text-body">
                   표 {s.tables} · 폼 {s.forms} · 버튼 {s.buttons}
                 </td>
-                <td className="px-5 py-2.5 text-right">{s.inbound}</td>
+                <td className="px-3 py-2.5 text-right">{s.inbound}</td>
+                <td className="px-5 py-2.5" data-testid="data-source">
+                  <Badge tone={DATA_SOURCE[s.dataSource ?? 'observed'].tone} plain>
+                    {DATA_SOURCE[s.dataSource ?? 'observed'].label}
+                  </Badge>
+                </td>
               </tr>
             ))}
           </tbody>

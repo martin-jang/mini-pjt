@@ -5,6 +5,7 @@ import { Badge, type Tone } from './StatusBadge';
 
 const STATUS: Record<WalkStatus, { label: string; tone: Tone }> = {
   completed: { label: '완주', tone: 'success' },
+  partial: { label: '부분 완주', tone: 'waiting' },
   failed: { label: '완주 못 함', tone: 'error' },
   untried: { label: '시도 안 함', tone: 'pending' },
 };
@@ -78,12 +79,20 @@ function CandidateRow({ c }: { c: WalkCandidateView }) {
           )}
           {c.status !== 'untried' && (
             <p className="text-[13px]">
-              {c.status === 'failed' && c.failKind && (
+              {c.status !== 'completed' && c.failKind && (
                 <span className="font-medium text-error">
                   {FAIL_KIND[c.failKind] ?? c.failKind} ·{' '}
                 </span>
               )}
               <span className="text-body">{c.result}</span>
+            </p>
+          )}
+          {c.dataRecovery && (
+            <p className="text-xs text-body" data-testid={`walk-recovery-${c.id}`}>
+              빈 조회 결과 대응 ·{' '}
+              {c.dataRecovery === 'found'
+                ? '조건을 넓혀 다시 조회해 데이터를 찾음'
+                : `조건을 넓혀도 비어 합성 데이터로 보완 (${c.fixture ?? '합성 못 함'})`}
             </p>
           )}
           {c.replayOk != null && (
@@ -103,6 +112,7 @@ function CandidateRow({ c }: { c: WalkCandidateView }) {
 /** Hypothesize · Walk 결과: 사이트 성격 1차 추론, 유스케이스 후보와 완주 여부 */
 export function WalkCard({ walk }: { walk: WalkView }) {
   const completed = walk.candidates.filter((c) => c.status === 'completed').length;
+  const partial = walk.candidates.filter((c) => c.status === 'partial').length;
   const tried = walk.candidates.filter((c) => c.status !== 'untried').length;
   return (
     <Card
@@ -111,7 +121,7 @@ export function WalkCard({ walk }: { walk: WalkView }) {
       testId="walk"
       actions={
         <span className="text-xs text-body" data-testid="walk-summary">
-          완주 {completed} · 시도 {tried} · 후보 {walk.candidates.length}
+          완주 {completed} · 부분 {partial} · 시도 {tried} · 후보 {walk.candidates.length}
         </span>
       }
       bodyClassName="p-0"

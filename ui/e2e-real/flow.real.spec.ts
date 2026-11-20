@@ -34,6 +34,11 @@ test('실제 서버: 새 요청 → 승인 2곳 → 결과', async ({ page }) =>
   await expect(walk.locator('[data-status="completed"]').nth(1)).toBeVisible({ timeout: 40_000 });
   await walk.locator('[data-status="completed"] button').first().click();
   await expect(walk.getByTestId(/walk-replay-/).first()).toContainText('재현됨');
+  // T07e: 데이터가 없는 자료실은 합성 데이터로 보완되어 출처가 "합성"으로 보인다
+  await expect(sitemap.locator('tr', { hasText: '자료실' })).toContainText('합성', {
+    timeout: 40_000,
+  });
+  await expect(sitemap.locator('tr', { hasText: '공지사항 목록' })).toContainText('관찰');
 
   // 승인 1
   await page.getByTestId('go-analysis-review').click({ timeout: 40_000 });

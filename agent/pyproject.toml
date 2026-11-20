@@ -20,6 +20,8 @@ ignore = ["ANN401"]
 "legacy2next/router.py" = ["E501"]
 "legacy2next/login.py" = ["E501"]
 "legacy2next/walker.py" = ["E501"]
+"legacy2next/crawl.py" = ["E501"]
+"legacy2next/derive.py" = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

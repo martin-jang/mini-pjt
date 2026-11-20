@@ -228,7 +228,11 @@ export interface SiteMapScreen {
   buttons: number;
   /** 이 화면으로 들어오는 이동 수 */
   inbound: number;
+  /** 화면 데이터 출처: observed(실제로 봄)·inferred(구조만 봄)·synthetic(합성 데이터) */
+  dataSource?: DataSource;
 }
+
+export type DataSource = 'observed' | 'inferred' | 'synthetic';
 
 export interface SiteMapMenuItem {
   label: string;
@@ -268,7 +272,7 @@ export interface WalkStepView {
   toUrl: string;
 }
 
-export type WalkStatus = 'completed' | 'failed' | 'untried';
+export type WalkStatus = 'completed' | 'partial' | 'failed' | 'untried';
 
 export interface WalkCandidateView {
   id: string;
@@ -289,6 +293,10 @@ export interface WalkCandidateView {
   /** 재실행 스크립트로 LLM 없이 다시 걸었을 때 재현됐는지 */
   replayOk?: boolean | null;
   replayMessage: string;
+  /** 빈 조회 결과 대응: found(조건 넓혀 찾음)·still_empty(합성 데이터로 보완) */
+  dataRecovery?: 'found' | 'still_empty' | null;
+  /** 합성 데이터 파일 (crawl 폴더 기준) */
+  fixture?: string | null;
 }
 
 export interface WalkView {
