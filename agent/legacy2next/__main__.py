@@ -23,6 +23,10 @@ def main() -> None:
     parser.add_argument("--checkpoint", type=Path)
     parser.add_argument("--stub-step-ms", type=int)
     parser.add_argument("--output-root", type=Path, help="next-pjt 대신 쓸 결과물 루트")
+    parser.add_argument("--session-dir", type=Path, help="로그인 세션 저장 폴더 (git 제외 경로)")
+    parser.add_argument(
+        "--auth-headless", action="store_true", help="사용자 인증 브라우저 창을 띄우지 않음 (E2E용)"
+    )
     parser.add_argument("--cors-origin", action="append", default=[])
     parser.add_argument(
         "--fake-llm", action="store_true", help="실제 Bedrock 대신 테스트용 가짜 LLM (E2E용)"
@@ -45,6 +49,10 @@ def main() -> None:
         overrides["output_root"] = args.output_root.resolve()
     if args.stub_step_ms is not None:
         overrides["stub_step_ms"] = args.stub_step_ms
+    if args.session_dir:
+        overrides["session_dir"] = args.session_dir.resolve()
+    if args.auth_headless:
+        overrides["explorer"] = config.explorer.model_copy(update={"auth_headless": True})
     if args.cors_origin:
         overrides["cors_origins"] = [*config.cors_origins, *args.cors_origin]
     config = config.model_copy(update=overrides)

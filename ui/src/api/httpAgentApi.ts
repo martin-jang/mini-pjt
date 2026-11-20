@@ -71,6 +71,14 @@ export function createHttpAgentApi(baseUrl: string): AgentApi {
       await request(`${sitePath(alias)}/design`, decision);
     },
 
+    submitAuth: async (alias, decision) => {
+      await request(`${sitePath(alias)}/auth`, decision);
+    },
+
+    deleteSession: async (alias) => {
+      await request(`${sitePath(alias)}/session/delete`, {});
+    },
+
     stopRun: async (alias) => {
       await request(`${sitePath(alias)}/stop`, {});
     },

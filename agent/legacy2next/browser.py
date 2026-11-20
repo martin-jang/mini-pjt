@@ -107,31 +107,43 @@ class McpBrowser:
         *,
         headless: bool = True,
         secrets_file: Path | None = None,
+        storage_state: Path | None = None,
+        caps: Sequence[str] = (),
+        extension: bool = False,
         cli_path: Path = MCP_CLI,
     ) -> None:
         self._allowed_origins = list(allowed_origins)
         self._output_dir = output_dir
         self._headless = headless
         self._secrets_file = secrets_file
+        self._storage_state = storage_state
+        self._caps = list(caps)
+        self._extension = extension
         self._cli_path = cli_path
         self._stack: AsyncExitStack | None = None
         self._session: ClientSession | None = None
         self.tool_names: set[str] = set()
 
     def server_args(self) -> list[str]:
+        # extension: 사용자가 이미 로그인한 Chrome에 붙는다 (프로필·세션은 사용자 브라우저 것)
+        mode = ["--extension"] if self._extension else ["--isolated"]
         args = [
             str(self._cli_path),
-            "--isolated",
+            *mode,
             "--output-dir",
             str(self._output_dir),
             # 1차 방어: 허용 origin만 요청 (보안 경계 아님)
             "--allowed-origins",
             ";".join(self._allowed_origins),
         ]
-        if self._headless:
+        if self._headless and not self._extension:
             args.append("--headless")
         if self._secrets_file:
             args += ["--secrets", str(self._secrets_file)]
+        if self._storage_state and not self._extension:
+            args += ["--storage-state", str(self._storage_state)]
+        if self._caps:
+            args += ["--caps", ",".join(self._caps)]
         return args
 
     async def __aenter__(self) -> McpBrowser:

@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { agentApi } from '../api/agentApi';
 import type { RunDetail, RunResult } from '../api/types';
 import { Button } from '../components/Button';
 import { Callout } from '../components/Callout';
@@ -9,6 +11,58 @@ import { RunLoader } from '../components/RunLoader';
 import { Badge, StatusBadge } from '../components/StatusBadge';
 import { useNow } from '../hooks/useNow';
 import { formatDuration, runDurations } from '../lib/format';
+
+/** 저장된 로그인 세션은 비밀값처럼 다룬다. 더 수집하지 않으면 지우도록 권한다 (G10) */
+function SessionNotice({ alias }: { alias: string }) {
+  const [busy, setBusy] = useState(false);
+  const [deleted, setDeleted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const remove = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      await agentApi.deleteSession(alias);
+      // 삭제 이벤트는 로그로만 오므로 스냅샷을 다시 받지 않는다. 성공하면 바로 숨긴다
+      setDeleted(true);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '세션을 지우지 못했습니다.');
+      setBusy(false);
+    }
+  };
+
+  if (deleted) return null;
+
+  return (
+    <div className="mb-6">
+      <Callout
+        tone="pending"
+        icon="cookie"
+        title="로그인 세션이 저장되어 있습니다"
+        testId="session-notice"
+        actions={
+          <Button
+            variant="danger"
+            icon="delete"
+            disabled={busy}
+            onClick={() => void remove()}
+            data-testid="delete-session"
+          >
+            세션 삭제
+          </Button>
+        }
+      >
+        확장 요청으로 화면을 더 수집하지 않을 거면 삭제하세요. 세션 파일은 생성 결과물과 분리된 git
+        제외 폴더에 있습니다.
+        {error && (
+          <span className="mt-1 block text-error" role="alert">
+            {error}
+          </span>
+        )}
+      </Callout>
+    </div>
+  );
+}
 
 function ResultView({ run, result }: { run: RunDetail; result: RunResult }) {
   const navigate = useNavigate();
@@ -65,6 +119,8 @@ function ResultView({ run, result }: { run: RunDetail; result: RunResult }) {
           </>
         }
       />
+
+      {run.sessionSaved && <SessionNotice alias={run.alias} />}
 
       <div className="mb-6 grid grid-cols-4 gap-4" data-testid="result-metrics">
         {metrics.map((m) => (

@@ -29,6 +29,7 @@ from .router import REJECT_TEXT, Router
 from .runs import RunError, RunService
 from .schemas import (
     AnalysisDecision,
+    AuthDecision,
     DesignDecision,
     LogLine,
     QueryAnswer,
@@ -85,12 +86,19 @@ def create_app(
         checkpoint.parent.mkdir(parents=True, exist_ok=True)
         async with AsyncSqliteSaver.from_conn_string(str(checkpoint)) as saver:
             events = EventLog(cfg.resolved_log_dir())
-            runs = RunService(cfg, events, saver)
-            runs.mark_interrupted_runs()
             settings = Secrets()
             client = llm_client or (
                 FakeLlmClient() if fake_llm else create_bedrock_client(settings)
             )
+            # 실행 노드용 LLM: 실행(별칭)마다 호출 수를 센다 (G8)
+            run_llm = LlmGateway(
+                client,
+                settings.bedrock_model_id,
+                CallBudget(cfg.limits.llm_calls_per_run),
+                events,
+            )
+            runs = RunService(cfg, events, saver, run_llm)
+            runs.mark_interrupted_runs()
             router_events = EventLog(cfg.resolved_log_dir() / "router")
             gateway = LlmGateway(
                 client,
@@ -101,7 +109,10 @@ def create_app(
             app.state.router = Router(gateway, router_events)
             app.state.events = events
             app.state.runs = runs
-            yield
+            try:
+                yield
+            finally:
+                await runs.aclose()
 
     app = FastAPI(title="Legacy2Next Agent", version=__version__, lifespan=lifespan)
     app.add_middleware(
@@ -200,10 +211,28 @@ def create_app(
             raise _bad_request(e) from e
         return {"status": "accepted"}
 
+    @app.post("/runs/{alias}/auth", status_code=202)
+    async def submit_auth(alias: str, body: AuthDecision, request: Request) -> dict[str, str]:
+        """사용자가 브라우저에서 인증을 마쳤음(done) 또는 취소(cancel)."""
+        try:
+            await _service(request).submit_auth(alias, body)
+        except RunError as e:
+            raise _bad_request(e) from e
+        return {"status": "accepted"}
+
+    @app.post("/runs/{alias}/session/delete")
+    async def delete_session(alias: str, request: Request) -> dict[str, bool]:
+        """저장한 로그인 세션 파일 삭제 (G10)."""
+        try:
+            deleted = _service(request).delete_session(alias)
+        except RunError as e:
+            raise _bad_request(e) from e
+        return {"deleted": deleted}
+
     @app.post("/runs/{alias}/stop", status_code=202)
     async def stop_run(alias: str, request: Request) -> dict[str, str]:
         try:
-            _service(request).stop(alias)
+            await _service(request).stop(alias)
         except RunError as e:
             raise HTTPException(status_code=404, detail=str(e)) from e
         return {"status": "accepted"}

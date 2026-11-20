@@ -12,6 +12,7 @@ export const STAGE_LABEL: Record<StageId, string> = {
 
 export const STATUS_LABEL: Record<RunStatus, string> = {
   running: '진행 중',
+  awaiting_auth: '인증 대기',
   awaiting_analysis: '승인 대기',
   awaiting_design: '승인 대기',
   done: '완료',
@@ -46,7 +47,12 @@ export function runDurations(run: RunDetail, now: number) {
 }
 
 export function isActive(status: RunStatus): boolean {
-  return status === 'running' || status === 'awaiting_analysis' || status === 'awaiting_design';
+  return (
+    status === 'running' ||
+    status === 'awaiting_auth' ||
+    status === 'awaiting_analysis' ||
+    status === 'awaiting_design'
+  );
 }
 
 /** 사이트 상태에 맞는 기본 화면 경로 */

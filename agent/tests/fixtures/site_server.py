@@ -1,6 +1,11 @@
-"""G2 검증용 시험 사이트.
+"""Explorer 검증용 시험 사이트.
 
-내부 링크, 다른 origin 링크, 다른 origin으로 가는 리다이렉트, 로그아웃 링크가 있다.
+- `/`: G2 검증. 내부 링크, 다른 origin 링크, 다른 origin으로 가는 리다이렉트, 로그아웃 링크
+- `/idpw/`: ID/PW 로그인이 필요한 영역 (T07a). 로그인하지 않으면 `/idpw/login`으로 보낸다
+- `/cert/`: 간편인증(사람이 해야 하는 인증)이 필요한 영역 (T07a). 로그인 화면은 인증 승인을
+  기다리며 `/cert/status`를 확인하고, 승인되면 세션 쿠키를 받는다.
+  사용자가 휴대폰에서 승인하는 동작은 `POST /_test/approve`로 흉내 낸다
+- `POST /_test/expire`: 발급한 세션을 모두 무효로 만든다 (세션 만료 흉내)
 
 pytest에서는 start_site()로 스레드에서 띄우고, E2E에서는 스크립트로 띄운다:
     python tests/fixtures/site_server.py --port 8766
@@ -11,8 +16,14 @@ pytest에서는 start_site()로 스레드에서 띄우고, E2E에서는 스크�
 from __future__ import annotations
 
 import argparse
+import secrets
 import threading
+from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import parse_qs
+
+FIXTURE_USERNAME = "tester"
+FIXTURE_PASSWORD = "fixture-pass-1234"
 
 
 def _page(title: str, body: str) -> bytes:
@@ -22,20 +33,83 @@ def _page(title: str, body: str) -> bytes:
     ).encode()
 
 
+LOGIN_FORM = _page(
+    "로그인",
+    (
+        '<form method="post" action="/idpw/login">'
+        '<label>아이디 <input name="uid" type="text"></label> '
+        '<label>비밀번호 <input name="upw" type="password"></label> '
+        '<button type="submit">로그인</button></form>'
+    ),
+)
+
+CERT_LOGIN = _page(
+    "인증 로그인",
+    (
+        "<p>공동인증서 또는 간편인증(카카오·PASS)으로 로그인하세요.</p>"
+        '<button type="button">공동인증서 로그인</button> '
+        '<button type="button">간편인증 요청</button>'
+        '<p id="state">휴대폰에서 인증을 승인해 주세요</p>'
+        # 콘솔에서 손으로 확인할 때 휴대폰 승인 대신 누르는 버튼 (사람만 누른다)
+        "<button type=\"button\" onclick=\"fetch('/_test/approve', {method: 'POST'})\">"
+        "(시험용) 휴대폰에서 승인</button>"
+        "<script>setInterval(async () => {"
+        " const r = await fetch('/cert/status');"
+        " if ((await r.text()) === 'ok') location.href = '/cert/home';"
+        "}, 300);</script>"
+    ),
+)
+
+
+class SiteState:
+    """발급한 세션과 간편인증 승인 여부. 서버 인스턴스마다 따로 둔다."""
+
+    def __init__(self, username: str, password: str) -> None:
+        self.username = username
+        self.password = password
+        self.sessions: set[str] = set()
+        self.approved = False
+        self.lock = threading.Lock()
+
+    def issue(self) -> str:
+        sid = secrets.token_hex(16)
+        with self.lock:
+            self.sessions.add(sid)
+        return sid
+
+
 class Handler(BaseHTTPRequestHandler):
-    def _send(self, status: int, body: bytes = b"", location: str | None = None) -> None:
+    server: SiteServer
+
+    def _send(
+        self,
+        status: int,
+        body: bytes = b"",
+        location: str | None = None,
+        cookie: str | None = None,
+        content_type: str = "text/html; charset=utf-8",
+    ) -> None:
         self.send_response(status)
         if location:
             self.send_header("Location", location)
-        self.send_header("Content-Type", "text/html; charset=utf-8")
+        if cookie:
+            self.send_header("Set-Cookie", f"{cookie}; Path=/; HttpOnly")
+        self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
 
+    def _logged_in(self, name: str) -> bool:
+        jar = SimpleCookie(self.headers.get("Cookie", ""))
+        sid = jar[name].value if name in jar else ""
+        with self.server.state.lock:
+            return sid in self.server.state.sessions
+
     def do_GET(self) -> None:  # noqa: N802 (http.server 규칙)
         port = self.server.server_address[1]
         external = f"http://localhost:{port}"
-        if self.path in ("/", "/index.html"):
+        path = self.path.split("?", 1)[0]
+        if path in ("/", "/index.html"):
             self._send(
                 200,
                 _page(
@@ -48,21 +122,90 @@ class Handler(BaseHTTPRequestHandler):
                     ),
                 ),
             )
-        elif self.path == "/page2.html":
+        elif path == "/page2.html":
             self._send(200, _page("공지 목록", '<a href="/">홈</a>'))
-        elif self.path == "/go-out":
+        elif path == "/go-out":
             self._send(302, location=f"{external}/external.html")
-        elif self.path == "/external.html":
+        elif path == "/external.html":
             self._send(200, _page("외부 페이지", "여기에 오면 안 된다"))
+        elif path == "/idpw/login":
+            self._send(200, LOGIN_FORM)
+        elif path.startswith("/idpw/"):
+            if not self._logged_in("idpw_sid"):
+                self._send(302, location="/idpw/login")
+            elif path in ("/idpw/", "/idpw/home"):
+                self._send(
+                    200,
+                    _page(
+                        "업무 홈",
+                        '<a href="/idpw/notice">공지사항</a> <a href="/idpw/members">회원 목록</a>',
+                    ),
+                )
+            elif path == "/idpw/notice":
+                self._send(200, _page("공지사항", '<a href="/idpw/home">홈</a>'))
+            elif path == "/idpw/members":
+                self._send(200, _page("회원 목록", '<a href="/idpw/home">홈</a>'))
+            else:
+                self._send(404, _page("없음", ""))
+        elif path == "/cert/login":
+            self._send(200, CERT_LOGIN)
+        elif path == "/cert/status":
+            with self.server.state.lock:
+                approved = self.server.state.approved
+            if approved:
+                sid = self.server.state.issue()
+                self._send(200, b"ok", cookie=f"cert_sid={sid}", content_type="text/plain")
+            else:
+                self._send(200, b"wait", content_type="text/plain")
+        elif path.startswith("/cert/"):
+            if not self._logged_in("cert_sid"):
+                self._send(302, location="/cert/login")
+            elif path in ("/cert/", "/cert/home"):
+                self._send(200, _page("민원 홈", '<a href="/cert/apply">민원 신청 내역</a>'))
+            elif path == "/cert/apply":
+                self._send(200, _page("민원 신청 내역", '<a href="/cert/home">홈</a>'))
+            else:
+                self._send(404, _page("없음", ""))
         else:
             self._send(404, _page("없음", ""))
+
+    def do_POST(self) -> None:  # noqa: N802
+        length = int(self.headers.get("Content-Length") or 0)
+        form = parse_qs(self.rfile.read(length).decode())
+        state = self.server.state
+        if self.path == "/idpw/login":
+            uid = form.get("uid", [""])[0]
+            upw = form.get("upw", [""])[0]
+            if uid == state.username and upw == state.password:
+                self._send(302, location="/idpw/home", cookie=f"idpw_sid={state.issue()}")
+            else:
+                self._send(200, LOGIN_FORM.replace(b"</h1>", b"</h1><p>login failed</p>"))
+        elif self.path == "/_test/approve":
+            with state.lock:
+                state.approved = True
+            self._send(200, b"approved", content_type="text/plain")
+        elif self.path == "/_test/expire":
+            with state.lock:
+                state.sessions.clear()
+                state.approved = False
+            self._send(200, b"expired", content_type="text/plain")
+        else:
+            self._send(404)
 
     def log_message(self, format: str, *args: object) -> None:
         pass
 
 
-def start_site(port: int = 0) -> ThreadingHTTPServer:
-    server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+class SiteServer(ThreadingHTTPServer):
+    def __init__(self, port: int, username: str, password: str) -> None:
+        super().__init__(("127.0.0.1", port), Handler)
+        self.state = SiteState(username, password)
+
+
+def start_site(
+    port: int = 0, username: str = FIXTURE_USERNAME, password: str = FIXTURE_PASSWORD
+) -> SiteServer:
+    server = SiteServer(port, username, password)
     threading.Thread(target=server.serve_forever, daemon=True).start()
     return server
 
@@ -70,5 +213,7 @@ def start_site(port: int = 0) -> ThreadingHTTPServer:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=8766)
+    parser.add_argument("--username", default=FIXTURE_USERNAME)
+    parser.add_argument("--password", default=FIXTURE_PASSWORD)
     args = parser.parse_args()
-    ThreadingHTTPServer(("127.0.0.1", args.port), Handler).serve_forever()
+    SiteServer(args.port, args.username, args.password).serve_forever()

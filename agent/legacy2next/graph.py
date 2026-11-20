@@ -1,13 +1,15 @@
 """LangGraph 고정 그래프 (T04: 노드는 스텁).
 
-Router → ① Explorer → ② Analyst → ⏸ 분석 리뷰 → ③ Designer → ⏸ 디자인 확인 → ④ Builder → ⑤ Verifier
-승인 2곳은 interrupt()로 멈추고, 콘솔의 결정으로 Command(resume=...) 재개한다.
+Router → ① 로그인(⏸ 사용자 인증) → Explorer → ② Analyst → ⏸ 분석 리뷰 → ③ Designer
+→ ⏸ 디자인 확인 → ④ Builder → ⑤ Verifier
+승인 2곳과 사용자 인증 넘김은 interrupt()로 멈추고, 콘솔의 결정으로 Command(resume=...) 재개한다.
 interrupt()가 있는 노드는 재개 때 처음부터 다시 실행되므로, 대기 이벤트는 앞 노드에서 남긴다.
 """
 
 from __future__ import annotations
 
 import asyncio
+import shutil
 from dataclasses import dataclass, field
 from typing import Any, Literal, TypedDict
 
@@ -17,14 +19,25 @@ from langgraph.graph.state import CompiledStateGraph
 from langgraph.types import Command, interrupt
 
 from . import stubs
-from .browser import GuardedBrowser, McpBrowser
-from .config import AgentConfig
+from .browser import BrowserActionError, GuardedBrowser, McpBrowser
+from .config import AgentConfig, load_site_credentials
 from .events import EventLog, EventType, RunEvent
-from .explorer import explore_links
+from .explorer import ExplorerError, SessionExpiredError, explore_links
+from .llm import LlmGateway
+from .login import (
+    AuthHandoffs,
+    LoginDetector,
+    check_login,
+    register_session_secrets,
+    secrets_file,
+    staging_dir,
+)
 from .schemas import (
     AnalysisDecision,
     AnalysisReview,
     ApprovedAnalysis,
+    AuthDecision,
+    AuthRequest,
     DesignChange,
     DesignDecision,
     DesignReview,
@@ -46,6 +59,11 @@ class GraphState(TypedDict, total=False):
     approved_analysis: dict[str, Any]
     design: dict[str, Any]
     result: dict[str, Any]
+    # 사용자 인증 넘김 요청 (없으면 None)
+    auth: dict[str, Any] | None
+    # 로그인 화면 주소 (수집 중 여기로 되돌아가면 세션 만료)
+    login_url: str | None
+    login_attempts: int
 
 
 @dataclass
@@ -96,6 +114,9 @@ class Emitter:
 class GraphDeps:
     events: EventLog
     config: AgentConfig = field(default_factory=AgentConfig)
+    # 실행 노드가 쓰는 LLM (실행당 호출 수 한도 G8). 스텁 수집에서는 없어도 된다
+    llm: LlmGateway | None = None
+    auth: AuthHandoffs = field(default_factory=AuthHandoffs)
 
     @property
     def step_delay(self) -> float:
@@ -116,7 +137,159 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
         await em.step()
         return {"intent": intent}
 
-    async def explorer(state: GraphState) -> dict[str, Any]:
+    def guard_emit(em: Emitter) -> Any:
+        def guard(rule: str, detail: str, outcome: str, message: str) -> None:
+            em.guardrail(rule, detail, outcome, message)
+
+        return guard
+
+    async def login(state: GraphState) -> dict[str, Any]:
+        """시작 화면(또는 설정한 로그인 화면)이 로그인 화면이면 로그인하거나 사용자에게 넘긴다."""
+        em = deps.emitter(state)
+        cfg = deps.config
+        if cfg.explorer.mode == "stub":
+            return {"auth": None}
+        em.stage("explorer", "running")
+        alias = state["alias"]
+        attempts = state.get("login_attempts", 0) + 1
+        if attempts > cfg.explorer.login_attempts:
+            raise ExplorerError(
+                f"로그인·인증을 {cfg.explorer.login_attempts}번 시도했지만 "
+                "로그인 상태가 되지 않아 멈춥니다"
+            )
+        site = cfg.site(alias)
+        if site.browser == "extension":
+            em.log("explorer", "사용자 Chrome(--extension)의 로그인 상태를 그대로 씁니다")
+            return {"auth": None, "login_attempts": attempts}
+        if deps.llm is None:
+            raise ExplorerError("로그인 판별에 쓸 LLM이 설정되지 않았습니다")
+
+        origins = cfg.allowed_origins(alias, state["url"])
+        session = cfg.session_path(alias)
+        had_session = session.exists()
+        if had_session:
+            register_session_secrets(session)
+            em.log("explorer", "저장된 로그인 세션을 불러옵니다")
+        target = site.login_url or state["url"]
+        credentials = load_site_credentials(alias)
+        # 로그인 브라우저 산출물(로그인 화면 스냅샷·세션 임시 파일)은 세션 폴더에 두고 끝나면 지운다
+        staging = staging_dir(session, "login")
+        with secrets_file(credentials) as secret_path:
+            async with McpBrowser(
+                origins,
+                staging,
+                headless=cfg.explorer.headless,
+                secrets_file=secret_path,
+                storage_state=session if had_session else None,
+                caps=["storage"],
+            ) as mcp:
+                em.log(
+                    "explorer", f"Playwright MCP 브라우저 시작, 허용 origin: {', '.join(origins)}"
+                )
+                browser = GuardedBrowser(mcp, origins, guard_emit(em))
+                try:
+                    check = await check_login(
+                        mcp=mcp,
+                        browser=browser,
+                        detector=LoginDetector(deps.llm),
+                        run_id=state["run_id"],
+                        url=target,
+                        credentials=credentials,
+                        session_path=session,
+                        staging=staging,
+                        log=lambda m: em.log("explorer", m),
+                    )
+                except BrowserActionError as e:
+                    raise ExplorerError(f"시작 화면을 열 수 없습니다: {target} ({e})") from e
+        shutil.rmtree(staging, ignore_errors=True)
+
+        if check.status == "ok":
+            if check.kind == "none":
+                em.log(
+                    "explorer",
+                    "저장된 세션으로 로그인된 상태입니다"
+                    if had_session
+                    else "로그인 화면이 아닙니다. 로그인 없이 진행합니다",
+                )
+            else:
+                em.log(
+                    "explorer",
+                    f"{check.reason}. 세션을 저장했습니다 "
+                    "(계정 값은 코드가 입력, LLM은 입력란만 찾음)",
+                )
+            return {
+                "auth": None,
+                "login_attempts": attempts,
+                "login_url": check.login_url or state.get("login_url"),
+            }
+
+        if had_session:
+            session.unlink(missing_ok=True)
+            em.log("explorer", "저장된 로그인 세션이 만료되어 삭제했습니다", "warn")
+        request = AuthRequest(
+            login_kind=check.kind, reason=check.reason, url=check.login_url or target
+        )
+        em.log("explorer", f"사용자 인증이 필요합니다: {check.reason}", "warn")
+        return {
+            "auth": request.model_dump(),
+            "login_attempts": attempts,
+            "login_url": check.login_url,
+        }
+
+    def after_login(state: GraphState) -> str:
+        return "auth_gate" if state.get("auth") else "explorer"
+
+    async def auth_gate(state: GraphState) -> dict[str, Any]:
+        """사용자가 인증할 브라우저 창을 띄우고 인증 대기를 알린다."""
+        em = deps.emitter(state)
+        cfg = deps.config
+        alias = state["alias"]
+        request = AuthRequest.model_validate(state["auth"])
+        origins = cfg.allowed_origins(alias, state["url"])
+        # 인증 브라우저 산출물도 세션처럼 다룬다 (next-pjt 밖, git 제외, 닫을 때 지움)
+        staging = staging_dir(cfg.session_path(alias), "auth")
+
+        def factory() -> McpBrowser:
+            return McpBrowser(
+                origins, staging, headless=cfg.explorer.auth_headless, caps=["storage"]
+            )
+
+        await deps.auth.open(alias, factory, request.url, staging)
+        em.stage("explorer", "waiting", "인증 대기")
+        em.status("awaiting_auth", auth=request.model_dump(by_alias=True))
+        em.log(
+            "gate",
+            "사용자 인증 대기: 브라우저 창에서 인증을 마치고 콘솔에서 '인증 완료'를 누르세요. "
+            "인증하는 동안 에이전트는 브라우저를 조작하지 않습니다",
+        )
+        return {}
+
+    async def auth_wait(state: GraphState) -> Command[str]:
+        raw = interrupt({"gate": "auth"})
+        decision = AuthDecision.model_validate(raw)
+        em = deps.emitter(state)
+        alias = state["alias"]
+        if decision.action == "cancel":
+            await deps.auth.close(alias)
+            em.stage("explorer", "stopped")
+            em.log("gate", "사용자 인증을 취소해 실행을 멈춥니다", "warn")
+            em.status("stopped")
+            return Command(goto=END)
+        try:
+            saved = await deps.auth.save(alias, deps.config.session_path(alias))
+        finally:
+            await deps.auth.close(alias)
+        em.stage("explorer", "running")
+        em.status("running")
+        if saved:
+            em.log("gate", "인증 완료: 세션을 저장했습니다. 로그인 상태를 다시 확인합니다")
+        else:
+            em.log(
+                "gate", "인증 브라우저가 닫혀 있어(서버 재시작 등) 다시 인증을 요청합니다", "warn"
+            )
+        return Command(goto="login", update={"auth": None})
+
+    async def explorer(state: GraphState) -> Command[str]:
         em = deps.emitter(state)
         em.stage("explorer", "running")
         if deps.config.explorer.mode == "stub":
@@ -124,23 +297,40 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
             await em.step()
             em.metrics(screens_collected=stubs.TOTAL_COLLECTED_SCREENS)
             em.stage("explorer", "done", f"{stubs.TOTAL_COLLECTED_SCREENS}개 화면")
-            return {}
+            return Command(goto="analyst")
 
         cfg = deps.config
-        origins = cfg.allowed_origins(state["alias"], state["url"])
-        em.log("explorer", f"허용 origin: {', '.join(origins)}")
-
-        def guard(rule: str, detail: str, outcome: str, message: str) -> None:
-            em.guardrail(rule, detail, outcome, message)
-
-        output_dir = cfg.site_dir(state["alias"]) / "crawl" / "_mcp"
-        async with McpBrowser(origins, output_dir, headless=cfg.explorer.headless) as mcp:
-            em.log("explorer", "Playwright MCP 브라우저 시작")
-            browser = GuardedBrowser(mcp, origins, guard)
-            report = await explore_links(
-                browser, state["url"], cfg.explorer.max_links, lambda m: em.log("explorer", m)
+        alias = state["alias"]
+        origins = cfg.allowed_origins(alias, state["url"])
+        session = cfg.session_path(alias)
+        has_session = session.exists()
+        extension = cfg.site(alias).browser == "extension"
+        output_dir = cfg.site_dir(alias) / "crawl" / "_mcp"
+        async with McpBrowser(
+            origins,
+            output_dir,
+            headless=cfg.explorer.headless,
+            storage_state=session if has_session else None,
+            extension=extension,
+        ) as mcp:
+            em.log(
+                "explorer", "화면 수집 시작" + (" (저장된 로그인 세션 사용)" if has_session else "")
             )
-            await browser.call("browser_close", {})
+            browser = GuardedBrowser(mcp, origins, guard_emit(em))
+            try:
+                report = await explore_links(
+                    browser,
+                    state["url"],
+                    cfg.explorer.max_links,
+                    lambda m: em.log("explorer", m),
+                    login_url=state.get("login_url"),
+                )
+            except SessionExpiredError as e:
+                session.unlink(missing_ok=True)
+                em.log("explorer", f"세션 만료를 감지해 다시 인증합니다: {e}", "warn")
+                return Command(goto="login")
+            if not extension:
+                await browser.call("browser_close", {})
         em.metrics(screens_collected=len(report.pages))
         em.log(
             "explorer",
@@ -148,7 +338,7 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
             f"건너뜀 {len(report.skipped)}건 (사이트맵 수집은 T07c)",
         )
         em.stage("explorer", "done", f"{len(report.pages)}개 화면")
-        return {}
+        return Command(goto="analyst")
 
     async def analyst(state: GraphState) -> dict[str, Any]:
         em = deps.emitter(state)
@@ -183,6 +373,12 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
         em = deps.emitter(state)
         em.status("done")
         em.log("system", f"완료: next-pjt/{state['alias']}/ (스텁 결과)")
+        if deps.config.session_path(state["alias"]).exists():
+            em.log(
+                "system",
+                "로그인 세션 파일이 남아 있습니다. "
+                "더 수집하지 않을 거면 결과 화면에서 삭제하세요 (G10)",
+            )
         return {}
 
     async def analysis_review(state: GraphState) -> Command[str]:
@@ -293,7 +489,10 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
 
     graph = StateGraph(GraphState)
     graph.add_node("router", router)
-    graph.add_node("explorer", explorer)
+    graph.add_node("login", login)
+    graph.add_node("auth_gate", auth_gate)
+    graph.add_node("auth_wait", auth_wait, destinations=("login", END))
+    graph.add_node("explorer", explorer, destinations=("analyst", "login"))
     graph.add_node("analyst", analyst)
     graph.add_node("analysis_gate", analysis_gate)
     graph.add_node(
@@ -306,8 +505,9 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
     graph.add_node("verifier", verifier)
     graph.add_node("finish", finish)
     graph.add_edge(START, "router")
-    graph.add_edge("router", "explorer")
-    graph.add_edge("explorer", "analyst")
+    graph.add_edge("router", "login")
+    graph.add_conditional_edges("login", after_login, ["auth_gate", "explorer"])
+    graph.add_edge("auth_gate", "auth_wait")
     graph.add_edge("analyst", "analysis_gate")
     graph.add_edge("analysis_gate", "analysis_review")
     graph.add_edge("designer", "design_gate")

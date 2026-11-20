@@ -8,7 +8,11 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from pydantic.alias_generators import to_camel
 
 RunKind = Literal["new", "extend"]
-RunStatus = Literal["running", "awaiting_analysis", "awaiting_design", "done", "stopped", "failed"]
+RunStatus = Literal[
+    "running", "awaiting_auth", "awaiting_analysis", "awaiting_design", "done", "stopped", "failed"
+]
+# 로그인 화면 유형: 로그인 아님 / 아이디·비밀번호 / 공동·공인인증서 / 간편인증 / 판단 어려움
+LoginKind = Literal["none", "id_pw", "certificate", "simple_auth", "unknown"]
 StageId = Literal[
     "explorer", "analyst", "analysisReview", "designer", "designReview", "builder", "verifier"
 ]
@@ -216,6 +220,20 @@ class SiteSummary(ApiModel):
     status: RunStatus
 
 
+class AuthRequest(ApiModel):
+    """사용자에게 넘긴 인증 (콘솔 "인증 대기" 카드)."""
+
+    login_kind: LoginKind
+    reason: str
+    url: str
+
+
+class AuthDecision(ApiModel):
+    """done: 브라우저에서 인증을 마침, cancel: 실행을 멈춤."""
+
+    action: Literal["done", "cancel"]
+
+
 class RunDetail(SiteSummary):
     kind: RunKind
     stages: list[StageInfo]
@@ -223,6 +241,9 @@ class RunDetail(SiteSummary):
     timing: RunTiming
     logs: list[LogLine] = Field(default_factory=list)
     guardrails: list[GuardrailEvent] = Field(default_factory=list)
+    auth: AuthRequest | None = None
+    # 저장된 로그인 세션 파일이 있는지 (G10: 실행이 끝나면 삭제 여부를 묻는다)
+    session_saved: bool = False
     analysis: AnalysisReview | None = None
     approved_analysis: ApprovedAnalysis | None = None
     design: DesignReview | None = None

@@ -4,7 +4,29 @@ export type RunKind = 'new' | 'extend';
 
 /** 실행 전체 상태 */
 export type RunStatus =
-  'running' | 'awaiting_analysis' | 'awaiting_design' | 'done' | 'stopped' | 'failed';
+  | 'running'
+  | 'awaiting_auth'
+  | 'awaiting_analysis'
+  | 'awaiting_design'
+  | 'done'
+  | 'stopped'
+  | 'failed';
+
+/** 로그인 화면 유형: 로그인 아님 / 아이디·비밀번호 / 공동·공인인증서 / 간편인증 / 판단 어려움 */
+export type LoginKind = 'none' | 'id_pw' | 'certificate' | 'simple_auth' | 'unknown';
+
+/** 사용자에게 넘긴 인증 (진행 화면 "인증 대기" 카드) */
+export interface AuthRequest {
+  loginKind: LoginKind;
+  reason: string;
+  /** 사용자가 인증할 화면 주소 (에이전트가 띄운 브라우저 창에 열려 있음) */
+  url: string;
+}
+
+/** done: 브라우저에서 인증을 마침, cancel: 실행을 멈춤 */
+export interface AuthDecision {
+  action: 'done' | 'cancel';
+}
 
 export type StageId =
   'explorer' | 'analyst' | 'analysisReview' | 'designer' | 'designReview' | 'builder' | 'verifier';
@@ -200,6 +222,10 @@ export interface RunDetail extends SiteSummary {
   timing: RunTiming;
   logs: LogLine[];
   guardrails: GuardrailEvent[];
+  /** 사용자 인증 대기 중일 때만 있음 */
+  auth?: AuthRequest | null;
+  /** 저장된 로그인 세션 파일이 있는지 (G10: 실행이 끝나면 삭제를 권한다) */
+  sessionSaved?: boolean;
   analysis?: AnalysisReview;
   /** 승인된 분석 결정 (승인 전에는 없음) */
   approvedAnalysis?: Omit<AnalysisDecision, 'action' | 'comment'>;

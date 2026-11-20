@@ -23,11 +23,18 @@ stub_step_ms: 500
 # 사이트별 생성 결과물 루트 (G9: 에이전트는 이 아래 <별칭>/ 밖에 쓰지 않는다)
 output_root: next-pjt
 
+# 로그인 세션(storageState) 저장 위치. next-pjt 밖, git 제외 (G10)
+session_dir: sessions
+
 # 화면 수집. mode: mcp(Playwright MCP 실제 브라우저) / stub(브라우저 없이 예시 데이터)
 explorer:
   mode: mcp
   headless: true
   max_links: 15
+  # 사용자 인증 브라우저 창을 띄우지 않음 (테스트용). 실제로는 false로 두고 사용자가 창에서 인증한다
+  auth_headless: false
+  # 한 실행에서 로그인·인증을 다시 시도하는 횟수 상한 (세션 만료 재요청 포함)
+  login_attempts: 3
 
 # 사이트별 설정. 키는 사이트 별칭이다. 설정이 없는 사이트는 요청 URL의 origin만 허용한다
 sites: {}
@@ -35,3 +42,8 @@ sites: {}
 #    # 요청 URL origin 밖이지만 꼭 필요한 origin (예: 다른 도메인의 SSO 로그인). G2
 #    extra_origins:
 #      - https://sso.example.com
+#    # 시작 화면이 로그인 화면이 아니면 로그인 화면 주소를 적는다 (허용 origin 안)
+#    login_url: https://hr.example.com/login
+#    # extension: 사용자가 이미 로그인한 Chrome에 붙는다 (보안 프로그램 때문에 자동화 브라우저 인증이 안 될 때)
+#    browser: isolated
+# 계정은 .env에 SITE_<별칭 대문자, -는 _>_USERNAME / _PASSWORD 로 넣는다 (예: SITE_HR_PORTAL_USERNAME)

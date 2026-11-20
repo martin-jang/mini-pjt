@@ -62,3 +62,58 @@ test('실제 서버: 범위 밖 질문은 거절, URL 요청은 새 요청으로
   await expect(page.getByTestId('input-url')).toHaveValue('https://legacy.example.com');
   await expect(page.getByTestId('input-alias')).toHaveValue('legacy-example');
 });
+
+// T07a: 로그인과 사용자 인증 넘김 (실제 브라우저 + 시험 사이트 + 가짜 LLM)
+test('실제 서버: ID/PW 자동 로그인 → 수집 → 결과에서 세션 삭제', async ({ page }) => {
+  // 계정은 에이전트 환경 변수 SITE_IDPW_E2E_USERNAME/PASSWORD (playwright.real.config.ts)
+  const alias = 'idpw-e2e';
+  await page.goto('/new');
+  await page.getByTestId('input-url').fill('http://127.0.0.1:8766/idpw/home');
+  await page.getByTestId('input-alias').fill(alias);
+  await page.getByTestId('submit-request').click();
+  const log = page.getByTestId('log-viewer');
+  await expect(log).toContainText('로그인 화면 감지: 아이디·비밀번호', { timeout: 30_000 });
+  await expect(log).toContainText('ID/PW 로그인 성공');
+  await expect(log).toContainText('화면 확인: 공지사항', { timeout: 30_000 });
+
+  await page.getByTestId('go-analysis-review').click({ timeout: 40_000 });
+  await page.getByTestId('analysis-approve').click();
+  await page.getByTestId('go-design-review').click({ timeout: 20_000 });
+  await page.getByTestId('screen-approve').click();
+  await expect(page.getByTestId('design-progress')).toContainText('승인 1 /');
+  await page.getByTestId('design-approve-regular').click();
+  await page.getByTestId('go-result').click({ timeout: 20_000 });
+
+  // G10: 저장된 세션을 결과 화면에서 지운다
+  await expect(page.getByTestId('session-notice')).toBeVisible();
+  await page.getByTestId('delete-session').click();
+  await expect(page.getByTestId('session-notice')).toBeHidden();
+});
+
+test('실제 서버: 간편인증은 사용자에게 넘기고, 인증 완료 후 이어서 진행', async ({
+  page,
+  request,
+}) => {
+  const alias = 'cert-e2e';
+  await page.goto('/new');
+  await page.getByTestId('input-url').fill('http://127.0.0.1:8766/cert/home');
+  await page.getByTestId('input-alias').fill(alias);
+  await page.getByTestId('submit-request').click();
+
+  const card = page.getByTestId('auth-card');
+  await expect(card).toContainText('브라우저에서 인증을 완료해 주세요', { timeout: 30_000 });
+  await expect(page.getByTestId('auth-reason')).toContainText('간편인증');
+  await expect(page.getByTestId('run-status')).toContainText('인증 대기');
+  await expect(page.getByTestId('stage-explorer')).toContainText('인증 대기');
+
+  // 사용자가 휴대폰에서 승인한 것으로 흉내 낸다 → 인증 브라우저 화면이 세션을 받는다
+  await request.post('http://127.0.0.1:8766/_test/approve');
+  await page.waitForTimeout(1500);
+  await page.getByTestId('auth-done').click();
+  await expect(card).toBeHidden({ timeout: 20_000 });
+  await expect(page.getByTestId('log-viewer')).toContainText('인증 완료: 세션을 저장했습니다');
+  await expect(page.getByTestId('log-viewer')).toContainText('화면 확인: 민원 신청 내역', {
+    timeout: 30_000,
+  });
+  await expect(page.getByTestId('go-analysis-review')).toBeVisible({ timeout: 40_000 });
+});

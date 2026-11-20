@@ -19,9 +19,13 @@ from pydantic import ValidationError
 from .config import AgentConfig, origin_of
 from .events import EventLog, RunEvent
 from .graph import GraphDeps, build_graph
+from .llm import LlmGateway
+from .login import AuthHandoffs
 from .schemas import (
     STAGE_ORDER,
     AnalysisDecision,
+    AuthDecision,
+    AuthRequest,
     DesignDecision,
     DesignReview,
     GuardrailEvent,
@@ -39,8 +43,8 @@ from .schemas import (
 logger = logging.getLogger(__name__)
 
 ALIAS_PATTERN = re.compile(r"^[a-z0-9][a-z0-9-]{1,31}$")
-ACTIVE: set[str] = {"running", "awaiting_analysis", "awaiting_design"}
-WAITING: set[str] = {"awaiting_analysis", "awaiting_design"}
+ACTIVE: set[str] = {"running", "awaiting_auth", "awaiting_analysis", "awaiting_design"}
+WAITING: set[str] = {"awaiting_auth", "awaiting_analysis", "awaiting_design"}
 FINAL: set[str] = {"done", "stopped", "failed"}
 PREVIOUS_TASK_WAIT_SECONDS = 5
 
@@ -70,6 +74,7 @@ def fold_events(alias: str, events: list[RunEvent], llm_limit: int) -> RunDetail
     timing = RunTiming(started_at=events[0].at)
     status: RunStatus = "running"
     url, kind = "", "new"
+    auth: AuthRequest | None = None
 
     for e in events:
         d = e.data
@@ -77,6 +82,11 @@ def fold_events(alias: str, events: list[RunEvent], llm_limit: int) -> RunDetail
             new_status = d.get("status", status)
             url = d.get("url", url)
             kind = d.get("kind", kind)
+            auth = (
+                AuthRequest.model_validate(d["auth"])
+                if new_status == "awaiting_auth" and d.get("auth")
+                else None
+            )
             if status in WAITING and new_status not in WAITING and timing.waiting_since:
                 timing.wait_ms += _ms_between(timing.waiting_since, e.at)
                 timing.waiting_since = None
@@ -128,6 +138,7 @@ def fold_events(alias: str, events: list[RunEvent], llm_limit: int) -> RunDetail
         timing=timing,
         logs=logs,
         guardrails=guardrails,
+        auth=auth,
     )
 
 
@@ -137,10 +148,12 @@ class RunService:
         config: AgentConfig,
         events: EventLog,
         checkpointer: BaseCheckpointSaver,
+        llm: LlmGateway | None = None,
     ) -> None:
         self._config = config
         self._events = events
-        self._graph = build_graph(GraphDeps(events, config), checkpointer)
+        self._auth = AuthHandoffs()
+        self._graph = build_graph(GraphDeps(events, config, llm, self._auth), checkpointer)
         self._tasks: dict[str, asyncio.Task[None]] = {}
 
     @staticmethod
@@ -236,7 +249,11 @@ class RunService:
             raise RunError("수정 요청 내용을 입력하세요.")
         self._launch(alias, Command(resume=decision.model_dump()))
 
-    def stop(self, alias: str) -> None:
+    async def submit_auth(self, alias: str, decision: AuthDecision) -> None:
+        await self._require_waiting(alias, "awaiting_auth", "사용자 인증")
+        self._launch(alias, Command(resume=decision.model_dump()))
+
+    async def stop(self, alias: str) -> None:
         status = self._status(alias)
         if status is None:
             raise RunError(f"'{alias}' 실행을 찾을 수 없습니다.")
@@ -245,7 +262,30 @@ class RunService:
         task = self._tasks.pop(alias, None)
         if task:
             task.cancel()
+        await self._auth.close(alias)
         self._emit_status(alias, "stopped", "사용자가 실행을 중단했습니다", "warn")
+
+    def delete_session(self, alias: str) -> bool:
+        """저장한 로그인 세션 파일을 지운다 (G10). 지웠으면 True."""
+        status = self._status(alias)
+        if status is None:
+            raise RunError(f"'{alias}' 실행을 찾을 수 없습니다.")
+        if status in ("running", "awaiting_auth"):
+            raise RunError("수집 중에는 로그인 세션을 지울 수 없습니다. 실행을 멈춘 뒤 지우세요.")
+        path = self._config.session_path(alias)
+        if not path.exists():
+            return False
+        path.unlink()
+        self._events.emit(
+            RunEvent(
+                run_id=alias, type="log", source="system", message="로그인 세션 파일을 삭제했습니다"
+            )
+        )
+        return True
+
+    async def aclose(self) -> None:
+        """서버 종료: 열려 있는 사용자 인증 브라우저를 닫는다."""
+        await self._auth.close_all()
 
     def mark_interrupted_runs(self) -> None:
         """서버 재시작으로 끊긴 진행 중 실행을 실패로 표시한다 (승인 대기는 그대로 재개 가능)."""
@@ -272,11 +312,12 @@ class RunService:
         detail = fold_events(alias, self._events.read(alias), self._config.limits.llm_calls_per_run)
         values = (await self._graph.aget_state(self._thread(alias))).values
         try:
-            update = {
+            update: dict[str, Any] = {
                 key: values[key]
                 for key in ("analysis", "approved_analysis", "design", "result")
                 if values.get(key)
             }
+            update["session_saved"] = self._config.session_path(alias).exists()
             return detail.model_validate({**detail.model_dump(), **update})
         except ValidationError:
             logger.exception("그래프 상태를 읽지 못했습니다: %s", alias)

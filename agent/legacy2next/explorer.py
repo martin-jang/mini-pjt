@@ -12,7 +12,7 @@ from __future__ import annotations
 import re
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from urllib.parse import urldefrag, urljoin
+from urllib.parse import urldefrag, urljoin, urlsplit
 
 from .browser import BrowserActionError, GuardedBrowser, OriginBlockedError
 
@@ -46,6 +46,22 @@ class ExplorerError(RuntimeError):
     """수집을 이어 갈 수 없음 (시작 화면 접속 실패 등). 메시지는 콘솔에 그대로 보인다."""
 
 
+class SessionExpiredError(RuntimeError):
+    """수집 중 로그인 화면으로 되돌아감. 세션이 만료되었으므로 다시 인증해야 한다."""
+
+
+def same_page(a: str | None, b: str | None) -> bool:
+    """쿼리·앵커를 빼고 같은 주소인지."""
+    if not a or not b:
+        return False
+    pa, pb = urlsplit(a), urlsplit(b)
+    return (pa.scheme, pa.netloc, pa.path.rstrip("/")) == (
+        pb.scheme,
+        pb.netloc,
+        pb.path.rstrip("/"),
+    )
+
+
 def parse_links(snapshot_text: str, base_url: str) -> list[Link]:
     """스냅샷에서 링크를 뽑아 절대 URL로 만든다 (중복·앵커 제거)."""
     links: list[Link] = []
@@ -66,13 +82,23 @@ async def explore_links(
     start_url: str,
     max_links: int,
     log: Callable[[str], None],
+    login_url: str | None = None,
 ) -> ExploreReport:
-    """시작 화면 → 링크 하나씩 이동 → 돌아오기. 막힌 이동은 기록하고 계속한다."""
+    """시작 화면 → 링크 하나씩 이동 → 돌아오기. 막힌 이동은 기록하고 계속한다.
+
+    login_url을 주면, 로그인 화면이 아닌 곳으로 갔는데 로그인 화면에 닿을 때 세션 만료로 본다.
+    """
     report = ExploreReport()
+
+    def check_session(target: str, landed: str | None) -> None:
+        if login_url and same_page(landed, login_url) and not same_page(target, login_url):
+            raise SessionExpiredError(f"{target} 이동이 로그인 화면으로 되돌아갔습니다")
+
     try:
         first = await browser.call("browser_navigate", {"url": start_url})
     except BrowserActionError as e:
         raise ExplorerError(f"시작 화면을 열 수 없습니다: {start_url} ({e})") from e
+    check_session(start_url, first.page_url)
     report.pages.append(VisitedPage(url=first.page_url or start_url, title=first.page_title or ""))
     log(f"시작 화면: {first.page_title or ''} ({first.page_url or start_url})")
 
@@ -96,6 +122,7 @@ async def explore_links(
             log(f"화면을 열 수 없어 건너뜀: {link.url} ({e})")
             await browser.call("browser_navigate", {"url": base})
             continue
+        check_session(link.url, page.page_url)
         visited = page.page_url or link.url
         if all(p.url != visited for p in report.pages):
             report.pages.append(VisitedPage(url=visited, title=page.page_title or ""))

@@ -35,3 +35,6 @@ next-pjt/
 
 # Playwright MCP 기본 출력 폴더 (--output-dir 없이 띄운 경우)
 .playwright-mcp/
+
+# 로그인 세션(storageState). 쿠키·토큰 원문이라 절대 커밋하지 않는다 (G10)
+sessions/

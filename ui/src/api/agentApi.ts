@@ -2,6 +2,7 @@ import { createHttpAgentApi } from './httpAgentApi';
 import { createMockAgentApi } from './mock/mockAgentApi';
 import type {
   AnalysisDecision,
+  AuthDecision,
   DesignDecision,
   NewRunInput,
   QueryAnswer,
@@ -21,6 +22,10 @@ export interface AgentApi {
   streamRun(alias: string, onEvent: (event: RunEvent) => void): () => void;
   submitAnalysis(alias: string, decision: AnalysisDecision): Promise<void>;
   submitDesign(alias: string, decision: DesignDecision): Promise<void>;
+  /** 사용자 인증 완료(또는 취소)를 알린다 */
+  submitAuth(alias: string, decision: AuthDecision): Promise<void>;
+  /** 저장된 로그인 세션 파일 삭제 (G10) */
+  deleteSession(alias: string): Promise<void>;
   stopRun(alias: string): Promise<void>;
   ask(alias: string, question: string): Promise<QueryAnswer>;
 }

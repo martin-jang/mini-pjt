@@ -1,8 +1,10 @@
 """테스트용 가짜 LLM 클라이언트 (`--fake-llm`). 실제 Bedrock 없이 E2E·개발 확인을 하기 위함.
 
-Router 분류만 흉내 낸다: URL이 있으면 신규 생성(확장 단어가 있으면 확장),
-사이트 관련 단어가 있으면 질의,
-그 외는 범위 밖. 실제 판단 품질은 실제 LLM으로 RTR 평가 샘플을 돌려 확인한다.
+흉내 내는 것:
+- Router 분류: URL이 있으면 신규 생성(확장 단어가 있으면 확장), 사이트 관련 단어가 있으면 질의,
+  그 외는 범위 밖
+- 로그인 화면 판별(`<page_content>` 요청): 입력란 이름·버튼 이름·인증 단어로 판단
+실제 판단 품질은 실제 LLM으로 평가 샘플을 돌려 확인한다.
 """
 
 from __future__ import annotations
@@ -66,6 +68,48 @@ def classify(user_message: str) -> dict[str, Any]:
     }
 
 
+USERNAME_WORDS = ("아이디", "사번", "사용자", "id", "이메일", "email", "user")
+PASSWORD_WORDS = ("비밀번호", "패스워드", "password", "pw")
+SUBMIT_WORDS = ("로그인", "login", "sign in")
+ELEMENT = re.compile(
+    r'- (?P<role>textbox|button|link) "(?P<name>[^"]*)"[^\n]*\[ref=(?P<ref>e\d+)\]'
+)
+
+
+def detect_login(user_message: str) -> dict[str, Any]:
+    page = _between(user_message, "page_content")
+    username = password = submit = None
+    for m in ELEMENT.finditer(page):
+        name = m.group("name").lower()
+        if m.group("role") == "textbox":
+            if password is None and any(w in name for w in PASSWORD_WORDS):
+                password = m.group("ref")
+            elif username is None and any(w in name for w in USERNAME_WORDS):
+                username = m.group("ref")
+        elif submit is None and any(w in name for w in SUBMIT_WORDS):
+            submit = m.group("ref")
+    if username and password and submit:
+        return {
+            "kind": "id_pw",
+            "username_ref": username,
+            "password_ref": password,
+            "submit_ref": submit,
+            "reason": "(가짜 LLM) 아이디·비밀번호 입력란과 로그인 버튼",
+        }
+    if "인증서" in page or "간편인증" in page:
+        kind = "simple_auth" if "간편인증" in page else "certificate"
+        reason = "(가짜 LLM) 인증 안내 문구"
+    else:
+        kind, reason = "none", "(가짜 LLM) 로그인 입력란 없음"
+    return {
+        "kind": kind,
+        "username_ref": None,
+        "password_ref": None,
+        "submit_ref": None,
+        "reason": reason,
+    }
+
+
 class _FakeMessages:
     async def create(self, **kwargs: Any) -> Any:
         content = kwargs["messages"][-1]["content"]
@@ -74,14 +118,13 @@ class _FakeMessages:
             if isinstance(content, str)
             else "".join(b.get("text", "") for b in content if isinstance(b, dict))
         )
+        answer = detect_login(text) if "<page_content>" in text else classify(text)
         return SimpleNamespace(
             model="fake-llm",
             stop_reason="end_turn",
             stop_details=None,
             usage=SimpleNamespace(input_tokens=0, output_tokens=0),
-            content=[
-                SimpleNamespace(type="text", text=json.dumps(classify(text), ensure_ascii=False))
-            ],
+            content=[SimpleNamespace(type="text", text=json.dumps(answer, ensure_ascii=False))],
         )
 
 

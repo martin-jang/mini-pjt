@@ -41,6 +41,11 @@ class SiteConfig(BaseModel):
     """사이트별 설정. 사용자가 직접 적은 추가 origin만 허용한다 (G2)."""
 
     extra_origins: list[str] = Field(default_factory=list)
+    # 시작 화면이 로그인 화면이 아닌 사이트의 로그인 화면 주소 (허용 origin 안이어야 한다)
+    login_url: str | None = None
+    # isolated: 에이전트가 띄우는 브라우저, extension: 사용자가 이미 로그인한 Chrome에 붙음
+    # (보안 프로그램 때문에 자동화 브라우저로 인증이 안 되는 사이트, Playwright 확장 설치 필요)
+    browser: Literal["isolated", "extension"] = "isolated"
 
     @field_validator("extra_origins")
     @classmethod
@@ -56,6 +61,10 @@ class ExplorerConfig(BaseModel):
     headless: bool = True
     # 시작 화면에서 따라가 볼 링크 수 상한 (T07c 사이트맵 수집 전 임시)
     max_links: int = Field(default=15, ge=0)
+    # 사용자 인증용 브라우저를 화면에 띄우지 않음 (테스트용. 실제로는 사용자가 창에서 인증한다)
+    auth_headless: bool = False
+    # 한 실행에서 로그인·인증을 다시 시도하는 횟수 상한 (세션 만료 재요청 포함)
+    login_attempts: int = Field(default=3, ge=1)
 
 
 class AgentConfig(BaseModel):
@@ -71,6 +80,8 @@ class AgentConfig(BaseModel):
     checkpoint_path: Path = Path("checkpoints.sqlite")
     # 스텁 노드의 단계 간 지연(ms). 콘솔에서 진행이 흐르는 모습을 보기 위함
     stub_step_ms: int = Field(default=500, ge=0)
+    # 로그인 세션(storageState) 저장 위치. next-pjt 밖의 git 제외 경로 (G10)
+    session_dir: Path = Path("sessions")
     sites: dict[str, SiteConfig] = Field(default_factory=dict)
 
     def resolved_log_dir(self) -> Path:
@@ -81,6 +92,14 @@ class AgentConfig(BaseModel):
         """사이트 결과물 폴더 next-pjt/<별칭>/."""
         root = self.output_root if self.output_root.is_absolute() else REPO_ROOT / self.output_root
         return root / alias
+
+    def session_path(self, alias: str) -> Path:
+        """사이트 로그인 세션 파일 sessions/<별칭>.json (생성 결과물과 분리, G10)."""
+        root = self.session_dir if self.session_dir.is_absolute() else REPO_ROOT / self.session_dir
+        return root / f"{alias}.json"
+
+    def site(self, alias: str) -> SiteConfig:
+        return self.sites.get(alias, SiteConfig())
 
     def resolved_checkpoint_path(self) -> Path:
         """checkpoint_path가 상대 경로면 저장소 루트 기준으로 푼다."""

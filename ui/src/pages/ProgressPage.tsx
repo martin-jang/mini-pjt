@@ -1,7 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { agentApi } from '../api/agentApi';
-import type { GuardrailOutcome, LogLevel, RunDetail, StageInfo } from '../api/types';
+import type {
+  AuthRequest,
+  GuardrailOutcome,
+  LoginKind,
+  LogLevel,
+  RunDetail,
+  StageInfo,
+} from '../api/types';
 import { Button } from '../components/Button';
 import { Callout } from '../components/Callout';
 import { Card } from '../components/Card';
@@ -121,6 +128,66 @@ const NEXT_ACTION: Partial<
   done: { title: 'POC 생성이 끝났습니다', to: 'result', label: '결과 보기', testId: 'go-result' },
 };
 
+const LOGIN_KIND_LABEL: Record<LoginKind, string> = {
+  none: '로그인 없음',
+  id_pw: '아이디·비밀번호',
+  certificate: '공동·공인인증서',
+  simple_auth: '간편인증',
+  unknown: '판단 어려움',
+};
+
+/** 사용자 인증 넘김: 에이전트가 띄운 브라우저 창에서 사용자가 인증하고 완료를 알린다 */
+function AuthCard({ run, auth }: { run: RunDetail; auth: AuthRequest }) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const done = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      await agentApi.submitAuth(run.alias, { action: 'done' });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '요청을 보내지 못했습니다.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Callout
+      tone="waiting"
+      icon="key"
+      title="브라우저에서 인증을 완료해 주세요"
+      testId="auth-card"
+      actions={
+        <Button
+          variant="primary"
+          icon="check"
+          disabled={busy}
+          onClick={() => void done()}
+          data-testid="auth-done"
+        >
+          인증 완료
+        </Button>
+      }
+    >
+      <p data-testid="auth-reason">
+        {auth.reason} · {LOGIN_KIND_LABEL[auth.loginKind]}
+      </p>
+      <p className="mt-1">
+        에이전트가 띄운 브라우저 창(<span className="font-mono text-xs">{auth.url}</span>)에서
+        로그인이나 휴대폰 승인을 마친 뒤 인증 완료를 누르세요. 인증하는 동안 에이전트는 브라우저를
+        조작하지 않습니다.
+      </p>
+      {error && (
+        <p className="mt-1 text-error" role="alert">
+          {error}
+        </p>
+      )}
+    </Callout>
+  );
+}
+
 function ProgressView({ run }: { run: RunDetail }) {
   const navigate = useNavigate();
   const active = isActive(run.status);
@@ -162,6 +229,12 @@ function ProgressView({ run }: { run: RunDetail }) {
           )
         }
       />
+
+      {run.status === 'awaiting_auth' && run.auth && (
+        <div className="mb-6">
+          <AuthCard run={run} auth={run.auth} />
+        </div>
+      )}
 
       {next && (
         <div className="mb-6">

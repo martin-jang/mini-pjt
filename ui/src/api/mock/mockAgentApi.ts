@@ -672,6 +672,21 @@ export function createMockAgentApi(options: { tickMs: number }): AgentApi {
         emitChanged(alias);
       }),
 
+    // 목업 흐름은 로그인이 없는 사이트라 인증 대기에 들어가지 않는다 (인증 흐름은 실제 서버 E2E로 확인)
+    submitAuth: (alias) =>
+      delay(() => {
+        const run = getMockRun(alias);
+        if (run.detail.status !== 'awaiting_auth')
+          throw new ApiError('사용자 인증 승인 대기 상태가 아닙니다.');
+      }),
+
+    deleteSession: (alias) =>
+      delay(() => {
+        const run = getMockRun(alias);
+        run.detail.sessionSaved = false;
+        emitChanged(alias);
+      }),
+
     stopRun: (alias) =>
       delay(() => {
         const run = getMockRun(alias);

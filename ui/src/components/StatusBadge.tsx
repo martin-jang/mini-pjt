@@ -13,6 +13,7 @@ const DOT_CLASS: Record<Tone, string> = {
 
 const STATUS_TONE: Record<RunStatus, Tone> = {
   running: 'running',
+  awaiting_auth: 'waiting',
   awaiting_analysis: 'waiting',
   awaiting_design: 'waiting',
   done: 'success',
