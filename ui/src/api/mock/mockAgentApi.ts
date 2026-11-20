@@ -638,7 +638,10 @@ export function createMockAgentApi(options: { tickMs: number }): AgentApi {
             log(run, now, 'gate', `화면 수정 요청: ${screen.path} — ${decision.comment}`);
             setTimeout(() => {
               screen.state = 'pending';
-              screen.changes = [...screen.changes, `수정 요청 반영: ${decision.comment}`];
+              screen.changes = [
+                ...screen.changes,
+                { what: `수정 요청 반영: ${decision.comment}`, why: '사용자 수정 요청' },
+              ];
               log(run, Date.now(), 'designer', `수정 요청 반영: ${screen.path}`);
               emitChanged(alias);
             }, tickMs * 4);

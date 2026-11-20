@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 
 from .masking import SecretRegistry, secrets
 
-EventType = Literal["log", "stage", "guardrail", "status", "llm"]
+EventType = Literal["log", "stage", "guardrail", "status", "llm", "metrics"]
 EventLevel = Literal["info", "warn", "block"]
 
 RUN_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$")
@@ -46,6 +46,7 @@ class EventLog:
         self._dir = log_dir / "runs"
         self._registry = registry
         self._subscribers: dict[str, list[Subscriber]] = {}
+        self._global: list[Subscriber] = []
 
     def _path(self, run_id: str) -> Path:
         if not RUN_ID_PATTERN.match(run_id):
@@ -65,7 +66,7 @@ class EventLog:
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("a", encoding="utf-8") as f:
             f.write(safe.model_dump_json() + "\n")
-        for subscriber in list(self._subscribers.get(safe.run_id, [])):
+        for subscriber in [*self._subscribers.get(safe.run_id, []), *self._global]:
             subscriber(safe)
         return safe
 
@@ -91,3 +92,20 @@ class EventLog:
         """SSE용: 이벤트를 받는 asyncio 큐와 해제 함수."""
         q: asyncio.Queue[RunEvent] = asyncio.Queue()
         return q, self.subscribe(run_id, q.put_nowait)
+
+    def subscribe_all(self, subscriber: Subscriber) -> Callable[[], None]:
+        """모든 실행의 이벤트를 받는다 (사이트 목록 갱신용)."""
+        self._global.append(subscriber)
+
+        def unsubscribe() -> None:
+            if subscriber in self._global:
+                self._global.remove(subscriber)
+
+        return unsubscribe
+
+    def run_ids(self) -> list[str]:
+        """이벤트 파일이 있는 실행 ID 목록 (오래된 순)."""
+        if not self._dir.exists():
+            return []
+        files = sorted(self._dir.glob("*.jsonl"), key=lambda p: p.stat().st_ctime)
+        return [p.stem for p in files]

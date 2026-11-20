@@ -51,11 +51,20 @@ class AgentConfig(BaseModel):
     limits: Limits = Field(default_factory=Limits)
     cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:5173"])
     log_dir: Path = Path("logs")
+    # LangGraph 체크포인트 SQLite 파일 (저장소 루트 기준, git 제외)
+    checkpoint_path: Path = Path("checkpoints.sqlite")
+    # 스텁 노드의 단계 간 지연(ms). 콘솔에서 진행이 흐르는 모습을 보기 위함
+    stub_step_ms: int = Field(default=500, ge=0)
     sites: dict[str, SiteConfig] = Field(default_factory=dict)
 
     def resolved_log_dir(self) -> Path:
         """log_dir가 상대 경로면 저장소 루트 기준으로 푼다."""
         return self.log_dir if self.log_dir.is_absolute() else REPO_ROOT / self.log_dir
+
+    def resolved_checkpoint_path(self) -> Path:
+        """checkpoint_path가 상대 경로면 저장소 루트 기준으로 푼다."""
+        p = self.checkpoint_path
+        return p if p.is_absolute() else REPO_ROOT / p
 
     def allowed_origins(self, alias: str, request_url: str) -> list[str]:
         """허용 origin = 요청 URL origin + 설정 파일의 추가 origin."""

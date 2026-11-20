@@ -76,7 +76,7 @@ function AnswerView({ answer }: { answer: QueryAnswer }) {
 }
 
 export function QueryPage() {
-  const sites = useSites();
+  const { sites } = useSites();
   const [alias, setAlias] = useState('');
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);

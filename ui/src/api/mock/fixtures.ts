@@ -3,6 +3,7 @@
 import type {
   AnalysisDecision,
   AnalysisReview,
+  DesignChange,
   DesignScreen,
   GeneratedScreen,
   LayoutSketch,
@@ -113,7 +114,7 @@ const legacyPage: LayoutSketch = { nav: 'left', blocks: ['상단 배너', '본�
 interface ScreenTemplate {
   path: string;
   majorChange: boolean;
-  changes: string[];
+  changes: DesignChange[];
   asis: LayoutSketch;
   tobe: LayoutSketch;
   preserved: number;
@@ -124,7 +125,12 @@ const screenCatalog: Record<string, ScreenTemplate> = {
   로그인: {
     path: '/login',
     majorChange: false,
-    changes: ['입력란·버튼 위치 유지, 간격과 글자 크기만 정리'],
+    changes: [
+      {
+        what: '입력란·버튼 위치 유지, 간격과 글자 크기만 정리',
+        why: '로그인은 매일 쓰는 익숙한 화면이라 배치는 그대로 두고 읽기 쉬운 정도만 높였습니다',
+      },
+    ],
     asis: { nav: 'none', blocks: ['로고', '아이디·비밀번호', '로그인 버튼'] },
     tobe: { nav: 'none', blocks: ['로고', '아이디·비밀번호', '로그인 버튼'] },
     preserved: 4,
@@ -133,7 +139,12 @@ const screenCatalog: Record<string, ScreenTemplate> = {
   메인: {
     path: '/main',
     majorChange: false,
-    changes: ['요약 박스 3개를 카드로 바꿈, 배치는 유지'],
+    changes: [
+      {
+        what: '요약 박스 3개를 카드로 바꿈, 배치는 유지',
+        why: '같은 정보를 카드로 묶어 영역이 한눈에 구분되게 했습니다. 위치는 그대로라 찾던 자리에서 찾을 수 있습니다',
+      },
+    ],
     asis: legacyPage,
     tobe: { nav: 'left', blocks: ['상단 헤더', '요약 카드', '최근 공지'] },
     preserved: 9,
@@ -142,7 +153,12 @@ const screenCatalog: Record<string, ScreenTemplate> = {
   '공지 목록': {
     path: '/notice/list',
     majorChange: false,
-    changes: ['검색 조건과 표 구성 유지, 공통 표 컴포넌트 적용'],
+    changes: [
+      {
+        what: '검색 조건과 표 구성 유지, 공통 표 컴포넌트 적용',
+        why: '분석 리뷰에서 승인한 "목록 표: 통일" 결정에 따라 7개 화면의 표를 하나의 컴포넌트로 맞췄습니다',
+      },
+    ],
     asis: { nav: 'left', blocks: ['검색 조건', '공지 표', '페이지 이동'] },
     tobe: { nav: 'left', blocks: ['검색 조건', '공지 표', '페이지 이동'] },
     preserved: 7,
@@ -151,7 +167,12 @@ const screenCatalog: Record<string, ScreenTemplate> = {
   '공지 상세': {
     path: '/notice/detail',
     majorChange: false,
-    changes: ['본문·첨부 영역 유지'],
+    changes: [
+      {
+        what: '본문·첨부 영역 유지',
+        why: '본문을 읽는 것이 주 목적인 화면이라 구조를 바꿀 이유가 없었습니다',
+      },
+    ],
     asis: { nav: 'left', blocks: ['제목', '본문', '첨부', '목록 버튼'] },
     tobe: { nav: 'left', blocks: ['제목', '본문', '첨부', '목록 버튼'] },
     preserved: 6,
@@ -160,7 +181,12 @@ const screenCatalog: Record<string, ScreenTemplate> = {
   '휴가 신청 목록': {
     path: '/leave/list',
     majorChange: false,
-    changes: ['상태 열을 배지로 표시, 표 구성 유지'],
+    changes: [
+      {
+        what: '상태 열을 배지로 표시, 표 구성 유지',
+        why: '신청 상태를 글자 대신 배지로 보여 승인·반려 건을 빨리 구분하게 했습니다',
+      },
+    ],
     asis: { nav: 'left', blocks: ['검색 조건', '신청 표', '신청 버튼'] },
     tobe: { nav: 'left', blocks: ['검색 조건', '신청 표', '신청 버튼'] },
     preserved: 8,
@@ -170,9 +196,18 @@ const screenCatalog: Record<string, ScreenTemplate> = {
     path: '/leave/apply',
     majorChange: true,
     changes: [
-      '한 화면에 있던 입력 11개를 "기간 선택 → 사유·결재자" 2단계로 나눔',
-      '왼쪽 아래에 있던 신청 버튼을 오른쪽 아래로 옮김',
-      '새 창으로 뜨던 결재자 선택을 화면 안 대화상자로 바꿈',
+      {
+        what: '한 화면에 있던 입력 11개를 "기간 선택 → 사유·결재자" 2단계로 나눔',
+        why: '입력 11개가 한 화면에 몰려 있어 필수 항목을 놓치기 쉬웠습니다. 단계마다 확인하게 해 입력 실수를 줄입니다',
+      },
+      {
+        what: '왼쪽 아래에 있던 신청 버튼을 오른쪽 아래로 옮김',
+        why: '입력을 마치고 다음으로 가는 버튼을 오른쪽 아래에 두는 일반적인 폼 흐름에 맞췄습니다',
+      },
+      {
+        what: '새 창으로 뜨던 결재자 선택을 화면 안 대화상자로 바꿈',
+        why: '새 창은 팝업 차단에 막히고 창을 오가야 합니다. 화면 안 대화상자로 바꿔 흐름이 끊기지 않게 했습니다',
+      },
     ],
     asis: { nav: 'left', blocks: ['입력 11개 (한 화면)', '결재자 새 창', '신청 버튼(왼쪽)'] },
     tobe: { nav: 'left', blocks: ['1단계: 기간 선택', '2단계: 사유·결재자', '신청 버튼(오른쪽)'] },
@@ -182,7 +217,12 @@ const screenCatalog: Record<string, ScreenTemplate> = {
   '사용자 목록': {
     path: '/admin/user/list',
     majorChange: false,
-    changes: ['공통 표 컴포넌트 적용'],
+    changes: [
+      {
+        what: '공통 표 컴포넌트 적용',
+        why: '분석 리뷰에서 승인한 "목록 표: 통일" 결정을 따릅니다',
+      },
+    ],
     asis: { nav: 'left', blocks: ['검색 조건', '사용자 표'] },
     tobe: { nav: 'left', blocks: ['검색 조건', '사용자 표'] },
     preserved: 6,
@@ -191,7 +231,12 @@ const screenCatalog: Record<string, ScreenTemplate> = {
   '사용자 상세': {
     path: '/admin/user/detail',
     majorChange: false,
-    changes: ['입력 항목 그룹 유지'],
+    changes: [
+      {
+        what: '입력 항목 그룹 유지',
+        why: '권한 설정은 실수하면 위험한 화면이라 기존 그룹 구성을 그대로 두었습니다',
+      },
+    ],
     asis: { nav: 'left', blocks: ['기본 정보', '권한'] },
     tobe: { nav: 'left', blocks: ['기본 정보', '권한'] },
     preserved: 8,

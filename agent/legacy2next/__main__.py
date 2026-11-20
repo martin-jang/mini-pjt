@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import argparse
 import logging
+from pathlib import Path
 
 import uvicorn
 from dotenv import load_dotenv
 
 from .api import create_app
-from .config import REPO_ROOT, register_env_secrets
+from .config import REPO_ROOT, load_config, register_env_secrets
 from .masking import secrets, setup_logging
 
 
@@ -17,6 +18,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Legacy2Next 에이전트 서버")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8000)
+    # 아래는 settings.yaml 값을 덮어쓴다 (E2E 테스트에서 격리된 저장 위치를 쓰기 위함)
+    parser.add_argument("--log-dir", type=Path)
+    parser.add_argument("--checkpoint", type=Path)
+    parser.add_argument("--stub-step-ms", type=int)
+    parser.add_argument("--cors-origin", action="append", default=[])
     args = parser.parse_args()
 
     # .env를 환경 변수로 올리고, 계정·키 값은 로그에 나오기 전에 마스킹 목록에 등록한다
@@ -24,7 +30,20 @@ def main() -> None:
     count = register_env_secrets(secrets)
     setup_logging()
     logging.getLogger("legacy2next").info("마스킹 대상 비밀값 %d개 등록", count)
-    uvicorn.run(create_app(), host=args.host, port=args.port, log_config=None)
+
+    config = load_config()
+    overrides: dict[str, object] = {}
+    if args.log_dir:
+        overrides["log_dir"] = args.log_dir.resolve()
+    if args.checkpoint:
+        overrides["checkpoint_path"] = args.checkpoint.resolve()
+    if args.stub_step_ms is not None:
+        overrides["stub_step_ms"] = args.stub_step_ms
+    if args.cors_origin:
+        overrides["cors_origins"] = [*config.cors_origins, *args.cors_origin]
+    config = config.model_copy(update=overrides)
+
+    uvicorn.run(create_app(config), host=args.host, port=args.port, log_config=None)
 
 
 if __name__ == "__main__":

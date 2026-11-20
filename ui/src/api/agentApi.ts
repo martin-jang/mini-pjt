@@ -1,3 +1,4 @@
+import { createHttpAgentApi } from './httpAgentApi';
 import { createMockAgentApi } from './mock/mockAgentApi';
 import type {
   AnalysisDecision,
@@ -26,6 +27,8 @@ export interface AgentApi {
 
 export { ApiError } from './errors';
 
-export const agentApi: AgentApi = createMockAgentApi({
-  tickMs: Number(import.meta.env.VITE_MOCK_TICK_MS ?? 600),
-});
+// 기본은 실제 에이전트 서버. VITE_USE_MOCK=1이면 목업(E2E 테스트·서버 없이 화면 확인용)
+export const agentApi: AgentApi =
+  import.meta.env.VITE_USE_MOCK === '1'
+    ? createMockAgentApi({ tickMs: Number(import.meta.env.VITE_MOCK_TICK_MS ?? 600) })
+    : createHttpAgentApi(import.meta.env.VITE_AGENT_API_URL ?? 'http://127.0.0.1:8000');

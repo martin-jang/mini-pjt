@@ -130,12 +130,18 @@ export interface LayoutSketch {
 
 export type ScreenReviewState = 'pending' | 'approved' | 'revise';
 
+/** 바뀐 점과 그렇게 바꾼 이유 */
+export interface DesignChange {
+  what: string;
+  why: string;
+}
+
 export interface DesignScreen {
   id: string;
   name: string;
   path: string;
   majorChange: boolean;
-  changes: string[];
+  changes: DesignChange[];
   state: ScreenReviewState;
   asis: LayoutSketch;
   tobe: LayoutSketch;

@@ -13,6 +13,6 @@ export default defineConfig({
     command: 'npx vite --port 5179 --strictPort',
     url: 'http://localhost:5179',
     reuseExistingServer: false,
-    env: { VITE_MOCK_TICK_MS: '40' },
+    env: { VITE_USE_MOCK: '1', VITE_MOCK_TICK_MS: '40' },
   },
 });

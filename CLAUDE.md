@@ -30,7 +30,11 @@
   - `masking.py` — 비밀값 마스킹 레지스트리와 로그 필터 (G3)
   - `events.py` — 실행 이벤트 로그 (`logs/runs/<실행 ID>.jsonl`, SSE 구독)
   - `llm.py` — LLM 게이트웨이(Anthropic SDK Bedrock Mantle): 호출 수 한도(G8), 입력 마스킹, 호출 기록, 거절 처리. 노드는 이것으로만 LLM을 부른다
-  - `api.py`, `__main__.py` — FastAPI 앱과 서버 실행
+  - `schemas.py` — 콘솔과 주고받는 데이터 구조 (`ui/src/api/types.ts`와 같은 모양, camelCase JSON)
+  - `graph.py` — LangGraph 고정 그래프: Router → ①~⑤ 노드, 승인 게이트 2곳(`interrupt()`), 상태 알림용 게이트 노드
+  - `runs.py` — 실행 시작·재개·중단, 이벤트 로그를 접어 콘솔용 실행 스냅샷을 만든다 (실행 ID = 별칭 = 그래프 thread_id)
+  - `stubs.py` — 실제 노드가 붙기 전 스텁 데이터. 노드가 구현되면 줄여 나간다
+  - `api.py`, `__main__.py` — FastAPI 앱(`/query`, `/runs`, 승인·중단, SSE)과 서버 실행
 - `tests/` — pytest (실제 Bedrock 호출 없이 가짜 모델로 검증)
 
 ### `next-pjt/<별칭>/` — 사이트별 생성 결과물 (git 제외)
@@ -57,7 +61,7 @@ PowerShell 기준. 명령이 생기거나 바뀌면 여기에 추가한다.
 
 ### 에이전트 (`agent/`)
 - 의존성 설치: `agent\.venv\Scripts\python -m pip install -r agent/requirements.txt`
-- 서버 실행: `cd agent; .venv\Scripts\python -m legacy2next --port 8000` (상태 확인: `GET /health`)
+- 서버 실행: `cd agent; .venv\Scripts\python -m legacy2next --port 8000` (상태 확인: `GET /health`, API 문서: `/docs`). 덮어쓰기 옵션: `--log-dir`, `--checkpoint`, `--stub-step-ms`, `--cors-origin`
 - 테스트: `agent\.venv\Scripts\python -m pytest agent`
 - 린트·포맷: `agent\.venv\Scripts\python -m ruff check agent`, `agent\.venv\Scripts\python -m ruff format agent`
 
@@ -66,8 +70,9 @@ PowerShell 기준. 명령이 생기거나 바뀌면 여기에 추가한다.
 - 개발 서버: `npm run dev --prefix ui`
 - 빌드: `npm run build --prefix ui`
 - 린트·포맷 검사: `npm run lint --prefix ui`, `npm run format:check --prefix ui`
-- E2E 테스트: `npm run test:e2e --prefix ui` (목업 API로 전체 흐름 검증, 포트 5179 사용)
-- 목업 진행 속도: 환경 변수 `VITE_MOCK_TICK_MS` (기본 600ms). 목업 상태는 메모리에만 있어 새로고침하면 처음 상태로 돌아간다
+- E2E 테스트(목업): `npm run test:e2e --prefix ui` (목업 API로 화면 흐름 검증, 포트 5179 사용)
+- 콘솔은 기본으로 실제 에이전트 서버(`VITE_AGENT_API_URL`, 기본 `http://127.0.0.1:8000`)에 붙는다. 서버 없이 화면만 보려면 `VITE_USE_MOCK=1` (목업 진행 속도 `VITE_MOCK_TICK_MS`, 목업 상태는 새로고침하면 처음으로)
+- 실제 서버 E2E: `npm run test:e2e:real --prefix ui` (에이전트 8010·콘솔 5180을 띄우고 임시 폴더에 기록, 스텁 그래프 전체 흐름 검증)
 
 ### 생성 결과물 (`next-pjt/<별칭>/`)
 - 실행: `npm run dev --prefix next-pjt/<별칭>`

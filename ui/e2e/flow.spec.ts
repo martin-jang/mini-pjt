@@ -27,6 +27,7 @@ test('새 요청부터 결과까지 전체 흐름', async ({ page }) => {
   await expect(page.getByTestId('major-change-notice')).toBeVisible();
   await expect(page.getByTestId('sketch-asis')).toBeVisible();
   await expect(page.getByTestId('sketch-tobe')).toBeVisible();
+  await expect(page.getByTestId('change-why').first()).toContainText('입력 실수');
   await page.getByTestId('screen-approve').click();
   await expect(page.getByTestId('design-progress')).toContainText('승인 1 /');
   await page.getByTestId('design-approve-regular').click();

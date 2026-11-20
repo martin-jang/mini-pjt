@@ -44,7 +44,7 @@ const navItemClass = (active: boolean) =>
   }`;
 
 function Sidebar() {
-  const sites = useSites();
+  const { sites, error } = useSites();
   const { pathname } = useLocation();
   return (
     <aside className="fixed inset-y-0 left-0 flex w-60 flex-col border-r border-hairline bg-canvas-soft">
@@ -63,6 +63,17 @@ function Sidebar() {
         </Link>
       </div>
       <p className="mt-6 px-5 text-xs font-medium text-mute">사이트</p>
+      {error && (
+        <p
+          className="mx-3 mt-2 rounded-md bg-error-soft px-3 py-2 text-xs text-error"
+          data-testid="sites-error"
+        >
+          {error}
+        </p>
+      )}
+      {!error && sites.length === 0 && (
+        <p className="mt-2 px-5 text-xs text-mute">아직 요청한 사이트가 없습니다.</p>
+      )}
       <ul className="mt-2 flex-1 space-y-0.5 overflow-y-auto px-3" data-testid="site-list">
         {sites.map((site) => {
           const active = pathname.startsWith(`/sites/${site.alias}`);

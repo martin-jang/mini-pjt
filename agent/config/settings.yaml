@@ -12,6 +12,12 @@ cors_origins:
 # 실행 로그 저장 위치 (저장소 루트 기준, git 제외)
 log_dir: logs
 
+# LangGraph 체크포인트 (승인 대기 실행을 서버 재시작 후에도 이어 가기 위함, git 제외)
+checkpoint_path: checkpoints.sqlite
+
+# 스텁 노드의 단계 간 지연(ms). 실제 노드가 붙으면 쓰지 않는다
+stub_step_ms: 500
+
 # 사이트별 설정. 키는 사이트 별칭이다. 설정이 없는 사이트는 요청 URL의 origin만 허용한다
 sites: {}
 #  hr-portal:

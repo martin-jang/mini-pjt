@@ -102,15 +102,21 @@ function ScreenDetail({
           <Sketch sketch={screen.asis} label="ASIS · 레거시 (마스킹본 기준)" testId="sketch-asis" />
           <Sketch sketch={screen.tobe} label={`TOBE · ${run.alias} 디자인`} testId="sketch-tobe" />
         </div>
-        <h3 className="mt-5 text-sm font-semibold">바뀐 점</h3>
-        <ul className="mt-2 space-y-1.5 text-sm" data-testid="screen-changes">
-          {screen.changes.map((c) => (
-            <li key={c} className="flex gap-2">
-              <Icon name="arrow_right" className="text-mute" />
-              {c}
+        <h3 className="mt-6 text-sm font-semibold">바뀐 점과 이유</h3>
+        <ol className="mt-2 divide-y divide-hairline" data-testid="screen-changes">
+          {screen.changes.map((c, i) => (
+            <li key={c.what} className="grid grid-cols-[20px_1fr] gap-x-2 py-3">
+              <span className="text-xs leading-5 text-mute">{i + 1}</span>
+              <p className="text-sm font-medium">{c.what}</p>
+              {c.why && (
+                <p className="col-start-2 mt-1 text-[13px] text-body" data-testid="change-why">
+                  <span className="text-mute">이유 · </span>
+                  {c.why}
+                </p>
+              )}
             </li>
           ))}
-        </ul>
+        </ol>
       </Card>
       {canAct && (
         <div className="flex items-center gap-2 rounded-md border border-hairline bg-canvas p-3">
