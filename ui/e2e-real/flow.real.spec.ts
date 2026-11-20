@@ -40,3 +40,19 @@ test('실제 서버: 입력 검증 오류가 콘솔에 보인다', async ({ page
   await page.getByTestId('submit-request').click();
   await expect(page.getByTestId('form-error')).toContainText('별칭');
 });
+
+// T05: Router 분류 결과가 콘솔 질의 화면에 보인다 (실제 서버, 가짜 LLM)
+test('실제 서버: 범위 밖 질문은 거절, URL 요청은 새 요청으로 안내', async ({ page }) => {
+  await page.goto('/query');
+  await page.getByTestId('query-input').fill('오늘 점심 메뉴 추천해줘');
+  await page.getByTestId('query-input').press('Enter');
+  await expect(page.getByTestId('answer-rejected')).toContainText('레거시 웹 시스템');
+
+  await page.getByTestId('query-input').fill('https://legacy.example.com 분석해서 POC 만들어줘');
+  await page.getByTestId('query-send').click();
+  await expect(page.getByTestId('answer-start')).toContainText('새 POC 생성');
+  await page.getByTestId('answer-start-link').click();
+  await expect(page).toHaveURL(/\/new\?/);
+  await expect(page.getByTestId('input-url')).toHaveValue('https://legacy.example.com');
+  await expect(page.getByTestId('input-alias')).toHaveValue('legacy-example');
+});

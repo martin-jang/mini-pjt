@@ -19,7 +19,7 @@ export default defineConfig({
   },
   webServer: [
     {
-      command: `"${resolve('../agent/.venv/Scripts/python.exe')}" -m legacy2next --port 8010 --stub-step-ms 30 --log-dir "${join(dataDir, 'logs')}" --checkpoint "${join(dataDir, 'cp.sqlite')}" --cors-origin ${consoleUrl}`,
+      command: `"${resolve('../agent/.venv/Scripts/python.exe')}" -m legacy2next --port 8010 --fake-llm --stub-step-ms 30 --log-dir "${join(dataDir, 'logs')}" --checkpoint "${join(dataDir, 'cp.sqlite')}" --cors-origin ${consoleUrl}`,
       cwd: '../agent',
       url: `${agentUrl}/health`,
       reuseExistingServer: false,

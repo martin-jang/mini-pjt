@@ -14,17 +14,29 @@ from pydantic import BaseModel
 from sse_starlette.sse import EventSourceResponse, ServerSentEvent
 
 from . import __version__
-from .config import AgentConfig, load_config
+from .config import AgentConfig, Secrets, load_config
 from .events import EventLog, RunEvent
+from .fake_llm import FakeLlmClient
+from .llm import (
+    CallBudget,
+    LlmBudgetExceededError,
+    LlmGateway,
+    LlmRefusalError,
+    MessagesClient,
+    create_bedrock_client,
+)
+from .router import REJECT_TEXT, Router
 from .runs import RunError, RunService
 from .schemas import (
     AnalysisDecision,
     DesignDecision,
     LogLine,
+    QueryAnswer,
     QueryRequest,
     QueryResponse,
     RunDetail,
     SiteSummary,
+    StartSuggestion,
 )
 
 SSE_PING_SECONDS = 15
@@ -58,7 +70,13 @@ def _run_event_payload(event: RunEvent) -> list[str]:
     return messages
 
 
-def create_app(config: AgentConfig | None = None) -> FastAPI:
+def create_app(
+    config: AgentConfig | None = None,
+    *,
+    llm_client: MessagesClient | None = None,
+    fake_llm: bool = False,
+) -> FastAPI:
+    """llm_client가 있으면 그것을, fake_llm이면 테스트용 가짜 LLM을, 둘 다 없으면 Bedrock을 쓴다."""
     cfg = config or load_config()
 
     @asynccontextmanager
@@ -69,6 +87,18 @@ def create_app(config: AgentConfig | None = None) -> FastAPI:
             events = EventLog(cfg.resolved_log_dir())
             runs = RunService(cfg, events, saver, cfg.stub_step_ms / 1000)
             runs.mark_interrupted_runs()
+            settings = Secrets()
+            client = llm_client or (
+                FakeLlmClient() if fake_llm else create_bedrock_client(settings)
+            )
+            router_events = EventLog(cfg.resolved_log_dir() / "router")
+            gateway = LlmGateway(
+                client,
+                settings.bedrock_model_id,
+                CallBudget(cfg.limits.router_calls),
+                router_events,
+            )
+            app.state.router = Router(gateway, router_events)
             app.state.events = events
             app.state.runs = runs
             yield
@@ -89,18 +119,57 @@ def create_app(config: AgentConfig | None = None) -> FastAPI:
 
     @app.post("/query", response_model_by_alias=True)
     async def query(body: QueryRequest, request: Request) -> QueryResponse:
-        """단일 진입점. url이 있으면 생성 요청, question이 있으면 질의 (Router 분류는 T05)."""
+        """단일 진입점. url이 있으면 새 요청 폼(의도가 정해짐), question이면 Router가 분류한다."""
         runs = _service(request)
+        if body.url:
+            kind = body.kind or "new"
+            try:
+                runs.start(body.alias or "", body.url, kind)
+                return QueryResponse(intent=kind, run=await runs.snapshot(body.alias or ""))
+            except RunError as e:
+                raise _bad_request(e) from e
+        if not (body.question or "").strip():
+            raise HTTPException(status_code=400, detail="url 또는 question 중 하나가 필요합니다.")
+
+        router: Router = request.app.state.router
+        sites = runs.list_sites()
+        rejected = QueryResponse(
+            intent="out_of_scope", answer=QueryAnswer(kind="rejected", text=REJECT_TEXT)
+        )
         try:
-            if body.url:
-                kind = body.kind or "new"
-                runs.start(body.alias, body.url, kind)
-                return QueryResponse(intent=kind, run=await runs.snapshot(body.alias))
-            if body.question:
-                return QueryResponse(intent="query", answer=runs.answer(body.alias, body.question))
-        except RunError as e:
-            raise _bad_request(e) from e
-        raise HTTPException(status_code=400, detail="url 또는 question 중 하나가 필요합니다.")
+            decision = await router.classify(
+                body.question or "", [s.alias for s in sites], body.alias
+            )
+        except LlmBudgetExceededError as e:
+            raise HTTPException(status_code=429, detail=str(e)) from e
+        except LlmRefusalError:
+            return rejected
+        except Exception as e:  # LLM 연결·인증 오류는 콘솔에 원인을 알린다
+            raise HTTPException(
+                status_code=503, detail=f"Router LLM 호출에 실패했습니다 ({type(e).__name__})."
+            ) from e
+
+        if decision.intent == "out_of_scope":
+            return rejected
+        if decision.intent == "query":
+            if not decision.alias:
+                text = "어느 사이트에 대한 질문인지 대상 사이트를 골라 주세요."
+                return QueryResponse(intent="query", answer=QueryAnswer(kind="answer", text=text))
+            answer = runs.answer(decision.alias, body.question or "")
+            return QueryResponse(intent="query", answer=answer)
+        if decision.intent == "new" and not decision.url:
+            text = "분석할 레거시 사이트의 URL(http:// 또는 https://)을 함께 알려 주세요."
+            return QueryResponse(intent="new", answer=QueryAnswer(kind="answer", text=text))
+        site_url = decision.url or next((s.url for s in sites if s.alias == decision.alias), None)
+        label = "새 POC 생성" if decision.intent == "new" else "기존 결과물 확장"
+        return QueryResponse(
+            intent=decision.intent,
+            answer=QueryAnswer(
+                kind="start",
+                text=f"{label} 요청으로 이해했습니다. 새 요청 화면에서 값을 확인하고 시작하세요.",
+                start=StartSuggestion(kind=decision.intent, url=site_url, alias=decision.alias),
+            ),
+        )
 
     @app.get("/runs", response_model_by_alias=True)
     def list_runs(request: Request) -> list[SiteSummary]:

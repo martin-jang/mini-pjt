@@ -9,7 +9,7 @@
 
 - **런타임**: Python 3.14 (`agent/.venv`), Node v26
 - **에이전트**: LangGraph 고정 그래프 (Router + 단계별 노드, `interrupt()`로 사용자 승인), 체크포인트 SqliteSaver
-- **LLM / 임베딩**: AWS Bedrock Claude Sonnet 5.5 (`anthropic.claude-sonnet-5-5`, Anthropic SDK `AsyncAnthropicBedrockMantle`, 거절 시 Sonnet 5로 대체) / Titan Embeddings v2
+- **LLM / 임베딩**: AWS Bedrock Claude Sonnet 4.6 (추론 프로필 `global.anthropic.claude-sonnet-4-6`, Anthropic SDK `AsyncAnthropicBedrock` = bedrock-runtime) / Titan Embeddings v2. 현재 계정은 Sonnet 5.x 접근 권한과 bedrock-mantle IAM 권한이 없다. 권한이 생기면 `.env`의 `BEDROCK_MODEL_ID`만 바꾼다
 - **RAG**: Chroma
 - **화면 수집**: Playwright MCP (`microsoft/playwright-mcp`)
 - **개인정보 마스킹**: Presidio (`presidio-analyzer`, `presidio-anonymizer`, `presidio-image-redactor` + Tesseract OCR `kor`)
@@ -29,11 +29,13 @@
   - `config.py` — 설정·`.env` 로더, origin 계산, 사이트 계정(`SITE_<별칭>_USERNAME/PASSWORD`)
   - `masking.py` — 비밀값 마스킹 레지스트리와 로그 필터 (G3)
   - `events.py` — 실행 이벤트 로그 (`logs/runs/<실행 ID>.jsonl`, SSE 구독)
-  - `llm.py` — LLM 게이트웨이(Anthropic SDK Bedrock Mantle): 호출 수 한도(G8), 입력 마스킹, 호출 기록, 거절 처리. 노드는 이것으로만 LLM을 부른다
+  - `llm.py` — LLM 게이트웨이(Anthropic SDK Bedrock): 호출 수 한도(G8), 입력 마스킹, 호출 기록, 거절 처리. 노드는 이것으로만 LLM을 부른다
   - `schemas.py` — 콘솔과 주고받는 데이터 구조 (`ui/src/api/types.ts`와 같은 모양, camelCase JSON)
   - `graph.py` — LangGraph 고정 그래프: Router → ①~⑤ 노드, 승인 게이트 2곳(`interrupt()`), 상태 알림용 게이트 노드
   - `runs.py` — 실행 시작·재개·중단, 이벤트 로그를 접어 콘솔용 실행 스냅샷을 만든다 (실행 ID = 별칭 = 그래프 thread_id)
   - `stubs.py` — 실제 노드가 붙기 전 스텁 데이터. 노드가 구현되면 줄여 나간다
+  - `router.py` — Router: 자유 문장 의도 분류(신규 생성·확장·질의·범위 밖), LLM 출력 재검사, 범위 밖 거절(G4, `logs/router/`에 기록). 새 요청 폼은 LLM을 부르지 않는다
+  - `fake_llm.py` — 테스트용 가짜 LLM 클라이언트(`--fake-llm`)
   - `api.py`, `__main__.py` — FastAPI 앱(`/query`, `/runs`, 승인·중단, SSE)과 서버 실행
 - `tests/` — pytest (실제 Bedrock 호출 없이 가짜 모델로 검증)
 
@@ -61,8 +63,9 @@ PowerShell 기준. 명령이 생기거나 바뀌면 여기에 추가한다.
 
 ### 에이전트 (`agent/`)
 - 의존성 설치: `agent\.venv\Scripts\python -m pip install -r agent/requirements.txt`
-- 서버 실행: `cd agent; .venv\Scripts\python -m legacy2next --port 8000` (상태 확인: `GET /health`, API 문서: `/docs`). 덮어쓰기 옵션: `--log-dir`, `--checkpoint`, `--stub-step-ms`, `--cors-origin`
-- 테스트: `agent\.venv\Scripts\python -m pytest agent`
+- 서버 실행: `cd agent; .venv\Scripts\python -m legacy2next --port 8000` (상태 확인: `GET /health`, API 문서: `/docs`). 덮어쓰기 옵션: `--log-dir`, `--checkpoint`, `--stub-step-ms`, `--cors-origin`, `--fake-llm`(Bedrock 대신 규칙 기반 가짜 LLM, E2E·자격 증명 없이 확인용)
+- 테스트: `agent\.venv\Scripts\python -m pytest agent` (실제 Bedrock을 부르는 테스트는 건너뜀)
+- 실제 LLM 평가 샘플(RTR 등, 호출 비용 발생): `$env:L2N_LIVE="1"; agent\.venv\Scripts\python -m pytest agent -k live -s`
 - 린트·포맷: `agent\.venv\Scripts\python -m ruff check agent`, `agent\.venv\Scripts\python -m ruff format agent`
 
 ### 콘솔 UI (`ui/`)

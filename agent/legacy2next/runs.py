@@ -173,7 +173,9 @@ class RunService:
     def _launch(self, alias: str, payload: Any) -> None:
         async def run() -> None:
             try:
-                await self._graph.ainvoke(payload, self._thread(alias))
+                # 단계마다 저장을 마친 뒤 다음 단계로 간다. 기본(async)이면 다음 노드가 보내는
+                # 상태 알림이 앞 노드 결과 저장보다 먼저 나가 콘솔이 빈 데이터를 읽을 수 있다
+                await self._graph.ainvoke(payload, self._thread(alias), durability="sync")
             except asyncio.CancelledError:
                 raise
             except Exception as e:  # 노드 오류는 실행 실패로 기록하고 서버는 계속 돈다

@@ -15,6 +15,8 @@ ignore = ["ANN401"]
 "tests/*" = ["ANN"]
 # 예시 데이터 문장은 줄 길이 예외
 "legacy2next/stubs.py" = ["E501"]
+# LLM 프롬프트 문장은 줄 길이 예외
+"legacy2next/router.py" = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

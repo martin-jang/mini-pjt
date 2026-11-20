@@ -1,6 +1,6 @@
 """LLM 호출 래퍼. 실행당 호출 수 한도(G8)와 입력 마스킹(G3), 호출 기록, 거절(refusal) 처리를 맡는다.
 
-Bedrock의 Claude는 Anthropic SDK의 Mantle 클라이언트로 부른다 (모델 ID는 `anthropic.` 접두사).
+Bedrock Claude는 Anthropic SDK의 bedrock-runtime 클라이언트(InvokeModel)로 부른다 (추론 프로필 ID).
 """
 
 from __future__ import annotations
@@ -9,7 +9,7 @@ import logging
 import threading
 from typing import Any, Protocol
 
-from anthropic import AsyncAnthropicBedrockMantle, BetaRefusalFallbackMiddleware
+from anthropic import AsyncAnthropicBedrock, BetaRefusalFallbackMiddleware
 from anthropic.types.beta import BetaMessage, BetaMessageParam
 
 from .config import Secrets
@@ -63,7 +63,7 @@ class _Beta(Protocol):
 
 
 class MessagesClient(Protocol):
-    """게이트웨이가 쓰는 클라이언트 모양. 실제는 AsyncAnthropicBedrockMantle, 테스트는 가짜."""
+    """게이트웨이가 쓰는 클라이언트 모양. 실제는 AsyncAnthropicBedrock, 테스트는 가짜."""
 
     @property
     def beta(self) -> _Beta: ...
@@ -164,8 +164,10 @@ class LlmGateway:
         return response
 
 
-def create_bedrock_client(settings: Secrets) -> AsyncAnthropicBedrockMantle:
-    """Bedrock Mantle 클라이언트. 자격 증명은 AWS 기본 체인(.env의 AWS_* 등)에서 읽는다.
+def create_bedrock_client(settings: Secrets) -> AsyncAnthropicBedrock:
+    """Bedrock(bedrock-runtime) 클라이언트. 자격 증명은 AWS 기본 체인(.env의 AWS_* 등)에서 읽는다.
+
+    Mantle(bedrock-mantle) 경로는 현재 계정 IAM 권한이 없어 쓰지 않는다.
 
     거절 시 대체 모델로 다시 시도하는 SDK 미들웨어를 단다 (Bedrock은 서버 쪽 fallbacks 미지원).
     """
@@ -174,7 +176,7 @@ def create_bedrock_client(settings: Secrets) -> AsyncAnthropicBedrockMantle:
         middleware.append(
             BetaRefusalFallbackMiddleware([{"model": settings.bedrock_fallback_model_id}])
         )
-    return AsyncAnthropicBedrockMantle(aws_region=settings.aws_region, middleware=middleware)
+    return AsyncAnthropicBedrock(aws_region=settings.aws_region, middleware=middleware)
 
 
 def create_gateway(settings: Secrets, budget: CallBudget, events: EventLog) -> LlmGateway:

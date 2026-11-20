@@ -42,7 +42,9 @@ def setup(tmp_path):
     messages = FakeMessages()
     client = SimpleNamespace(beta=SimpleNamespace(messages=messages))
     events = EventLog(tmp_path, reg)
-    gateway = LlmGateway(client, "anthropic.claude-sonnet-5-5", CallBudget(limit=2), events, reg)
+    gateway = LlmGateway(
+        client, "global.anthropic.claude-sonnet-4-6", CallBudget(limit=2), events, reg
+    )
     return gateway, messages, events
 
 
@@ -59,7 +61,7 @@ async def test_gateway_masks_input_and_records_call(setup):
     )
     assert reply.content[0].text == "ok"
     sent = messages.requests[0]
-    assert sent["model"] == "anthropic.claude-sonnet-5-5"
+    assert sent["model"] == "global.anthropic.claude-sonnet-4-6"
     assert "pw-secret" not in str(sent["system"]) + str(sent["messages"])
     logged = events.read("run-1")
     assert logged[0].type == "llm"
@@ -100,7 +102,9 @@ def test_create_gateway_requires_model_id(tmp_path):
 
 def test_create_gateway_builds_bedrock_client_without_network(tmp_path):
     settings = Secrets(
-        bedrock_model_id="anthropic.claude-sonnet-5-5", aws_region="us-east-1", _env_file=None
+        bedrock_model_id="global.anthropic.claude-sonnet-4-6",
+        aws_region="us-east-1",
+        _env_file=None,
     )
     gateway = create_gateway(settings, CallBudget(1), EventLog(tmp_path))
     assert isinstance(gateway, LlmGateway)

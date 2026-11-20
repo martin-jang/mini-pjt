@@ -4,6 +4,8 @@
 limits:
   llm_calls_per_run: 200
   verifier_retries: 3
+  # Router(질의 분류) LLM 호출 수 상한 (서버 프로세스 단위)
+  router_calls: 1000
 
 # 콘솔 UI 개발 서버 (CORS 허용)
 cors_origins:

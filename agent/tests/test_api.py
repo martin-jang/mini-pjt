@@ -13,7 +13,7 @@ def client(tmp_path: Path):
     cfg = AgentConfig(
         log_dir=tmp_path / "logs", checkpoint_path=tmp_path / "cp.sqlite", stub_step_ms=0
     )
-    with TestClient(create_app(cfg)) as c:
+    with TestClient(create_app(cfg, fake_llm=True)) as c:
         yield c
 
 
@@ -150,3 +150,24 @@ def test_design_change_reads_old_string_format():
     from legacy2next.schemas import DesignChange
 
     assert DesignChange.model_validate("예전 문구").model_dump() == {"what": "예전 문구", "why": ""}
+
+
+@pytest.mark.parametrize(
+    ("question", "alias", "kind", "check"),
+    [
+        ("오늘 점심 메뉴 추천해줘", None, "rejected", "레거시 웹 시스템"),
+        ("https://legacy.example.com 분석해서 POC 만들어줘", None, "start", "새 POC 생성"),
+        ("화면 구성이 어떻게 돼?", None, "answer", "대상 사이트"),
+    ],
+)
+def test_query_router_answers(client, question, alias, kind, check):
+    res = client.post("/query", json={"question": question, "alias": alias})
+    answer = res.json()["answer"]
+    assert answer["kind"] == kind
+    assert check in answer["text"]
+    if kind == "start":
+        assert answer["start"] == {
+            "kind": "new",
+            "url": "https://legacy.example.com",
+            "alias": "legacy-example",
+        }

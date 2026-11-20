@@ -32,6 +32,8 @@ class Limits(BaseModel):
 
     llm_calls_per_run: int = Field(default=200, gt=0)
     verifier_retries: int = Field(default=3, ge=0)
+    # Router(질의 분류) LLM 호출 수 상한. 실행 단위가 아니라 서버 프로세스 단위로 센다
+    router_calls: int = Field(default=1000, gt=0)
 
 
 class SiteConfig(BaseModel):
@@ -81,9 +83,9 @@ class Secrets(BaseSettings):
     )
 
     aws_region: str = "ap-northeast-2"
-    bedrock_model_id: str = "anthropic.claude-sonnet-5-5"
+    bedrock_model_id: str = "global.anthropic.claude-sonnet-4-6"
     # 거절(refusal) 시 다시 시도할 대체 모델. 비우면 대체하지 않는다
-    bedrock_fallback_model_id: str = "anthropic.claude-sonnet-5"
+    bedrock_fallback_model_id: str = ""
     bedrock_embed_model_id: str = "amazon.titan-embed-text-v2:0"
 
 

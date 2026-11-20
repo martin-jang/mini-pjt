@@ -233,9 +233,9 @@ class RunDetail(SiteSummary):
 
 
 class QueryRequest(ApiModel):
-    """콘솔의 단일 진입점. url이 있으면 생성 요청, 없으면 질의."""
+    """콘솔의 단일 진입점. url이 있으면 새 요청 폼(Router LLM 생략), question이면 Router가 분류."""
 
-    alias: str
+    alias: str | None = None
     url: str | None = None
     kind: RunKind | None = None
     question: str | None = None
@@ -246,9 +246,18 @@ class QueryTable(ApiModel):
     rows: list[list[str]]
 
 
+class StartSuggestion(ApiModel):
+    """Router가 생성·확장 요청으로 분류했을 때 콘솔이 새 요청 폼을 채우는 값."""
+
+    kind: RunKind
+    url: str | None = None
+    alias: str | None = None
+
+
 class QueryAnswer(ApiModel):
-    kind: Literal["answer", "rejected"]
+    kind: Literal["answer", "rejected", "start"]
     text: str
+    start: StartSuggestion | None = None
     table: QueryTable | None = None
     sources: list[str] = Field(default_factory=list)
 

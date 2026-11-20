@@ -225,4 +225,10 @@ export type QueryAnswer =
       table?: { columns: string[]; rows: string[][] };
       sources: string[];
     }
-  | { kind: 'rejected'; text: string };
+  | { kind: 'rejected'; text: string }
+  | {
+      /** Router가 생성·확장 요청으로 분류: 새 요청 폼을 채울 값 */
+      kind: 'start';
+      text: string;
+      start: { kind: RunKind; url?: string | null; alias?: string | null };
+    };

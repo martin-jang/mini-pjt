@@ -36,7 +36,7 @@ export function NewRequestPage() {
   const [params] = useSearchParams();
   const extendAlias = params.get('extend');
   const [url, setUrl] = useState(params.get('url') ?? '');
-  const [alias, setAlias] = useState(extendAlias ?? '');
+  const [alias, setAlias] = useState(params.get('alias') ?? extendAlias ?? '');
   const [kind, setKind] = useState<RunKind>(extendAlias ? 'extend' : 'new');
   const [error, setError] = useState<string>();
   const [submitting, setSubmitting] = useState(false);

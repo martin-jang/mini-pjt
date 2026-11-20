@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
+import { Link } from 'react-router';
 import { agentApi } from '../api/agentApi';
 import type { QueryAnswer } from '../api/types';
 import { Icon } from '../components/Icon';
@@ -25,7 +26,31 @@ function AgentAvatar() {
   );
 }
 
+/** Router가 생성·확장 요청으로 분류한 경우: 새 요청 폼으로 넘어가는 링크 */
+function startLink(start: Extract<QueryAnswer, { kind: 'start' }>['start']): string {
+  const params = new URLSearchParams();
+  if (start.url) params.set('url', start.url);
+  if (start.kind === 'extend' && start.alias) params.set('extend', start.alias);
+  else if (start.alias) params.set('alias', start.alias);
+  return `/new?${params.toString()}`;
+}
+
 function AnswerView({ answer }: { answer: QueryAnswer }) {
+  if (answer.kind === 'start') {
+    return (
+      <div className="min-w-0 flex-1" data-testid="answer-start">
+        <p className="text-sm leading-6">{answer.text}</p>
+        <Link
+          to={startLink(answer.start)}
+          data-testid="answer-start-link"
+          className="mt-2 inline-flex h-8 items-center gap-1.5 rounded-md border border-hairline bg-canvas px-3 text-sm font-medium hover:bg-canvas-soft"
+        >
+          새 요청으로 시작
+          <Icon name="arrow_forward" />
+        </Link>
+      </div>
+    );
+  }
   if (answer.kind === 'rejected') {
     return (
       <p

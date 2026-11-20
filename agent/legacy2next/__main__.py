@@ -23,6 +23,9 @@ def main() -> None:
     parser.add_argument("--checkpoint", type=Path)
     parser.add_argument("--stub-step-ms", type=int)
     parser.add_argument("--cors-origin", action="append", default=[])
+    parser.add_argument(
+        "--fake-llm", action="store_true", help="실제 Bedrock 대신 테스트용 가짜 LLM (E2E용)"
+    )
     args = parser.parse_args()
 
     # .env를 환경 변수로 올리고, 계정·키 값은 로그에 나오기 전에 마스킹 목록에 등록한다
@@ -43,7 +46,9 @@ def main() -> None:
         overrides["cors_origins"] = [*config.cors_origins, *args.cors_origin]
     config = config.model_copy(update=overrides)
 
-    uvicorn.run(create_app(config), host=args.host, port=args.port, log_config=None)
+    uvicorn.run(
+        create_app(config, fake_llm=args.fake_llm), host=args.host, port=args.port, log_config=None
+    )
 
 
 if __name__ == "__main__":

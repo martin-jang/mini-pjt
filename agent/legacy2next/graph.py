@@ -98,7 +98,10 @@ def build_graph(deps: GraphDeps, checkpointer: BaseCheckpointSaver) -> CompiledS
     async def router(state: GraphState) -> dict[str, Any]:
         em = deps.emitter(state)
         intent = state.get("kind", "new")
-        em.log("router", f"{STUB}의도 분류: {'신규 생성' if intent == 'new' else '확장'}")
+        em.log(
+            "router",
+            f"의도: {'신규 생성' if intent == 'new' else '확장'} (새 요청 폼, Router LLM 생략)",
+        )
         await em.step()
         return {"intent": intent}
 
